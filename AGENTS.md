@@ -12,12 +12,13 @@ Before making changes, agents must read:
 2. `README.md`
 3. `STUDIO_PROTOCOL.md`
 4. `PRODUCT_SPEC.md` when working on product definition, lifecycle boundaries, future app direction, or canonical studio context
-5. `XML_PROMPT_PROTOCOL.md` when creating or editing Codex tickets, reusable prompts, or LLM prompt standards
-6. `REPO_ONBOARDING_PROTOCOL.md` when working on repository onboarding, connected repo analysis, uploaded repo analysis, or repo context generation
-7. `CODE_ASSET_PROTOCOL.md` when working on code asset extraction, classification, storage, retrieval, or reuse
-8. `DECISIONS.md`
-9. `APP_REGISTRY.md`
-10. `CODEX_RULES.md` when creating or executing Codex tickets
+5. `RUIZTECH_CODE_STANDARD.md` when working on future implementation quality, reusable asset readiness, or Codex-generated code behavior
+6. `XML_PROMPT_PROTOCOL.md` when creating or editing Codex tickets, reusable prompts, or LLM prompt standards
+7. `REPO_ONBOARDING_PROTOCOL.md` when working on repository onboarding, connected repo analysis, uploaded repo analysis, or repo context generation
+8. `CODE_ASSET_PROTOCOL.md` when working on code asset extraction, classification, storage, retrieval, or reuse
+9. `DECISIONS.md`
+10. `APP_REGISTRY.md`
+11. `CODEX_RULES.md` when creating or executing Codex tickets
 
 ## Repository Identity
 
@@ -38,6 +39,8 @@ It also defines the Repo Onboarding Protocol for future authorized GitHub reposi
 It also defines the XML Prompt Protocol for structured Codex and LLM prompts.
 
 It also defines the canonical `ruizTechStudio` product specification in `PRODUCT_SPEC.md`.
+
+It also defines the RuizTech Code Standard for future implementation quality and reusable asset readiness.
 
 ## Current Studio Focus
 
@@ -74,6 +77,7 @@ This repository currently exists to organize studio operations, documentation, p
 - `STUDIO_DASHBOARD.md`
 - `STUDIO_PROTOCOL.md`
 - `PRODUCT_SPEC.md`
+- `RUIZTECH_CODE_STANDARD.md`
 - `XML_PROMPT_PROTOCOL.md`
 - `REPO_ONBOARDING_PROTOCOL.md`
 - `CODE_ASSET_PROTOCOL.md`
