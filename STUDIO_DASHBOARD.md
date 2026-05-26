@@ -1,3 +1,47 @@
+===
+## Source of Truth Rule
+
+This repository is the source of truth for RuizTech Studio.
+
+Do not rely on scattered chats, screenshots, memory, or loose notes when resuming work.
+
+Every serious decision, active app, milestone, Codex task, and next action must be reflected in this repository.
+===
+
+===
+## Active App Rule
+
+Only one app can be the primary active app at a time.
+
+The active app receives the main build energy, Codex tasks, architecture work, and weekly planning.
+
+Secondary apps may only receive work if:
+- they create immediate cash flow
+- they unblock the active app
+- they are being documented, not expanded
+
+Current active app(NOTE: UPDATE THIS WHEN CHANGING ACTIVE APP): TinySheets Worksheet Generator.
+===
+
+===
+
+## Daily Resume Loop
+
+Start every session here.
+
+1. Confirm the active app.
+2. Confirm the current milestone.
+3. Review the next task.
+4. Check blockers.
+5. Create or use one Codex-ready ticket.
+6. Implement, review, test, commit, and push.
+7. Update this dashboard before stopping.
+
+If the dashboard does not reflect the current state, the session is not finished.
+
+===
+
+
 # RUIZTECH STUDIO DASHBOARD
 ### Master Issue
 #### Build focused, sellable, maintainable software products.

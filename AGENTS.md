@@ -1,8 +1,54 @@
+===
+## Source of Truth Rule
+
+This repository is the source of truth for RuizTech Studio.
+
+Do not rely on scattered chats, screenshots, memory, or loose notes when resuming work.
+
+Every serious decision, active app, milestone, Codex task, and next action must be reflected in this repository.
+===
+
+===
+## Active App Rule
+
+Only one app can be the primary active app at a time.
+
+The active app receives the main build energy, Codex tasks, architecture work, and weekly planning.
+
+Secondary apps may only receive work if:
+- they create immediate cash flow
+- they unblock the active app
+- they are being documented, not expanded
+
+Current active app(NOTE: UPDATE THIS WHEN CHANGING ACTIVE APP): TinySheets Worksheet Generator.
+===
+
+===
+
+## Required Session Behavior for Agents
+
+Before making changes, agents must:
+
+1. Read `STUDIO_DASHBOARD.md`.
+2. Confirm the active app and current milestone.
+3. Check `DECISIONS.md` for relevant prior decisions.
+4. Check `APP_REGISTRY.md` for the current app state.
+5. Work only on the assigned task.
+6. Avoid unrelated rewrites or new architecture.
+7. Validate the change when possible.
+8. Summarize changed files, validation results, risks, and the suggested next task.
+
+Agents must not treat this repository as a generic coding sandbox.
+
+This repo is the continuity system for RuizTech Studio.
+===
+
 # AGENTS.md
 
 This file defines how AI coding agents must work inside the `ruizTechServices/studio-1` repository.
 
 Read this file before making changes.
+
 
 ## Repository Identity
 
