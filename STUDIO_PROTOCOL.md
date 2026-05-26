@@ -2,6 +2,8 @@
 
 This is the canonical operating system for RuizTech Studio.
 
+For canonical product definition, lifecycle boundaries, and future app direction, use `PRODUCT_SPEC.md`.
+
 For Codex tickets, reusable prompts, and structured LLM instructions, use `XML_PROMPT_PROTOCOL.md` as the controlling prompt-format protocol.
 
 For future authorized repository intake and project understanding, use `REPO_ONBOARDING_PROTOCOL.md` as the controlling protocol.
@@ -135,3 +137,20 @@ A decision entry must include:
 AI is used to support strategy, scope control, implementation, review, validation, and documentation.
 
 AI does not replace the studio source of truth. If a conclusion matters, it belongs in this repo.
+
+
+## Markdown Lifecycle Policy
+
+`PRODUCT_SPEC.md` is the canonical product-level source for the markdown lifecycle policy.
+
+ruizTechStudio is currently markdown-first because the product is still being designed.
+
+The planning markdown files in this repository are temporary scaffolding documents. They exist to define the product thesis, architecture, repo onboarding flow, Code Asset Registry, Codex-ticket workflow, and implementation boundaries before production code is built.
+
+These planning markdown files should not be treated as permanent production documentation.
+
+Once ruizTechStudio is complete enough for production, the temporary planning markdown files should be removed from the active codebase. The production `README.md` should then become the official documentation for the actual ruizTechStudio application.
+
+The final production README should describe the application itself, including setup, usage, architecture, repo onboarding, Code Asset Registry behavior, Codex-ticket generation, validation, and deployment.
+
+Old planning documents may remain recoverable through Git history, release tags, or an archival branch, but they should not remain in the production codebase as active source-of-truth documents.

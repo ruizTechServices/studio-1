@@ -8,6 +8,8 @@ This repository is not a production application. It is the operating system for 
 
 RuizTech Studio exists to help build focused, sellable, maintainable software products without losing context between work sessions.
 
+`PRODUCT_SPEC.md` is the canonical product specification for `ruizTechStudio` during the current design and specification phase.
+
 The larger studio direction also includes authorized repository onboarding and a proprietary RuizTech code asset library: a future system for understanding connected GitHub repositories, generating supervised project context, extracting reusable functions, components, algorithms, patterns, templates, workflows, prompts, schemas, and integrations, and reusing them through controlled integration plans. See `REPO_ONBOARDING_PROTOCOL.md` and `CODE_ASSET_PROTOCOL.md`.
 
 ## Current Studio Focus
@@ -30,6 +32,7 @@ studio-1/
   AGENTS.md
   STUDIO_DASHBOARD.md
   STUDIO_PROTOCOL.md
+  PRODUCT_SPEC.md
   REPO_ONBOARDING_PROTOCOL.md
   CODE_ASSET_PROTOCOL.md
   APP_REGISTRY.md
@@ -75,6 +78,10 @@ A session is not complete until the repo accurately describes where the project 
 - Do not create application source code in this repo unless explicitly instructed.
 - Do not initialize Next.js, React, Supabase, Prisma, Tailwind, or any application framework here unless the repo is deliberately converted into an executable project.
 - Do not add payments, admin dashboards, marketplace features, or product-specific MVP work while the current focus is creating `ruizTechStudio`.
+
+## Markdown Lifecycle
+
+The planning markdown files are temporary scaffolding while `ruizTechStudio` is being designed and implemented. After production readiness, temporary planning and protocol markdown files should be removed from the active codebase. `README.md` is the exception: it should be rewritten as the official production application documentation.
 
 ## How To Resume Work
 

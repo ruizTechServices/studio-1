@@ -10,6 +10,29 @@ Each decision must include:
 - rejected alternatives
 - revisit condition
 
+## 2026-05-26 - PRODUCT_SPEC is canonical for ruizTechStudio definition
+
+### Decision
+
+`PRODUCT_SPEC.md` is the canonical product specification for `ruizTechStudio` during the design and specification phase.
+
+The planning markdown files remain authoritative while the product is being designed and implemented, but they are temporary scaffolding. After production readiness, temporary planning and protocol markdown files should be removed from the active production codebase. `README.md` should remain and be rewritten as the official production application documentation.
+
+### Reason
+
+`ruizTechStudio` needs one canonical product-level document that defines what the product is, what it is not, the active focus, parked project policy, major modules, future app boundary, and markdown lifecycle before implementation begins.
+
+### Rejected
+
+- Treating scattered protocol files as the only product definition
+- Starting app implementation before a canonical product specification exists
+- Keeping temporary planning markdown as active production documentation after production readiness
+- Deleting `README.md` instead of rewriting it for the production application
+
+### Revisit
+
+When `ruizTechStudio` enters implementation readiness, reaches production readiness, or the product modules need to be converted into implementation tickets.
+
 ## 2026-05-26 - RuizTech Studio adopts XML-style prompt structure
 
 ### Decision

@@ -11,6 +11,7 @@ Use `XML_PROMPT_PROTOCOL.md` as the controlling prompt-format protocol.
   <read_first>
     <file>STUDIO_DASHBOARD.md</file>
     <file>STUDIO_PROTOCOL.md</file>
+    <file>PRODUCT_SPEC.md</file>
     <file>DECISIONS.md</file>
     <file>APP_REGISTRY.md</file>
   </read_first>
@@ -40,6 +41,7 @@ Use `XML_PROMPT_PROTOCOL.md` as the controlling prompt-format protocol.
 <llm_prompt>
   <read_first>
     <file>XML_PROMPT_PROTOCOL.md</file>
+    <file>PRODUCT_SPEC.md</file>
     <file>STUDIO_DASHBOARD.md</file>
     <file>STUDIO_PROTOCOL.md</file>
     <file>CODEX_RULES.md</file>

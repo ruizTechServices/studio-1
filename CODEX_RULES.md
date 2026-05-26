@@ -27,6 +27,7 @@ Codex must:
 
 - read `AGENTS.md` before making changes
 - read the relevant studio docs
+- read `PRODUCT_SPEC.md` before tasks involving product definition, future app direction, markdown lifecycle, or production-readiness boundaries
 - read `XML_PROMPT_PROTOCOL.md` before creating or editing Codex tickets, reusable prompts, or LLM prompt standards
 - read `REPO_ONBOARDING_PROTOCOL.md` before tasks involving connected repo analysis, uploaded repo analysis, repo onboarding, or repo context generation
 - read `CODE_ASSET_PROTOCOL.md` before tasks involving proprietary code asset extraction, classification, retrieval, storage, or reuse

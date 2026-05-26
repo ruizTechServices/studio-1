@@ -16,6 +16,8 @@ The goal is not to build many half-finished apps. The goal is to build focused, 
 
 The larger Studio direction also includes authorized repo onboarding plus a proprietary RuizTech code intelligence and asset-reuse system. `REPO_ONBOARDING_PROTOCOL.md` defines how connected or uploaded repositories should become supervised project context, and `CODE_ASSET_PROTOCOL.md` defines how reusable code assets should be reviewed, stored, retrieved, and later integrated into future projects.
 
+`PRODUCT_SPEC.md` is the canonical product specification for the current `ruizTechStudio` direction.
+
 ## Current Studio Focus
 
 **ruizTechStudio**
@@ -38,7 +40,7 @@ No product-specific revenue hypothesis is active during this phase. Revenue work
 
 ## Next Smallest Task
 
-Create the next ruizTechStudio protocol or context document needed to support code standards, repo onboarding, or code asset reuse.
+Create the next ruizTechStudio protocol or context document needed to support code standards, asset registry structure, repo onboarding, or code asset reuse.
 
 ## Blockers
 
