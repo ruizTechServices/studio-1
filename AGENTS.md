@@ -43,6 +43,85 @@ Agents must not treat this repository as a generic coding sandbox.
 This repo is the continuity system for RuizTech Studio.
 ===
 
+===
+
+## Task Decomposition Rule
+
+Never ask Codex to build a whole product.
+
+Every Codex task must be reduced to one bounded implementation unit.
+
+A valid task includes:
+- goal
+- context
+- scope
+- constraints
+- acceptance criteria
+- files likely involved
+- validation steps
+- final response format
+
+Invalid task:
+
+“Build the app.”
+
+Valid task:
+
+“Create `APP_REGISTRY.md` using the current studio dashboard as the source of truth.”
+
+===
+
+===
+
+## End-of-Session Continuity Rule
+
+Every work session must end with the repo able to answer:
+
+1. What changed?
+2. Why did it change?
+3. What is the active app?
+4. What milestone is active?
+5. What is the next smallest task?
+6. What is blocked?
+7. What should not be touched yet?
+
+If those answers are not captured, the session is not complete.
+
+===
+
+===
+## Decision Logging Rule
+
+Any decision that changes product direction, architecture, stack, scope, pricing, active app priority, or launch path must be recorded in `DECISIONS.md`.
+
+A decision entry must include:
+
+- date
+- decision
+- reason
+- rejected alternatives
+- revisit condition
+
+#### EXAMPLE: ```## 2026-05-26 — TinySheets remains the active app
+
+### Decision
+TinySheets remains the primary active app for the studio.
+
+### Reason
+It has the clearest user, smallest MVP, and strongest path to a paid SaaS test.
+
+### Rejected
+- Switching focus to 24HourGPT
+- Building the studio dashboard first
+- Starting a new AI agent app
+
+### Revisit
+After TinySheets has a working MVP or a clear blocker.
+```
+
+===
+
+    
 # AGENTS.md
 
 This file defines how AI coding agents must work inside the `ruizTechServices/studio-1` repository.

@@ -44,6 +44,24 @@ The session is not complete until this repo accurately describes the current sta
 
 ===
 
+===
+
+## End-of-Session Continuity Rule
+
+Every work session must end with the repo able to answer:
+
+1. What changed?
+2. Why did it change?
+3. What is the active app?
+4. What milestone is active?
+5. What is the next smallest task?
+6. What is blocked?
+7. What should not be touched yet?
+
+If those answers are not captured, the session is not complete.
+
+===
+
 # RuizTech Studio
 
 RuizTech Studio is the source-of-truth workspace for planning, building, reviewing, and launching RuizTechServices software products.
