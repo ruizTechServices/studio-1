@@ -9,6 +9,8 @@ const iconPaths = {
   "chevron-right": '<path d="m9 18 6-6-6-6"/>',
   "clipboard": '<rect x="8" y="3" width="8" height="4" rx="1"/><path d="M9 5H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-3"/><path d="M8 12h8"/><path d="M8 16h5"/>',
   "code": '<path d="m8 9-4 3 4 3"/><path d="m16 9 4 3-4 3"/><path d="m14 5-4 14"/>',
+  "database": '<ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/>',
+  "download": '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/>',
   "document": '<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v6h6"/><path d="M8 13h8"/><path d="M8 17h6"/>',
   "eye": '<path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z"/><circle cx="12" cy="12" r="2.5"/>',
   "file": '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/>',
@@ -26,6 +28,7 @@ const iconPaths = {
   "settings": '<path d="M12 15.5A3.5 3.5 0 1 0 12 8a3.5 3.5 0 0 0 0 7.5Z"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 0 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1A2 2 0 0 1 4.2 17l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L4.3 7A2 2 0 0 1 7.1 4.2l.1.1a1.7 1.7 0 0 0 1.9.3h.1a1.7 1.7 0 0 0 .9-1.6V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1A2 2 0 0 1 19.8 7l-.1.1a1.7 1.7 0 0 0-.3 1.9v.1a1.7 1.7 0 0 0 1.6.9h.1a2 2 0 0 1 0 4H21a1.7 1.7 0 0 0-1.6 1Z"/>',
   "share": '<path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"/><path d="M16 6l-4-4-4 4"/><path d="M12 2v13"/>',
   "spark": '<path d="M13 2 8.5 12H13l-2 10 5.5-12H12l1-8Z"/>',
+  "upload": '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M17 8l-5-5-5 5"/><path d="M12 3v12"/>',
   "workflow": '<path d="M6 4v6"/><path d="M18 14v6"/><rect x="3" y="10" width="6" height="6" rx="1.5"/><rect x="15" y="8" width="6" height="6" rx="1.5"/><path d="M9 13h2a3 3 0 0 0 3-3V8a4 4 0 0 1 4-4"/><path d="M15 11h-2a3 3 0 0 0-3 3v2a4 4 0 0 1-4 4"/>'
 };
 
@@ -42,14 +45,15 @@ function studioLogo(className = "") {
 }
 
 const navItems = [
-  ["Home", "home"],
-  ["Projects", "folder"],
-  ["Specs", "clipboard"],
-  ["Agents", "bot"],
-  ["Workflows", "workflow"],
-  ["Memory", "layers"],
-  ["Files", "file"],
-  ["Settings", "settings"]
+  { label: "Home", icon: "home", href: "index.html", page: "home" },
+  { label: "Dashboard", icon: "layers", href: "dashboard.html", page: "dashboard" },
+  { label: "Projects", icon: "folder", href: "dashboard.html#projects" },
+  { label: "Specs", icon: "clipboard", href: "dashboard.html#specs" },
+  { label: "Agents", icon: "bot", href: "dashboard.html#agents" },
+  { label: "Workflows", icon: "workflow", href: "dashboard.html#workflows" },
+  { label: "Memory", icon: "layers", href: "dashboard.html#memory" },
+  { label: "Files", icon: "file", href: "dashboard.html#files" },
+  { label: "Settings", icon: "settings", href: "dashboard.html#settings" }
 ];
 
 const projects = [
@@ -126,9 +130,20 @@ const health = [
 
 const dashboardGrid = document.querySelector("#dashboardGrid");
 const toast = document.querySelector("#toast");
+const currentPage = document.body.dataset.page;
 let toastTimer;
+let savedRepos = [];
+let filterRules = {
+  ignoredDirs: ["node_modules", ".git", "dist", "build", ".next", "coverage"],
+  allowedExtensions: [".js", ".jsx", ".ts", ".tsx", ".html", ".css", ".json", ".md"],
+  maxFileSizeBytes: 2 * 1024 * 1024
+};
 
 function showToast(message) {
+  if (!toast) {
+    return;
+  }
+
   clearTimeout(toastTimer);
   toast.textContent = message;
   toast.classList.add("show");
@@ -139,19 +154,31 @@ function renderIconPlaceholders() {
   document.querySelectorAll("[data-icon]").forEach((target) => {
     target.innerHTML = icon(target.dataset.icon);
   });
-  document.querySelector(".logo-mark").innerHTML = studioLogo();
+
+  const logoMark = document.querySelector(".logo-mark");
+  if (logoMark) {
+    logoMark.innerHTML = studioLogo();
+  }
 }
 
 function renderNav() {
   const nav = document.querySelector("#primaryNav");
-  nav.innerHTML = navItems.map(([label, iconName], index) => `
-    <button class="nav-item ${index === 0 ? "active" : ""}" type="button" data-nav="${label}" data-toast="${label}">
-      ${icon(iconName)}
-      <span>${label}</span>
-    </button>
+  if (!nav) {
+    return;
+  }
+
+  nav.innerHTML = navItems.map((item) => `
+    <a class="nav-item ${item.page === currentPage ? "active" : ""}" href="${item.href}" data-nav="${item.label}">
+      ${icon(item.icon)}
+      <span>${item.label}</span>
+    </a>
   `).join("");
 
   const projectNav = document.querySelector("#projectNav");
+  if (!projectNav) {
+    return;
+  }
+
   projectNav.innerHTML = projects.map(([label, iconName, active]) => `
     <button class="project-row ${active ? "active" : ""}" type="button" data-project="${label}" data-toast="${label}">
       ${icon(iconName)}
@@ -167,7 +194,12 @@ function renderNav() {
 }
 
 function renderKpis() {
-  document.querySelector("#kpiStrip").innerHTML = kpis.map((item) => `
+  const kpiStrip = document.querySelector("#kpiStrip");
+  if (!kpiStrip) {
+    return;
+  }
+
+  kpiStrip.innerHTML = kpis.map((item) => `
     <article class="kpi-card">
       <span class="kpi-label">${item.label}</span>
       <span class="kpi-value">${item.value}</span>
@@ -184,7 +216,7 @@ function header(title, viewAll = true) {
 }
 
 function activeProjectsCard() {
-  return `<article class="panel row-one">
+  return `<article class="panel row-one" id="projects">
     ${header("Active Projects")}
     <div class="featured-project">
       <div class="feature-title">
@@ -224,7 +256,7 @@ function activeProjectsCard() {
 }
 
 function recentSpecsCard() {
-  return `<article class="panel row-one">
+  return `<article class="panel row-one" id="specs">
     ${header("Recent Specs")}
     <div class="compact-list">
       ${specs.map(([title, sub, version, iconName, color]) => `
@@ -242,7 +274,7 @@ function recentSpecsCard() {
 }
 
 function agentsCard() {
-  return `<article class="panel row-one">
+  return `<article class="panel row-one" id="agents">
     ${header("Running Agents")}
     <div class="compact-list">
       ${agents.map(([title, sub, value, iconName, color]) => `
@@ -261,7 +293,7 @@ function agentsCard() {
 }
 
 function quickCreateCard() {
-  return `<article class="panel row-one">
+  return `<article class="panel row-one" id="workflows">
     ${header("Quick Create", false)}
     <div class="compact-list">
       ${quickCreate.map(([title, sub, iconName, color]) => `
@@ -279,7 +311,7 @@ function quickCreateCard() {
 }
 
 function savedPromptsCard() {
-  return `<article class="panel">
+  return `<article class="panel" id="memory">
     ${header("Saved Prompts")}
     <div class="compact-list">
       ${savedPrompts.map((title) => `
@@ -295,7 +327,7 @@ function savedPromptsCard() {
 }
 
 function activityCard() {
-  return `<article class="panel">
+  return `<article class="panel" id="files">
     ${header("Recent Activity")}
     <div class="compact-list">
       ${activities.map(([subject, action, time, iconName, color]) => `
@@ -325,7 +357,7 @@ function tasksCard() {
 }
 
 function healthCard() {
-  return `<article class="panel health-panel">
+  return `<article class="panel health-panel" id="settings">
     ${header("Project Health", false)}
     <div class="health-gauge">
       <svg viewBox="0 0 180 108" aria-hidden="true">
@@ -355,6 +387,10 @@ function healthCard() {
 }
 
 function renderDashboard() {
+  if (!dashboardGrid) {
+    return;
+  }
+
   dashboardGrid.innerHTML = [
     activeProjectsCard(),
     recentSpecsCard(),
@@ -367,10 +403,348 @@ function renderDashboard() {
   ].join("");
 }
 
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function formatBytes(bytes) {
+  if (!bytes) {
+    return "0 B";
+  }
+
+  const units = ["B", "KB", "MB", "GB"];
+  const index = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)), units.length - 1);
+  return `${(bytes / 1024 ** index).toFixed(index === 0 ? 0 : 1)} ${units[index]}`;
+}
+
+async function readApiJson(response) {
+  const text = await response.text();
+  let result = {};
+
+  if (text) {
+    try {
+      result = JSON.parse(text);
+    } catch {
+      result = { error: text.slice(0, 180) || "Server returned an unreadable response." };
+    }
+  }
+
+  if (!response.ok) {
+    throw new Error(result.error || `Request failed with ${response.status}.`);
+  }
+
+  return result;
+}
+
+function shouldUploadFile(file) {
+  const relativePath = file.webkitRelativePath || file.name;
+  const parts = relativePath.toLowerCase().split("/");
+  const hasExtension = file.name.includes(".");
+  const extension = hasExtension ? `.${file.name.split(".").pop()}`.toLowerCase() : "";
+  const importantNames = ["dockerfile", "makefile", "readme", "license"];
+
+  if (parts.some((part) => filterRules.ignoredDirs.includes(part))) {
+    return false;
+  }
+
+  if (file.size > filterRules.maxFileSizeBytes) {
+    return false;
+  }
+
+  if (!hasExtension) {
+    return importantNames.includes(file.name.toLowerCase());
+  }
+
+  return filterRules.allowedExtensions.includes(extension);
+}
+
+function filterSelectedFiles(files) {
+  const kept = files.filter(shouldUploadFile);
+  return {
+    kept,
+    skipped: files.length - kept.length
+  };
+}
+
+function categoryLabel(category) {
+  const labels = {
+    components: "Components",
+    pagesRoutes: "Pages / Routes",
+    apiEndpoints: "API Endpoints",
+    functions: "Functions",
+    classes: "Classes",
+    databaseFiles: "Database",
+    authLogic: "Auth",
+    paymentLogic: "Payments",
+    aiLogic: "AI",
+    configFiles: "Config",
+    documentation: "Docs",
+    tests: "Tests",
+    problemsTodos: "Problems / TODOs",
+    other: "Other"
+  };
+  return labels[category] || category;
+}
+
+function categoryAccent(category) {
+  const accents = {
+    components: "#3b82f6",
+    pagesRoutes: "#8b5cf6",
+    apiEndpoints: "#06b6d4",
+    functions: "#10b981",
+    databaseFiles: "#f59e0b",
+    authLogic: "#22c55e",
+    paymentLogic: "#ef4444",
+    aiLogic: "#ec4899",
+    configFiles: "#94a3b8",
+    documentation: "#60a5fa",
+    tests: "#84cc16",
+    other: "#64748b"
+  };
+  return accents[category] || "#64748b";
+}
+
+function renderRepoList(repos) {
+  const repoList = document.querySelector("#repoList");
+  if (!repoList) {
+    return;
+  }
+
+  if (!repos.length) {
+    repoList.innerHTML = `
+      <div class="empty-repo-state">
+        <span>${icon("folder")}</span>
+        <p>No uploaded repos yet.</p>
+      </div>
+    `;
+    renderRepoDetail(null);
+    return;
+  }
+
+  repoList.innerHTML = repos.map((repo, index) => `
+    <button class="repo-row ${index === 0 ? "active" : ""}" type="button" data-repo-id="${escapeHtml(repo.id)}">
+      <span class="repo-row-icon">${icon("folder")}</span>
+      <span>
+        <strong>${escapeHtml(repo.name)}</strong>
+        <small>${repo.totalFiles} files · ${formatBytes(repo.totalBytes)}</small>
+      </span>
+      <span class="repo-row-arrow">${icon("chevron-right")}</span>
+    </button>
+  `).join("");
+
+  renderRepoDetail(repos[0]);
+}
+
+function renderRepoDetail(repo) {
+  const detail = document.querySelector("#repoDetail");
+  if (!detail) {
+    return;
+  }
+
+  if (!repo) {
+    detail.innerHTML = `
+      <div class="repo-detail-empty">
+        <span>${icon("spark")}</span>
+        <h2>Upload a repo to inspect its contents.</h2>
+      </div>
+    `;
+    return;
+  }
+
+  const categories = Object.entries(repo.categories || {})
+    .sort((a, b) => b[1] - a[1])
+    .map(([category, count]) => `
+      <div class="repo-category-pill" style="--category-color:${categoryAccent(category)}">
+        <span></span>
+        <strong>${count}</strong>
+        ${escapeHtml(categoryLabel(category))}
+      </div>
+    `).join("");
+
+  const files = (repo.files || []).slice(0, 80).map((file) => `
+    <div class="repo-file-row">
+      <span class="repo-file-icon" style="--category-color:${categoryAccent(file.category)}">${icon("file")}</span>
+      <span class="repo-file-path">${escapeHtml(file.path)}</span>
+      <span class="repo-file-meta">${escapeHtml(categoryLabel(file.category))}</span>
+      <span class="repo-file-size">${formatBytes(file.sizeBytes)}</span>
+    </div>
+  `).join("");
+
+  detail.innerHTML = `
+    <div class="repo-detail-head">
+      <div>
+        <h2>${escapeHtml(repo.name)}</h2>
+        <p>${repo.totalFiles} files saved to SQLite · ${formatBytes(repo.totalBytes)}</p>
+      </div>
+      <span class="repo-saved-badge">${icon("database")} Saved</span>
+    </div>
+    <div class="repo-category-grid">${categories}</div>
+    <div class="repo-file-table">
+      <div class="repo-file-table-head">
+        <span>Path</span>
+        <span>Category</span>
+        <span>Size</span>
+      </div>
+      ${files}
+    </div>
+  `;
+}
+
+async function loadRepos() {
+  const repoList = document.querySelector("#repoList");
+  if (!repoList) {
+    return;
+  }
+
+  repoList.innerHTML = `<div class="empty-repo-state"><span>${icon("refresh")}</span><p>Loading repos...</p></div>`;
+
+  try {
+    const response = await fetch("/api/repos");
+    savedRepos = await readApiJson(response);
+    renderRepoList(savedRepos);
+  } catch (error) {
+    repoList.innerHTML = `<div class="empty-repo-state"><span>${icon("database")}</span><p>${escapeHtml(error.message)}</p></div>`;
+  }
+}
+
+async function loadFilterRules() {
+  try {
+    const response = await fetch("/api/filter-rules");
+    filterRules = await readApiJson(response);
+  } catch {
+    return;
+  }
+}
+
+function bindHomeRepoUpload() {
+  if (currentPage !== "home") {
+    return;
+  }
+
+  const form = document.querySelector("#repoUploadForm");
+  const input = document.querySelector("#repoFolderInput");
+  const nameInput = document.querySelector("#repoNameInput");
+  const urlInput = document.querySelector("#repoUrlInput");
+  const status = document.querySelector("#repoUploadStatus");
+  const filterStatus = document.querySelector("#repoFilterStatus");
+  const refreshButton = document.querySelector("#refreshReposBtn");
+  const githubImportButton = document.querySelector("#githubImportBtn");
+
+  if (!form || !input || !status) {
+    return;
+  }
+
+  input.addEventListener("change", () => {
+    const files = Array.from(input.files || []);
+    const filtered = filterSelectedFiles(files);
+    const firstFolder = files[0]?.webkitRelativePath?.split("/")[0];
+    if (firstFolder && !nameInput.value.trim()) {
+      nameInput.value = firstFolder;
+    }
+    status.textContent = files.length ? `${filtered.kept.length} scannable files selected.` : "No repo selected.";
+    if (filterStatus) {
+      filterStatus.textContent = files.length ? `${filtered.skipped} files skipped before upload.` : "Filters skip dependency folders, build output, cache folders, and large files.";
+    }
+  });
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const files = Array.from(input.files || []);
+    const filtered = filterSelectedFiles(files);
+
+    if (!files.length) {
+      status.textContent = "Choose a repo folder first.";
+      return;
+    }
+
+    if (!filtered.kept.length) {
+      status.textContent = "No scannable files left after filtering.";
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("repoName", nameInput.value.trim());
+    filtered.kept.forEach((file) => {
+      formData.append("files", file, file.webkitRelativePath || file.name);
+    });
+
+    status.textContent = `Uploading ${filtered.kept.length} filtered files...`;
+
+    try {
+      const response = await fetch("/api/repos/upload", {
+        method: "POST",
+        body: formData
+      });
+      const result = await readApiJson(response);
+
+      status.textContent = `${result.name} saved with ${result.totalFiles} files.`;
+      form.reset();
+      savedRepos = [result, ...savedRepos.filter((repo) => repo.id !== result.id)];
+      renderRepoList(savedRepos);
+      showToast("Repo saved to SQLite");
+    } catch (error) {
+      status.textContent = error.message;
+    }
+  });
+
+  if (githubImportButton && urlInput) {
+    githubImportButton.addEventListener("click", async () => {
+      const repoUrl = urlInput.value.trim();
+      if (!repoUrl) {
+        status.textContent = "Enter a GitHub repo URL first.";
+        return;
+      }
+
+      status.textContent = "Cloning GitHub repo and applying filters...";
+
+      try {
+        const response = await fetch("/api/repos/import-github", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ repoUrl })
+        });
+        const result = await readApiJson(response);
+
+        status.textContent = `${result.name} imported with ${result.totalFiles} files.`;
+        urlInput.value = "";
+        savedRepos = [result, ...savedRepos.filter((repo) => repo.id !== result.id)];
+        renderRepoList(savedRepos);
+        showToast("GitHub repo imported");
+      } catch (error) {
+        status.textContent = error.message;
+      }
+    });
+  }
+
+  if (refreshButton) {
+    refreshButton.addEventListener("click", loadRepos);
+  }
+
+  document.addEventListener("click", (event) => {
+    const repoButton = event.target.closest("[data-repo-id]");
+    if (!repoButton) {
+      return;
+    }
+
+    document.querySelectorAll(".repo-row").forEach((row) => row.classList.remove("active"));
+    repoButton.classList.add("active");
+    renderRepoDetail(savedRepos.find((repo) => repo.id === repoButton.dataset.repoId));
+  });
+
+  loadFilterRules().then(loadRepos);
+}
+
 function bindInteractions() {
   document.addEventListener("click", (event) => {
     const navButton = event.target.closest(".nav-item");
-    if (navButton) {
+    if (navButton && navButton.tagName !== "A") {
       document.querySelectorAll(".nav-item").forEach((item) => item.classList.remove("active"));
       navButton.classList.add("active");
     }
@@ -388,26 +762,34 @@ function bindInteractions() {
   });
 
   const researchToggle = document.querySelector("#researchToggle");
-  researchToggle.addEventListener("click", () => {
-    const active = researchToggle.getAttribute("aria-pressed") === "true";
-    researchToggle.setAttribute("aria-pressed", String(!active));
-    showToast(!active ? "Deep Research on" : "Deep Research off");
-  });
+  if (researchToggle) {
+    researchToggle.addEventListener("click", () => {
+      const active = researchToggle.getAttribute("aria-pressed") === "true";
+      researchToggle.setAttribute("aria-pressed", String(!active));
+      showToast(!active ? "Deep Research on" : "Deep Research off");
+    });
+  }
 
   document.addEventListener("keydown", (event) => {
     if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
       event.preventDefault();
-      document.querySelector("#searchInput").focus();
+      const searchInput = document.querySelector("#searchInput");
+      if (searchInput) {
+        searchInput.focus();
+      }
     }
   });
 
-  document.querySelector("#commandForm").addEventListener("submit", (event) => {
-    event.preventDefault();
-    const input = document.querySelector("#commandInput");
-    const value = input.value.trim();
-    showToast(value ? `Queued: ${value}` : "Ask studio-1 anything");
-    input.value = "";
-  });
+  const commandForm = document.querySelector("#commandForm");
+  if (commandForm) {
+    commandForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const input = document.querySelector("#commandInput");
+      const value = input.value.trim();
+      showToast(value ? `Queued: ${value}` : "Ask studio-1 anything");
+      input.value = "";
+    });
+  }
 }
 
 renderIconPlaceholders();
@@ -415,3 +797,4 @@ renderNav();
 renderKpis();
 renderDashboard();
 bindInteractions();
+bindHomeRepoUpload();

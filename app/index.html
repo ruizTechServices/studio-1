@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>studio-1</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body data-page="home">
+    <div class="product-shell">
+      <aside class="sidebar" aria-label="Sidebar">
+        <div class="brand">
+          <span class="logo-mark" aria-hidden="true"></span>
+          <span class="brand-name">studio-1</span>
+        </div>
+
+        <nav class="primary-nav" id="primaryNav" aria-label="Primary"></nav>
+      </aside>
+
+      <main class="home-workspace">
+        <section class="repo-intake" aria-labelledby="repoUploadTitle">
+          <div class="repo-hero">
+            <div>
+              <h1 id="repoUploadTitle">Repo Map Intake</h1>
+              <p>Upload a local repo folder, save it to SQLite, and inspect its structure before any edit happens.</p>
+            </div>
+            <div class="repo-hero-mark" aria-hidden="true">
+              <span data-icon="folder"></span>
+              <span data-icon="database"></span>
+              <span data-icon="layers"></span>
+            </div>
+          </div>
+
+          <div class="repo-layout">
+            <form class="repo-upload-card" id="repoUploadForm">
+              <label class="repo-name-field github-url-field">
+                <span>GitHub repo URL</span>
+                <div class="repo-url-row">
+                  <input id="repoUrlInput" name="repoUrl" type="url" placeholder="https://github.com/ruizTechServices/studio-1.git">
+                  <button class="repo-import-btn" id="githubImportBtn" type="button">
+                    <span data-icon="download"></span>
+                    Import
+                  </button>
+                </div>
+              </label>
+
+              <div class="repo-divider"><span>or</span></div>
+
+              <div class="upload-dropzone">
+                <span class="upload-icon" data-icon="upload"></span>
+                <div>
+                  <h2>Upload repo folder</h2>
+                  <p>Choose a local repo. Dependency and build folders are filtered before upload.</p>
+                </div>
+                <input id="repoFolderInput" name="files" type="file" webkitdirectory directory multiple required>
+              </div>
+
+              <label class="repo-name-field">
+                <span>Repo name</span>
+                <input id="repoNameInput" name="repoName" type="text" placeholder="Auto-detected from folder">
+              </label>
+
+              <button class="repo-submit-btn" type="submit">
+                <span data-icon="spark"></span>
+                Upload and Save
+              </button>
+
+              <p class="repo-upload-status" id="repoUploadStatus">No repo selected.</p>
+              <p class="repo-filter-status" id="repoFilterStatus">Filters skip dependency folders, build output, cache folders, and large files.</p>
+            </form>
+
+            <section class="repo-library-card" aria-labelledby="repoLibraryTitle">
+              <div class="home-card-header">
+                <div>
+                  <h2 id="repoLibraryTitle">Saved Repos</h2>
+                  <p>SQLite-backed uploads ready for mapping.</p>
+                </div>
+                <button class="mini-icon-btn" type="button" id="refreshReposBtn" aria-label="Refresh repos">
+                  <span data-icon="refresh"></span>
+                </button>
+              </div>
+              <div class="repo-list" id="repoList"></div>
+            </section>
+          </div>
+
+          <section class="repo-detail-card" id="repoDetail" aria-live="polite"></section>
+        </section>
+      </main>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="script.js"></script>
+  </body>
+</html>
