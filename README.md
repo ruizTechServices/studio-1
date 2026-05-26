@@ -2,11 +2,13 @@
 
 RuizTech Studio is the source-of-truth workspace for planning, building, reviewing, and launching RuizTechServices software products.
 
-This repository is not a production application. It is the operating system for keeping product direction, app status, Codex tickets, decisions, prompts, playbooks, and session continuity in one place.
+This repository is not a production application. It is the operating system for keeping product direction, app status, Codex tickets, decisions, prompts, playbooks, protocol docs, and session continuity in one place.
 
 ## Studio Purpose
 
 RuizTech Studio exists to help build focused, sellable, maintainable software products without losing context between work sessions.
+
+The larger studio direction also includes a proprietary RuizTech code asset library: a future system for ingesting authorized GitHub repositories, extracting reusable functions, components, algorithms, patterns, templates, workflows, prompts, schemas, and integrations, and reusing them through controlled integration plans. See `CODE_ASSET_PROTOCOL.md`.
 
 ## Current Active App
 
@@ -32,6 +34,7 @@ studio-1/
   AGENTS.md
   STUDIO_DASHBOARD.md
   STUDIO_PROTOCOL.md
+  CODE_ASSET_PROTOCOL.md
   APP_REGISTRY.md
   DECISIONS.md
   CODEX_RULES.md

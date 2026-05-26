@@ -2,6 +2,8 @@
 
 This is the canonical operating system for RuizTech Studio.
 
+For future proprietary code asset extraction and reuse, use `CODE_ASSET_PROTOCOL.md` as the controlling protocol. This repository remains markdown-first until a separate scoped decision converts any part of that protocol into implementation work.
+
 ## Source-of-Truth Rule
 
 This repository is the source of truth for RuizTech Studio.
@@ -77,6 +79,7 @@ Check that the change:
 - avoids unrelated rewrites
 - preserves this repo as the source of truth
 - does not create app code unless explicitly requested
+- does not implement code asset ingestion, OAuth, vector storage, database schemas, or asset installation automation unless explicitly requested
 - does not introduce secrets, generated files, dependency folders, or build outputs
 
 ## Manual Test Rule

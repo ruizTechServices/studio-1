@@ -10,6 +10,29 @@ Each decision must include:
 - rejected alternatives
 - revisit condition
 
+## 2026-05-26 - RuizTech Studio adopts Code Asset Protocol direction
+
+### Decision
+
+RuizTech Studio will define a Code Asset Protocol for extracting, classifying, storing, retrieving, and reusing proprietary RuizTech code assets from authorized GitHub repositories.
+
+TinySheets Worksheet Generator remains the current active app. The code asset direction is a larger studio capability and does not authorize implementation work in this repository yet.
+
+### Reason
+
+RuizTech Studio should compound implementation leverage across projects by turning reusable functions, components, algorithms, patterns, templates, workflows, prompts, schemas, and integrations into reviewed proprietary assets with provenance and controlled reuse instructions.
+
+### Rejected
+
+- Manual copy-paste between projects as the default reuse process
+- Building GitHub ingestion before documenting the protocol
+- Implementing vector storage before defining metadata, compliance review, and reuse rules
+- Replacing the TinySheets MVP focus with a new studio platform build
+
+### Revisit
+
+When TinySheets needs reusable assets from another repo, when RuizTech is ready to implement GitHub ingestion, or when the markdown protocol becomes insufficient for tracking asset candidates.
+
 ## 2026-05-26 - Studio starts as markdown-first
 
 ### Decision

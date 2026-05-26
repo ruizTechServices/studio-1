@@ -2,6 +2,8 @@
 
 This file tracks all RuizTech Studio apps and their current state.
 
+RuizTech Studio also maintains protocol-level direction for a future proprietary code intelligence and asset-reuse system. That capability is governed by `CODE_ASSET_PROTOCOL.md` and does not replace TinySheets as the current active app.
+
 ## Summary
 
 | App | Status | Priority | Revenue Path | Current Milestone | Next Task | Paused Reason |

@@ -11,9 +11,10 @@ Before making changes, agents must read:
 1. `STUDIO_DASHBOARD.md`
 2. `README.md`
 3. `STUDIO_PROTOCOL.md`
-4. `DECISIONS.md`
-5. `APP_REGISTRY.md`
-6. `CODEX_RULES.md` when creating or executing Codex tickets
+4. `CODE_ASSET_PROTOCOL.md` when working on code asset extraction, classification, storage, retrieval, or reuse
+5. `DECISIONS.md`
+6. `APP_REGISTRY.md`
+7. `CODEX_RULES.md` when creating or executing Codex tickets
 
 ## Repository Identity
 
@@ -26,6 +27,8 @@ It is not currently a Next.js app.
 It is not currently a monorepo.
 
 It is a planning, continuity, prompt, playbook, and template repository for building future apps deliberately.
+
+It also defines the Code Asset Protocol for future RuizTech proprietary code asset extraction and controlled reuse.
 
 ## Current Primary Product
 
@@ -61,6 +64,7 @@ This repository currently exists to organize studio operations, documentation, p
 - `AGENTS.md`
 - `STUDIO_DASHBOARD.md`
 - `STUDIO_PROTOCOL.md`
+- `CODE_ASSET_PROTOCOL.md`
 - `APP_REGISTRY.md`
 - `DECISIONS.md`
 - `PROMPTS.md`
