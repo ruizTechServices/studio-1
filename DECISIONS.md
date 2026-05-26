@@ -1,6 +1,6 @@
 # Decisions
 
-This file records decisions that affect product direction, architecture, stack, scope, pricing, active app priority, or launch path.
+This file records decisions that affect product direction, architecture, stack, scope, pricing, current focus, primary product selection, or launch path.
 
 Each decision must include:
 
@@ -10,13 +10,37 @@ Each decision must include:
 - rejected alternatives
 - revisit condition
 
+## 2026-05-26 - No current primary product app
+
+### Decision
+
+RuizTech Studio currently has no primary product app.
+
+The current focus is creating and formalizing `ruizTechStudio` as the source-of-truth studio operating workspace and future proprietary code asset system.
+
+TinySheets Worksheet Generator and other app ideas are parked candidates unless a later decision explicitly selects one as active.
+
+### Reason
+
+The immediate need is to define the studio itself: operating docs, protocols, registries, prompts, playbooks, and the controlled code asset reuse direction. Product app creation before that would add scope and false urgency.
+
+### Rejected
+
+- Treating TinySheets as the current active product app
+- Starting any product MVP before `ruizTechStudio` is clarified
+- Creating app source code or framework files in this repository
+
+### Revisit
+
+When the studio owner explicitly selects a primary product app or decides to convert part of `ruizTechStudio` into an executable product.
+
 ## 2026-05-26 - RuizTech Studio adopts Code Asset Protocol direction
 
 ### Decision
 
 RuizTech Studio will define a Code Asset Protocol for extracting, classifying, storing, retrieving, and reusing proprietary RuizTech code assets from authorized GitHub repositories.
 
-TinySheets Worksheet Generator remains the current active app. The code asset direction is a larger studio capability and does not authorize implementation work in this repository yet.
+There is currently no primary product app. The code asset direction is a larger studio capability and does not authorize implementation work in this repository yet.
 
 ### Reason
 
@@ -27,11 +51,11 @@ RuizTech Studio should compound implementation leverage across projects by turni
 - Manual copy-paste between projects as the default reuse process
 - Building GitHub ingestion before documenting the protocol
 - Implementing vector storage before defining metadata, compliance review, and reuse rules
-- Replacing the TinySheets MVP focus with a new studio platform build
+- Building product app features before documenting the protocol
 
 ### Revisit
 
-When TinySheets needs reusable assets from another repo, when RuizTech is ready to implement GitHub ingestion, or when the markdown protocol becomes insufficient for tracking asset candidates.
+When RuizTech is ready to implement GitHub ingestion, when a selected product app needs reusable assets, or when the markdown protocol becomes insufficient for tracking asset candidates.
 
 ## 2026-05-26 - Studio starts as markdown-first
 
@@ -53,26 +77,27 @@ The immediate need is continuity, focus, and scope control, not another app or d
 
 After the studio has a shipped product or the markdown workflow becomes a clear blocker.
 
-## 2026-05-26 - TinySheets is the active app
+## 2026-05-26 - Superseded: TinySheets product-app focus
 
 ### Decision
 
-TinySheets Worksheet Generator remains the primary active app for the studio.
+This decision is superseded by the later decision that there is no current primary product app.
+
+TinySheets Worksheet Generator is now a parked candidate, not the active studio focus.
 
 ### Reason
 
-It has the clearest user, smallest MVP, and strongest path to a paid SaaS or low-cost paid tool test.
+The studio owner clarified that the current focus is creating `ruizTechStudio`, not creating a primary product app.
 
 ### Rejected
 
-- Switching focus to 24HourGPT
-- Switching focus to LetMeExplain
-- Making Nucleus the active app
-- Building the studio dashboard before the product workflow
+- Continuing to describe TinySheets as active
+- Starting product MVP work before studio setup is clarified
+- Selecting a different product app without an explicit decision
 
 ### Revisit
 
-After TinySheets has a working MVP or a clear blocker.
+When the studio owner explicitly selects a primary product app.
 
 ## 2026-05-26 - Custom studio dashboard is deferred
 
@@ -82,7 +107,7 @@ A custom studio dashboard is deferred.
 
 ### Reason
 
-The repo can already provide the required source-of-truth structure with markdown files. Building a dashboard now would distract from the TinySheets MVP.
+The repo can already provide the required source-of-truth structure with markdown files. Building a dashboard now would distract from clarifying `ruizTechStudio`.
 
 ### Rejected
 
@@ -92,27 +117,27 @@ The repo can already provide the required source-of-truth structure with markdow
 
 ### Revisit
 
-When the markdown workflow can no longer answer active app, milestone, next task, blocker, and decision questions efficiently.
+When the markdown workflow can no longer answer current focus, milestone, next task, blocker, and decision questions efficiently.
 
-## 2026-05-26 - One primary app at a time
+## 2026-05-26 - At most one primary app when product work resumes
 
 ### Decision
 
-Only one app can be the primary active app at a time.
+There is currently no primary product app. When product work resumes, only one app can be selected as the primary product app at a time.
 
 ### Reason
 
-The studio needs focused build energy, clear priorities, and fewer half-finished products.
+The studio needs focused build energy, clear priorities, and fewer half-finished products. For now, that focus is `ruizTechStudio`.
 
 ### Rejected
 
-- Parallel primary apps
+- Parallel primary product apps
 - Weekly priority switching between products
 - Expanding secondary apps without revenue or unblock value
 
 ### Revisit
 
-After TinySheets ships an MVP or a different app has a stronger immediate revenue opportunity.
+When the studio owner explicitly selects a primary product app.
 
 ## 2026-05-26 - Codex only receives scoped tickets
 

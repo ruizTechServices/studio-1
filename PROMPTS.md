@@ -8,19 +8,19 @@ Reusable prompt library for RuizTech Studio.
 Read `STUDIO_DASHBOARD.md`, `STUDIO_PROTOCOL.md`, `DECISIONS.md`, and `APP_REGISTRY.md`.
 
 Summarize:
-- current active app
+- current studio focus
 - current milestone
-- next smallest revenue-relevant task
+- next smallest scope-relevant task
 - current blockers
 - what should not be touched yet
 
-Do not propose new app ideas unless the docs say the active app is blocked.
+Do not propose new app ideas unless the docs explicitly request product ideation.
 ```
 
 ## Create Codex Ticket Prompt
 
 ```txt
-Create a Codex-ready ticket for the next smallest task.
+Create a Codex-ready ticket for the next smallest scope-relevant task.
 
 Include:
 - goal
@@ -83,7 +83,7 @@ Keep it factual and specific.
 ## Create App Record Prompt
 
 ```txt
-Create or update an `APP_REGISTRY.md` app record.
+Create or update an `APP_REGISTRY.md` product app candidate record.
 
 Include:
 - app name

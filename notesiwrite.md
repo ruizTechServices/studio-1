@@ -642,8 +642,8 @@ Constraints:
 - Do not implement vector storage yet.
 - Do not implement GitHub ingestion yet.
 - This is a documentation/specification step only.
-- Preserve TinySheets as the current active app.
-- Clarify that TinySheets is the first active product/use case, but the Studio’s larger purpose includes building a reusable RuizTech code asset library.
+- Do not set any current primary product app.
+- Clarify that `ruizTechStudio` is the current focus and that the Studio's larger purpose includes building a reusable RuizTech code asset library.
 
 Acceptance Criteria:
 - `CODE_ASSET_PROTOCOL.md` defines what a RuizTech code asset is.
@@ -681,7 +681,7 @@ Acceptance Criteria:
 Validation:
 - Confirm `CODE_ASSET_PROTOCOL.md` exists.
 - Confirm no app code or framework files were created.
-- Confirm TinySheets remains the active app.
+- Confirm no primary product app is active.
 - Confirm the protocol clearly explains reusable RuizTech proprietary code assets.
 - Confirm existing docs still describe this repo as a source-of-truth/studio operating repo.
 
@@ -714,9 +714,9 @@ We are building:
 A studio system that ingests GitHub repos, understands them, extracts reusable RuizTech-created assets, stores those assets with metadata/vector search/compliance status, and lets future projects reuse approved assets through controlled integration instead of manual copy-paste.
 ```
 
-TinySheets is not just an app.
+A future selected product app can become a source of reusable assets.
 
-TinySheets is also the first source of future reusable assets:
+No product app is selected as the current source of future reusable assets yet.
 
 ```txt
 worksheet generator logic

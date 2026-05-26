@@ -6,7 +6,7 @@ This dashboard is the first file to open when resuming RuizTech Studio work.
 
 This repository is the source of truth for RuizTech Studio.
 
-Do not rely on scattered chats, screenshots, memory, or loose notes when resuming work. Every serious decision, active app, milestone, Codex task, and next action must be reflected in this repository.
+Do not rely on scattered chats, screenshots, memory, or loose notes when resuming work. Every serious decision, current focus, milestone, Codex task, and next action must be reflected in this repository.
 
 ## Studio Purpose
 
@@ -16,27 +16,29 @@ The goal is not to build many half-finished apps. The goal is to build focused, 
 
 The larger Studio direction also includes a proprietary RuizTech code intelligence and asset-reuse system. `CODE_ASSET_PROTOCOL.md` defines how reusable code assets should be extracted from authorized GitHub repositories, reviewed, stored, retrieved, and later integrated into future projects.
 
-## Current Active App
+## Current Studio Focus
 
-**TinySheets Worksheet Generator**
+**ruizTechStudio**
 
-K-2 teachers, tutors, and homeschool parents generate clean one-page math and vocabulary worksheets in under 60 seconds.
+There is currently no primary product app.
+
+The current focus is creating and formalizing `ruizTechStudio` as the markdown-first studio operating workspace and future proprietary code asset system.
 
 ## Current Milestone
 
-Build the first usable MVP workflow.
+Define the studio operating docs, protocols, registries, prompt library, and reuse-system boundaries.
 
-## MVP Test
+## Current Validation Test
 
-A logged-in user can generate a simple K-2 worksheet, preview it, save it, and export it as a PDF.
+The repo clearly explains that `ruizTechStudio` is the current focus, no primary product app is active, and no app source code or framework files should be created.
 
 ## Revenue Hypothesis
 
-Users may pay around $12/month or a low one-time fee for faster worksheet creation.
+No product-specific revenue hypothesis is active during this phase. Revenue work resumes when a primary product app or studio product path is explicitly selected.
 
 ## Next Smallest Task
 
-Create active app context docs.
+Create the next ruizTechStudio protocol or context document needed to support repo onboarding and code asset reuse.
 
 ## Blockers
 
@@ -47,11 +49,11 @@ None yet.
 Every work session follows this loop:
 
 1. Open `STUDIO_DASHBOARD.md`.
-2. Confirm the current active app.
+2. Confirm the current studio focus.
 3. Confirm the current milestone.
 4. Review the latest relevant decisions in `DECISIONS.md`.
-5. Review the active app entry in `APP_REGISTRY.md`.
-6. Choose the next smallest revenue-relevant task.
+5. Review `APP_REGISTRY.md` only if product app status is relevant to the task.
+6. Choose the next smallest scope-relevant task.
 7. Convert that task into a Codex-ready ticket.
 8. Give Codex only that ticket.
 9. Review Codex's diff before accepting it.
@@ -64,38 +66,35 @@ Every work session follows this loop:
 
 A session is not complete until the repo accurately describes where the project stands.
 
-## Active App Rule
+## Current Focus Rule
 
-Only one app can be the primary active app at a time.
+There is currently no primary product app.
 
-The active app receives the main build energy, Codex tasks, architecture work, and weekly planning.
+The active studio focus receives the main planning energy, Codex tasks, architecture work, and weekly planning.
 
-Secondary apps may only receive work if:
+A product app may only become active if `DECISIONS.md` records that selection.
+
+Parked product ideas may only receive work if:
 
 - they create immediate cash flow
-- they unblock the active app
+- they unblock `ruizTechStudio`
 - they are being documented, not expanded
 
-## Active App Registry
+## Current Focus Registry
 
-| App | Status | Priority | Revenue Path | Next Action |
+| Focus | Status | Priority | Purpose | Next Action |
 |---|---|---:|---|---|
-| TinySheets Worksheet Generator | Active | 1 | SaaS/subscription or low-cost paid tool | Create active app context docs |
-| Tech Rescue Sprint | Secondary | 2 | Local service sales / lead capture | Improve offer and intake notes |
-| 24HourGPT | Paused | 3 | Low-cost temporary AI access | Revisit after one product ships |
-| LetMeExplain | Paused | 4 | SaaS for feedback rewriting | Revisit after TinySheets MVP |
-| Nucleus | Research | 5 | Desktop AI assistant subscription | Keep as long-term R&D |
+| ruizTechStudio | Active studio focus | 1 | Studio operating workspace and future proprietary code asset system | Create the next protocol or context document |
+| Product app creation | Not active | N/A | Future app work only after explicit selection | Keep candidates parked in `APP_REGISTRY.md` |
 
 ## What Not To Build Yet
 
 - custom studio dashboard
-- another new primary app
+- any primary product app
 - app source code in this repository unless explicitly instructed
 - GitHub ingestion, OAuth, vector storage, or asset installation automation before a separate scoped decision and ticket
 - payments
 - admin dashboard
-- multi-page worksheet books
-- school management features
 - marketplace
 
 ## Operating Model
@@ -124,14 +123,8 @@ Secondary apps may only receive work if:
 
 The studio owner makes final product and business decisions.
 
-## Current Technical Assumptions For TinySheets
+## Current Technical Assumptions
 
-These are app planning assumptions, not instructions to create app code in this repo.
+No product app stack is selected.
 
-- Frontend: Next.js App Router
-- Styling: Tailwind CSS and ShadCN UI where useful
-- Auth: Supabase Auth
-- Database: Supabase Postgres
-- File Storage: Supabase Storage for generated PDF/spec files when needed
-- PDF Generation: To be decided after worksheet rendering structure is clear
-- Deployment: Vercel
+Do not initialize Next.js, React, Supabase, Prisma, Tailwind, or any application framework in this repo unless a later scoped decision explicitly converts the workspace into an executable project.

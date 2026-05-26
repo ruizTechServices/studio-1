@@ -1,66 +1,65 @@
 # App Registry
 
-This file tracks all RuizTech Studio apps and their current state.
+This file tracks RuizTech Studio product app candidates and their current state.
 
-RuizTech Studio also maintains protocol-level direction for a future proprietary code intelligence and asset-reuse system. That capability is governed by `CODE_ASSET_PROTOCOL.md` and does not replace TinySheets as the current active app.
+There is currently no primary product app.
+
+The current studio focus is creating and formalizing `ruizTechStudio`. Product app candidates stay parked here until `DECISIONS.md` explicitly selects one as active.
+
+RuizTech Studio also maintains protocol-level direction for a future proprietary code intelligence and asset-reuse system. That capability is governed by `CODE_ASSET_PROTOCOL.md`.
 
 ## Summary
 
 | App | Status | Priority | Revenue Path | Current Milestone | Next Task | Paused Reason |
-|---|---|---:|---|---|---|---|
-| TinySheets Worksheet Generator | Active | 1 | SaaS subscription or low-cost paid tool | Build the first usable MVP workflow | Create active app context docs | Not paused |
-| Tech Rescue Sprint | Secondary | 2 | Local service sales and lead capture | Clarify offer and intake flow | Improve offer and intake notes | Not primary; only work if it creates immediate cash flow |
-| 24HourGPT | Paused | 3 | Low-cost temporary AI access | Revisit after one product ships | None while paused | TinySheets is the active app |
-| LetMeExplain | Paused | 4 | SaaS for rewriting feedback into clearer language | Revisit after TinySheets MVP | None while paused | TinySheets is the active app |
-| Nucleus | Research | 5 | Desktop AI assistant subscription | Long-term R&D only | Keep notes only | Too broad for current studio focus |
+|---|---|---|---|---|---|---|
+| TinySheets Worksheet Generator | Parked candidate | Not active | Possible SaaS subscription or low-cost paid tool | None while parked | None while parked | No primary product app is selected |
+| Tech Rescue Sprint | Parked service idea | Not active | Local service sales and lead capture | None while parked | None while parked | Current focus is `ruizTechStudio` |
+| 24HourGPT | Parked candidate | Not active | Low-cost temporary AI access | None while parked | None while parked | Current focus is `ruizTechStudio` |
+| LetMeExplain | Parked candidate | Not active | SaaS for rewriting feedback into clearer language | None while parked | None while parked | Current focus is `ruizTechStudio` |
+| Nucleus | Research idea | Not active | Desktop AI assistant subscription | Long-term notes only | None while parked | Too broad for current studio focus |
 
 ## TinySheets Worksheet Generator
 
 ### Status
 
-Active
+Parked candidate
 
 ### Priority
 
-1
+Not active
 
 ### Revenue Path
 
-SaaS subscription around $12/month or a low one-time fee for quick worksheet generation.
+Possible SaaS subscription or low-cost paid tool.
 
 ### Current Milestone
 
-Build the first usable MVP workflow.
-
-### MVP Test
-
-A logged-in user can generate a simple K-2 worksheet, preview it, save it, and export it as a PDF.
+None while parked.
 
 ### Next Task
 
-Create active app context docs.
+None while parked.
 
 ### Paused Reason
 
-Not paused.
+No primary product app is selected. The current focus is creating `ruizTechStudio`.
 
 ### Do Not Build Yet
 
+- product MVP workflow
 - payments
 - admin dashboard
-- multi-page worksheet books
-- school management features
 - marketplace
 
 ## Tech Rescue Sprint
 
 ### Status
 
-Secondary
+Parked service idea
 
 ### Priority
 
-2
+Not active
 
 ### Revenue Path
 
@@ -68,25 +67,25 @@ Local service sales, repair offers, cleanup packages, and lead capture.
 
 ### Current Milestone
 
-Clarify the offer and intake flow.
+None while parked.
 
 ### Next Task
 
-Improve offer and intake notes.
+None while parked.
 
 ### Paused Reason
 
-Not paused, but not the primary active app. Work only if it creates immediate cash flow or directly supports TinySheets.
+Current focus is `ruizTechStudio`. Work only if the studio owner explicitly selects it or it creates immediate cash flow without distracting from studio setup.
 
 ## 24HourGPT
 
 ### Status
 
-Paused
+Parked candidate
 
 ### Priority
 
-3
+Not active
 
 ### Revenue Path
 
@@ -94,7 +93,7 @@ Low-cost temporary AI access.
 
 ### Current Milestone
 
-Revisit after one product ships.
+None while parked.
 
 ### Next Task
 
@@ -102,17 +101,17 @@ None while paused.
 
 ### Paused Reason
 
-TinySheets is the active app.
+Current focus is `ruizTechStudio`.
 
 ## LetMeExplain
 
 ### Status
 
-Paused
+Parked candidate
 
 ### Priority
 
-4
+Not active
 
 ### Revenue Path
 
@@ -120,7 +119,7 @@ SaaS for rewriting feedback into clearer, more useful language.
 
 ### Current Milestone
 
-Revisit after TinySheets MVP.
+None while parked.
 
 ### Next Task
 
@@ -128,7 +127,7 @@ None while paused.
 
 ### Paused Reason
 
-TinySheets is the active app.
+Current focus is `ruizTechStudio`.
 
 ## Nucleus
 
@@ -138,7 +137,7 @@ Research
 
 ### Priority
 
-5
+Not active
 
 ### Revenue Path
 

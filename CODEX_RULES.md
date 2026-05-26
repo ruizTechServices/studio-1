@@ -50,7 +50,7 @@ For documentation tasks, validation means confirming:
 
 - required files exist
 - required sections are present
-- the active app and milestone are consistent
+- the current studio focus and milestone are consistent
 - the canonical operating loop is reflected
 - no forbidden app framework files were created
 
@@ -72,7 +72,7 @@ Build the app.
 ```
 
 ```txt
-Make TinySheets.
+Make the product.
 ```
 
 ```txt
@@ -87,25 +87,24 @@ Make this repo better.
 
 ```txt
 Goal:
-Create `APP_REGISTRY.md` using `STUDIO_DASHBOARD.md` as the source of truth.
+Update `STUDIO_DASHBOARD.md` to reflect the current studio focus.
 
 Context:
-This repo is the markdown-first source of truth for RuizTech Studio. TinySheets is the active app.
+This repo is the markdown-first source of truth for RuizTech Studio. There is currently no primary product app. The current focus is creating `ruizTechStudio`.
 
 Scope:
-Create or update only `APP_REGISTRY.md`.
+Update only `STUDIO_DASHBOARD.md`.
 
 Constraints:
 Do not create app code. Do not initialize frameworks. Do not add unrelated files.
 
 Acceptance Criteria:
-- TinySheets is listed as active priority 1.
-- Tech Rescue Sprint, 24HourGPT, LetMeExplain, and Nucleus are listed.
-- Each app has status, priority, revenue path, current milestone, next task, and paused reason.
+- The dashboard says `ruizTechStudio` is the current focus.
+- The dashboard says no primary product app is active.
+- The current milestone and next task are consistent with studio setup.
 
 Files likely involved:
-- `APP_REGISTRY.md`
-- `STUDIO_DASHBOARD.md` for reference only
+- `STUDIO_DASHBOARD.md`
 
 Validation:
 Read the final file and confirm all acceptance criteria are met.

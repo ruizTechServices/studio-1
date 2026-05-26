@@ -4,7 +4,7 @@ This protocol defines how RuizTech Studio should identify, classify, store, retr
 
 This is a documentation/specification file only. It does not implement GitHub ingestion, OAuth, vector storage, database schemas, or installation automation.
 
-TinySheets Worksheet Generator remains the current active app. This protocol describes a larger studio capability that can support TinySheets and future RuizTech projects.
+There is currently no primary product app. This protocol describes a larger studio capability that can support future RuizTech projects when product work is explicitly selected.
 
 ## Purpose
 

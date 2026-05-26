@@ -26,17 +26,17 @@ It is not currently a Next.js app.
 
 It is not currently a monorepo.
 
-It is a planning, continuity, prompt, playbook, and template repository for building future apps deliberately.
+It is a planning, continuity, prompt, playbook, protocol, and template repository for creating `ruizTechStudio` deliberately.
 
 It also defines the Code Asset Protocol for future RuizTech proprietary code asset extraction and controlled reuse.
 
-## Current Primary Product
+## Current Studio Focus
 
-TinySheets Worksheet Generator is the current primary app.
+There is currently no primary product app.
 
-The MVP goal is:
+The current focus is creating and formalizing `ruizTechStudio` as the source-of-truth studio operating workspace and future code asset system.
 
-A logged-in user can generate a simple K-2 worksheet, preview it, save it, and export it as a PDF.
+Do not treat TinySheets Worksheet Generator or any other app as the current primary product unless a later decision explicitly sets it as active.
 
 ## Primary Rule
 

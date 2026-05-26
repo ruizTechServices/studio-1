@@ -8,32 +8,36 @@ For future proprietary code asset extraction and reuse, use `CODE_ASSET_PROTOCOL
 
 This repository is the source of truth for RuizTech Studio.
 
-Do not rely on scattered chats, screenshots, memory, or loose notes when resuming work. Every serious decision, active app, milestone, Codex task, and next action must be reflected in this repository.
+Do not rely on scattered chats, screenshots, memory, or loose notes when resuming work. Every serious decision, current focus, milestone, Codex task, and next action must be reflected in this repository.
 
-## Active App Rule
+## Current Focus Rule
 
-Only one app can be the primary active app at a time.
+There is currently no primary product app.
 
-The active app receives the main build energy, Codex tasks, architecture work, and weekly planning.
+The active studio focus receives the main planning energy, Codex tasks, architecture work, and weekly planning.
 
-Secondary apps may only receive work if:
+A product app may only become active if `DECISIONS.md` records that selection.
+
+Parked product ideas may only receive work if:
 
 - they create immediate cash flow
-- they unblock the active app
+- they unblock `ruizTechStudio`
 - they are being documented, not expanded
 
-Current active app: **TinySheets Worksheet Generator**
+Current studio focus: **ruizTechStudio**
+
+Current primary product app: **None**
 
 ## Canonical Studio Operating Loop
 
 Every work session follows this loop:
 
 1. Open `STUDIO_DASHBOARD.md`.
-2. Confirm the current active app.
+2. Confirm the current studio focus.
 3. Confirm the current milestone.
 4. Review the latest relevant decisions in `DECISIONS.md`.
-5. Review the active app entry in `APP_REGISTRY.md`.
-6. Choose the next smallest revenue-relevant task.
+5. Review `APP_REGISTRY.md` only if product app status is relevant to the task.
+6. Choose the next smallest scope-relevant task.
 7. Convert that task into a Codex-ready ticket.
 8. Give Codex only that ticket.
 9. Review Codex's diff before accepting it.
@@ -67,7 +71,7 @@ A valid task includes:
 
 Codex receives only scoped tickets.
 
-Codex may implement, edit, test, inspect diffs, and summarize work, but it does not decide product direction, business priorities, active app priority, pricing, or launch strategy.
+Codex may implement, edit, test, inspect diffs, and summarize work, but it does not decide product direction, business priorities, current focus priority, primary product selection, pricing, or launch strategy.
 
 ## Review Rule
 
@@ -102,7 +106,7 @@ Every work session must end with the repo able to answer:
 
 1. What changed?
 2. Why did it change?
-3. What is the active app?
+3. What is the current studio focus?
 4. What milestone is active?
 5. What is the next smallest task?
 6. What is blocked?
@@ -112,7 +116,7 @@ If those answers are not captured, the session is not complete.
 
 ## Decision Logging Rule
 
-Any decision that changes product direction, architecture, stack, scope, pricing, active app priority, or launch path must be recorded in `DECISIONS.md`.
+Any decision that changes product direction, architecture, stack, scope, pricing, current focus, primary product selection, or launch path must be recorded in `DECISIONS.md`.
 
 A decision entry must include:
 
