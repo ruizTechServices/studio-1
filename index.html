@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>studio-1 Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="product-shell">
+      <aside class="sidebar" aria-label="Sidebar">
+        <div class="brand">
+          <span class="logo-mark" aria-hidden="true"></span>
+          <span class="brand-name">studio-1</span>
+        </div>
+
+        <nav class="primary-nav" id="primaryNav" aria-label="Primary"></nav>
+
+        <section class="project-nav" aria-label="Projects">
+          <div class="section-heading">
+            <span>Projects</span>
+            <button class="mini-icon-btn" type="button" aria-label="Add project" data-toast="New project">
+              <span data-icon="plus"></span>
+            </button>
+          </div>
+          <div id="projectNav"></div>
+        </section>
+
+        <section class="plan-card" aria-label="Plan">
+          <p>Pro Plan</p>
+          <div class="plan-price"><strong>$20</strong> <span>/mo</span></div>
+          <small>Renews Jun 12, 2025</small>
+          <button class="primary-button" type="button" data-toast="Plan management opened">Manage Plan</button>
+        </section>
+      </aside>
+
+      <main class="workspace">
+        <header class="topbar" aria-label="Utility bar">
+          <label class="search-box" aria-label="Search">
+            <span data-icon="search"></span>
+            <input id="searchInput" type="search" placeholder="Search...">
+            <kbd>&#8984;K</kbd>
+          </label>
+          <button class="top-icon-btn" type="button" aria-label="Calendar" data-toast="Calendar">
+            <span data-icon="calendar"></span>
+          </button>
+          <button class="top-icon-btn" type="button" aria-label="Notifications" data-toast="Notifications">
+            <span data-icon="bell"></span>
+          </button>
+          <button class="avatar-button" type="button" aria-label="Account" data-toast="Account menu">
+            <span class="avatar-portrait" aria-hidden="true"></span>
+          </button>
+        </header>
+
+        <div class="workspace-main">
+          <section class="dashboard-content" aria-label="Dashboard">
+            <div class="overview-row">
+              <div class="welcome-copy">
+                <h1>Welcome back, Alex <span aria-hidden="true">&#128075;</span></h1>
+                <p>Here's what's happening with your projects and AI teammates.</p>
+              </div>
+              <div class="kpi-strip" id="kpiStrip"></div>
+            </div>
+
+            <div class="dashboard-grid" id="dashboardGrid"></div>
+          </section>
+
+          <form class="command-bar" id="commandForm" aria-label="Command input">
+            <span class="command-icon" data-icon="message"></span>
+            <input id="commandInput" type="text" autocomplete="off" placeholder="Ask studio-1 anything...">
+            <label class="toggle-label">
+              <span>Deep Research</span>
+              <button class="toggle-switch" id="researchToggle" type="button" aria-pressed="false" aria-label="Toggle Deep Research">
+                <span></span>
+              </button>
+            </label>
+            <button class="attach-btn" type="button" aria-label="Attach file" data-toast="Attach file">
+              <span data-icon="paperclip"></span>
+            </button>
+            <button class="send-btn" type="submit" aria-label="Send">
+              <span data-icon="arrow-up"></span>
+            </button>
+          </form>
+        </div>
+      </main>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="script.js"></script>
+  </body>
+</html>
