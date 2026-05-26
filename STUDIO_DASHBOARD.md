@@ -14,7 +14,7 @@ RuizTech Studio exists to help build, launch, sell, and maintain focused softwar
 
 The goal is not to build many half-finished apps. The goal is to build focused, sellable, maintainable products that can become real businesses.
 
-The larger Studio direction also includes a proprietary RuizTech code intelligence and asset-reuse system. `CODE_ASSET_PROTOCOL.md` defines how reusable code assets should be extracted from authorized GitHub repositories, reviewed, stored, retrieved, and later integrated into future projects.
+The larger Studio direction also includes authorized repo onboarding plus a proprietary RuizTech code intelligence and asset-reuse system. `REPO_ONBOARDING_PROTOCOL.md` defines how connected or uploaded repositories should become supervised project context, and `CODE_ASSET_PROTOCOL.md` defines how reusable code assets should be reviewed, stored, retrieved, and later integrated into future projects.
 
 ## Current Studio Focus
 
@@ -38,7 +38,7 @@ No product-specific revenue hypothesis is active during this phase. Revenue work
 
 ## Next Smallest Task
 
-Create the next ruizTechStudio protocol or context document needed to support repo onboarding and code asset reuse.
+Create the next ruizTechStudio protocol or context document needed to support code standards, repo onboarding, or code asset reuse.
 
 ## Blockers
 
@@ -92,7 +92,7 @@ Parked product ideas may only receive work if:
 - custom studio dashboard
 - any primary product app
 - app source code in this repository unless explicitly instructed
-- GitHub ingestion, OAuth, vector storage, or asset installation automation before a separate scoped decision and ticket
+- GitHub ingestion, repo upload handling, OAuth, vector storage, database schemas, dashboard UI, or asset installation automation before a separate scoped decision and ticket
 - payments
 - admin dashboard
 - marketplace

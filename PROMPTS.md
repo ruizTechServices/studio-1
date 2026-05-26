@@ -35,6 +35,26 @@ Include:
 Keep the task bounded to one implementation unit. Do not ask Codex to build a whole product.
 ```
 
+## Create Repo Onboarding Ticket Prompt
+
+```txt
+Create a Codex-ready ticket for repo onboarding documentation or planning.
+
+Use `REPO_ONBOARDING_PROTOCOL.md` as the controlling protocol.
+
+Keep the task documentation/specification-only unless the studio owner explicitly asks for implementation.
+
+Include:
+- goal
+- context
+- scope
+- constraints
+- acceptance criteria
+- files likely involved
+- validation steps
+- final response format
+```
+
 ## Review Codex Diff Prompt
 
 ```txt

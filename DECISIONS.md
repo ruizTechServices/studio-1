@@ -10,6 +10,31 @@ Each decision must include:
 - rejected alternatives
 - revisit condition
 
+## 2026-05-26 - RuizTech Studio adopts Repo Onboarding Protocol direction
+
+### Decision
+
+RuizTech Studio will define a Repo Onboarding Protocol for processing authorized connected or uploaded GitHub repositories.
+
+The protocol describes how a repository should become supervised project context, dashboard-ready outputs, risk notes, next-task candidates, Codex-ticket candidates, and inputs for `CODE_ASSET_PROTOCOL.md`.
+
+There is currently no primary product app. This is a documentation/specification step for `ruizTechStudio`, not an implementation step.
+
+### Reason
+
+RuizTech Studio needs a repo-level intake process before it can safely extract assets or suggest work. Repo onboarding defines how source metadata, snapshots, file trees, stack signals, architecture, integrations, commands, risks, and progress should be captured before any future automation exists.
+
+### Rejected
+
+- Implementing GitHub ingestion before defining the onboarding protocol
+- Treating connected repo analysis as automatic approval to reuse code
+- Generating canonical context docs without user approval
+- Starting dashboard UI or database work before the protocol is clear
+
+### Revisit
+
+When RuizTech is ready to implement GitHub ingestion, repo uploads, dashboard outputs, or persistent onboarding records.
+
 ## 2026-05-26 - No current primary product app
 
 ### Decision

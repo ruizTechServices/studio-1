@@ -23,12 +23,13 @@ Codex must:
 
 - read `AGENTS.md` before making changes
 - read the relevant studio docs
+- read `REPO_ONBOARDING_PROTOCOL.md` before tasks involving connected repo analysis, uploaded repo analysis, repo onboarding, or repo context generation
 - read `CODE_ASSET_PROTOCOL.md` before tasks involving proprietary code asset extraction, classification, retrieval, storage, or reuse
 - work only on the assigned task
 - modify only the files needed for that task
 - avoid unrelated cleanup or rewrites
 - avoid app code unless explicitly instructed
-- avoid implementing GitHub ingestion, OAuth, vector storage, database schemas, or asset installation automation unless explicitly instructed
+- avoid implementing GitHub ingestion, repo upload handling, OAuth, vector storage, database schemas, dashboard UI, or asset installation automation unless explicitly instructed
 - preserve this repo as the studio source of truth
 
 ## Review Requirements

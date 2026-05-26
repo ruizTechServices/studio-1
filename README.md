@@ -8,7 +8,7 @@ This repository is not a production application. It is the operating system for 
 
 RuizTech Studio exists to help build focused, sellable, maintainable software products without losing context between work sessions.
 
-The larger studio direction also includes a proprietary RuizTech code asset library: a future system for ingesting authorized GitHub repositories, extracting reusable functions, components, algorithms, patterns, templates, workflows, prompts, schemas, and integrations, and reusing them through controlled integration plans. See `CODE_ASSET_PROTOCOL.md`.
+The larger studio direction also includes authorized repository onboarding and a proprietary RuizTech code asset library: a future system for understanding connected GitHub repositories, generating supervised project context, extracting reusable functions, components, algorithms, patterns, templates, workflows, prompts, schemas, and integrations, and reusing them through controlled integration plans. See `REPO_ONBOARDING_PROTOCOL.md` and `CODE_ASSET_PROTOCOL.md`.
 
 ## Current Studio Focus
 
@@ -30,6 +30,7 @@ studio-1/
   AGENTS.md
   STUDIO_DASHBOARD.md
   STUDIO_PROTOCOL.md
+  REPO_ONBOARDING_PROTOCOL.md
   CODE_ASSET_PROTOCOL.md
   APP_REGISTRY.md
   DECISIONS.md

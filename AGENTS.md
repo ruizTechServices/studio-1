@@ -11,10 +11,11 @@ Before making changes, agents must read:
 1. `STUDIO_DASHBOARD.md`
 2. `README.md`
 3. `STUDIO_PROTOCOL.md`
-4. `CODE_ASSET_PROTOCOL.md` when working on code asset extraction, classification, storage, retrieval, or reuse
-5. `DECISIONS.md`
-6. `APP_REGISTRY.md`
-7. `CODEX_RULES.md` when creating or executing Codex tickets
+4. `REPO_ONBOARDING_PROTOCOL.md` when working on repository onboarding, connected repo analysis, uploaded repo analysis, or repo context generation
+5. `CODE_ASSET_PROTOCOL.md` when working on code asset extraction, classification, storage, retrieval, or reuse
+6. `DECISIONS.md`
+7. `APP_REGISTRY.md`
+8. `CODEX_RULES.md` when creating or executing Codex tickets
 
 ## Repository Identity
 
@@ -29,6 +30,8 @@ It is not currently a monorepo.
 It is a planning, continuity, prompt, playbook, protocol, and template repository for creating `ruizTechStudio` deliberately.
 
 It also defines the Code Asset Protocol for future RuizTech proprietary code asset extraction and controlled reuse.
+
+It also defines the Repo Onboarding Protocol for future authorized GitHub repository intake and project understanding.
 
 ## Current Studio Focus
 
@@ -64,6 +67,7 @@ This repository currently exists to organize studio operations, documentation, p
 - `AGENTS.md`
 - `STUDIO_DASHBOARD.md`
 - `STUDIO_PROTOCOL.md`
+- `REPO_ONBOARDING_PROTOCOL.md`
 - `CODE_ASSET_PROTOCOL.md`
 - `APP_REGISTRY.md`
 - `DECISIONS.md`
