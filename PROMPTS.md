@@ -1,119 +1,208 @@
 # Prompts
 
-Reusable prompt library for RuizTech Studio.
+Reusable XML-style prompt library for RuizTech Studio.
+
+Use `XML_PROMPT_PROTOCOL.md` as the controlling prompt-format protocol.
 
 ## Resume Studio Prompt
 
-```txt
-Read `STUDIO_DASHBOARD.md`, `STUDIO_PROTOCOL.md`, `DECISIONS.md`, and `APP_REGISTRY.md`.
+```xml
+<llm_prompt>
+  <read_first>
+    <file>STUDIO_DASHBOARD.md</file>
+    <file>STUDIO_PROTOCOL.md</file>
+    <file>DECISIONS.md</file>
+    <file>APP_REGISTRY.md</file>
+  </read_first>
 
-Summarize:
-- current studio focus
-- current milestone
-- next smallest scope-relevant task
-- current blockers
-- what should not be touched yet
+  <goal>
+    Summarize the current RuizTech Studio state.
+  </goal>
 
-Do not propose new app ideas unless the docs explicitly request product ideation.
+  <response_requirements>
+    <item>current studio focus</item>
+    <item>current milestone</item>
+    <item>next smallest scope-relevant task</item>
+    <item>current blockers</item>
+    <item>what should not be touched yet</item>
+  </response_requirements>
+
+  <constraints>
+    <constraint>Do not propose new app ideas unless the docs explicitly request product ideation.</constraint>
+    <constraint>Use the repo docs as the source of truth.</constraint>
+  </constraints>
+</llm_prompt>
 ```
 
 ## Create Codex Ticket Prompt
 
-```txt
-Create a Codex-ready ticket for the next smallest scope-relevant task.
+```xml
+<llm_prompt>
+  <read_first>
+    <file>XML_PROMPT_PROTOCOL.md</file>
+    <file>STUDIO_DASHBOARD.md</file>
+    <file>STUDIO_PROTOCOL.md</file>
+    <file>CODEX_RULES.md</file>
+  </read_first>
 
-Include:
-- goal
-- context
-- scope
-- constraints
-- acceptance criteria
-- files likely involved
-- validation steps
-- final response format
+  <goal>
+    Create a Codex-ready XML ticket for the next smallest scope-relevant task.
+  </goal>
 
-Keep the task bounded to one implementation unit. Do not ask Codex to build a whole product.
+  <required_ticket_tags>
+    <tag>codex_task</tag>
+    <tag>read_first</tag>
+    <tag>goal</tag>
+    <tag>context</tag>
+    <tag>scope</tag>
+    <tag>constraints</tag>
+    <tag>acceptance_criteria</tag>
+    <tag>validation</tag>
+    <tag>final_response_format</tag>
+  </required_ticket_tags>
+
+  <constraints>
+    <constraint>Keep the task bounded to one implementation unit.</constraint>
+    <constraint>Do not ask Codex to build a whole product.</constraint>
+    <constraint>Preserve the current repo truth from the studio docs.</constraint>
+  </constraints>
+</llm_prompt>
 ```
 
 ## Create Repo Onboarding Ticket Prompt
 
-```txt
-Create a Codex-ready ticket for repo onboarding documentation or planning.
+```xml
+<llm_prompt>
+  <read_first>
+    <file>XML_PROMPT_PROTOCOL.md</file>
+    <file>REPO_ONBOARDING_PROTOCOL.md</file>
+    <file>STUDIO_DASHBOARD.md</file>
+    <file>CODEX_RULES.md</file>
+  </read_first>
 
-Use `REPO_ONBOARDING_PROTOCOL.md` as the controlling protocol.
+  <goal>
+    Create a Codex-ready XML ticket for repo onboarding documentation or planning.
+  </goal>
 
-Keep the task documentation/specification-only unless the studio owner explicitly asks for implementation.
+  <context>
+    <protocol>
+      Use `REPO_ONBOARDING_PROTOCOL.md` as the controlling protocol.
+    </protocol>
+  </context>
 
-Include:
-- goal
-- context
-- scope
-- constraints
-- acceptance criteria
-- files likely involved
-- validation steps
-- final response format
+  <constraints>
+    <constraint>Keep the task documentation/specification-only unless the studio owner explicitly asks for implementation.</constraint>
+    <constraint>Do not implement GitHub ingestion, OAuth, vector storage, database schemas, dashboard UI, or automation.</constraint>
+  </constraints>
+
+  <required_ticket_tags>
+    <tag>codex_task</tag>
+    <tag>read_first</tag>
+    <tag>goal</tag>
+    <tag>context</tag>
+    <tag>scope</tag>
+    <tag>constraints</tag>
+    <tag>acceptance_criteria</tag>
+    <tag>validation</tag>
+    <tag>final_response_format</tag>
+  </required_ticket_tags>
+</llm_prompt>
 ```
 
 ## Review Codex Diff Prompt
 
-```txt
-Review this Codex diff against the ticket.
+```xml
+<review_prompt>
+  <goal>
+    Review a Codex diff against the provided ticket.
+  </goal>
 
-Prioritize:
-- scope drift
-- unrelated rewrites
-- missing acceptance criteria
-- missing validation
-- accidental app code
-- secrets or generated files
-- inconsistency with `STUDIO_PROTOCOL.md`
+  <review_focus>
+    <item>scope drift</item>
+    <item>unrelated rewrites</item>
+    <item>missing acceptance criteria</item>
+    <item>missing validation</item>
+    <item>accidental app code</item>
+    <item>secrets or generated files</item>
+    <item>inconsistency with `STUDIO_PROTOCOL.md`</item>
+  </review_focus>
 
-Return findings first, ordered by severity, with file references.
+  <response_format>
+    <section>Findings first, ordered by severity, with file references.</section>
+    <section>Open questions or assumptions.</section>
+    <section>Brief change summary only after findings.</section>
+  </response_format>
+</review_prompt>
 ```
 
 ## Reduce MVP Scope Prompt
 
-```txt
-Review this MVP scope and reduce it to the smallest version that can validate user value or revenue.
+```xml
+<llm_prompt>
+  <goal>
+    Review an MVP scope and reduce it to the smallest version that can validate user value or revenue.
+  </goal>
 
-Return:
-- must-have workflow
-- deferred features
-- biggest scope risks
-- next smallest build task
-- what not to build yet
+  <response_requirements>
+    <section>must-have workflow</section>
+    <section>deferred features</section>
+    <section>biggest scope risks</section>
+    <section>next smallest build task</section>
+    <section>what not to build yet</section>
+  </response_requirements>
+
+  <constraints>
+    <constraint>Do not expand the product scope.</constraint>
+    <constraint>Prefer the smallest testable workflow.</constraint>
+  </constraints>
+</llm_prompt>
 ```
 
 ## Write Decision Log Prompt
 
-```txt
-Write a `DECISIONS.md` entry for this decision.
+```xml
+<llm_prompt>
+  <goal>
+    Write a `DECISIONS.md` entry for a product, architecture, scope, pricing, current focus, primary product selection, or launch-path decision.
+  </goal>
 
-Include:
-- date
-- decision
-- reason
-- rejected alternatives
-- revisit condition
+  <required_sections>
+    <section>date</section>
+    <section>decision</section>
+    <section>reason</section>
+    <section>rejected alternatives</section>
+    <section>revisit condition</section>
+  </required_sections>
 
-Keep it factual and specific.
+  <constraints>
+    <constraint>Keep it factual and specific.</constraint>
+    <constraint>Do not invent decisions that were not made.</constraint>
+  </constraints>
+</llm_prompt>
 ```
 
 ## Create App Record Prompt
 
-```txt
-Create or update an `APP_REGISTRY.md` product app candidate record.
+```xml
+<llm_prompt>
+  <goal>
+    Create or update an `APP_REGISTRY.md` product app candidate record.
+  </goal>
 
-Include:
-- app name
-- status
-- priority
-- revenue path
-- current milestone
-- next task
-- paused reason
-- what not to build yet, if relevant
+  <required_fields>
+    <field>app name</field>
+    <field>status</field>
+    <field>priority</field>
+    <field>revenue path</field>
+    <field>current milestone</field>
+    <field>next task</field>
+    <field>paused reason</field>
+    <field>what not to build yet, if relevant</field>
+  </required_fields>
 
-Use the current studio docs as the source of truth.
+  <constraints>
+    <constraint>Use the current studio docs as the source of truth.</constraint>
+    <constraint>Do not mark any product app active unless `DECISIONS.md` explicitly selects it.</constraint>
+  </constraints>
+</llm_prompt>
 ```

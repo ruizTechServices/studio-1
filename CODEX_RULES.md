@@ -6,7 +6,11 @@ Codex does not decide product direction.
 
 ## Prompt Format
 
-Every Codex ticket should include:
+Every Codex ticket should use XML-style structure unless there is a clear reason not to.
+
+Use `XML_PROMPT_PROTOCOL.md` as the controlling prompt-format protocol.
+
+Every Codex ticket should include these sections as XML-style tags:
 
 - goal
 - context
@@ -23,6 +27,7 @@ Codex must:
 
 - read `AGENTS.md` before making changes
 - read the relevant studio docs
+- read `XML_PROMPT_PROTOCOL.md` before creating or editing Codex tickets, reusable prompts, or LLM prompt standards
 - read `REPO_ONBOARDING_PROTOCOL.md` before tasks involving connected repo analysis, uploaded repo analysis, repo onboarding, or repo context generation
 - read `CODE_ASSET_PROTOCOL.md` before tasks involving proprietary code asset extraction, classification, retrieval, storage, or reuse
 - work only on the assigned task
@@ -86,30 +91,56 @@ Make this repo better.
 
 ## Good Prompt Example
 
-```txt
-Goal:
-Update `STUDIO_DASHBOARD.md` to reflect the current studio focus.
+```xml
+<codex_task>
+  <read_first>
+    <file>AGENTS.md</file>
+    <file>STUDIO_DASHBOARD.md</file>
+    <file>STUDIO_PROTOCOL.md</file>
+    <file>CODEX_RULES.md</file>
+  </read_first>
 
-Context:
-This repo is the markdown-first source of truth for RuizTech Studio. There is currently no primary product app. The current focus is creating `ruizTechStudio`.
+  <goal>
+    Update `STUDIO_DASHBOARD.md` to reflect the current studio focus.
+  </goal>
 
-Scope:
-Update only `STUDIO_DASHBOARD.md`.
+  <context>
+    <repo_identity>
+      This repo is the markdown-first source of truth for RuizTech Studio.
+    </repo_identity>
+    <current_focus>
+      There is currently no primary product app. The current focus is creating `ruizTechStudio`.
+    </current_focus>
+  </context>
 
-Constraints:
-Do not create app code. Do not initialize frameworks. Do not add unrelated files.
+  <scope>
+    <update_files>
+      <file>STUDIO_DASHBOARD.md</file>
+    </update_files>
+  </scope>
 
-Acceptance Criteria:
-- The dashboard says `ruizTechStudio` is the current focus.
-- The dashboard says no primary product app is active.
-- The current milestone and next task are consistent with studio setup.
+  <constraints>
+    <constraint>Do not create app code.</constraint>
+    <constraint>Do not initialize frameworks.</constraint>
+    <constraint>Do not add unrelated files.</constraint>
+  </constraints>
 
-Files likely involved:
-- `STUDIO_DASHBOARD.md`
+  <acceptance_criteria>
+    <item>The dashboard says `ruizTechStudio` is the current focus.</item>
+    <item>The dashboard says no primary product app is active.</item>
+    <item>The current milestone and next task are consistent with studio setup.</item>
+  </acceptance_criteria>
 
-Validation:
-Read the final file and confirm all acceptance criteria are met.
+  <validation>
+    <step>Read the final file and confirm all acceptance criteria are met.</step>
+  </validation>
 
-Final response format:
-Summary, files changed, validation performed, risks, suggested next task.
+  <final_response_format>
+    <section>Summary</section>
+    <section>Files changed</section>
+    <section>Validation performed</section>
+    <section>Risks or open questions</section>
+    <section>Suggested next task</section>
+  </final_response_format>
+</codex_task>
 ```

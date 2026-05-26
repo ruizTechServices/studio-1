@@ -11,11 +11,12 @@ Before making changes, agents must read:
 1. `STUDIO_DASHBOARD.md`
 2. `README.md`
 3. `STUDIO_PROTOCOL.md`
-4. `REPO_ONBOARDING_PROTOCOL.md` when working on repository onboarding, connected repo analysis, uploaded repo analysis, or repo context generation
-5. `CODE_ASSET_PROTOCOL.md` when working on code asset extraction, classification, storage, retrieval, or reuse
-6. `DECISIONS.md`
-7. `APP_REGISTRY.md`
-8. `CODEX_RULES.md` when creating or executing Codex tickets
+4. `XML_PROMPT_PROTOCOL.md` when creating or editing Codex tickets, reusable prompts, or LLM prompt standards
+5. `REPO_ONBOARDING_PROTOCOL.md` when working on repository onboarding, connected repo analysis, uploaded repo analysis, or repo context generation
+6. `CODE_ASSET_PROTOCOL.md` when working on code asset extraction, classification, storage, retrieval, or reuse
+7. `DECISIONS.md`
+8. `APP_REGISTRY.md`
+9. `CODEX_RULES.md` when creating or executing Codex tickets
 
 ## Repository Identity
 
@@ -32,6 +33,8 @@ It is a planning, continuity, prompt, playbook, protocol, and template repositor
 It also defines the Code Asset Protocol for future RuizTech proprietary code asset extraction and controlled reuse.
 
 It also defines the Repo Onboarding Protocol for future authorized GitHub repository intake and project understanding.
+
+It also defines the XML Prompt Protocol for structured Codex and LLM prompts.
 
 ## Current Studio Focus
 
@@ -67,6 +70,7 @@ This repository currently exists to organize studio operations, documentation, p
 - `AGENTS.md`
 - `STUDIO_DASHBOARD.md`
 - `STUDIO_PROTOCOL.md`
+- `XML_PROMPT_PROTOCOL.md`
 - `REPO_ONBOARDING_PROTOCOL.md`
 - `CODE_ASSET_PROTOCOL.md`
 - `APP_REGISTRY.md`

@@ -2,6 +2,8 @@
 
 This is the canonical operating system for RuizTech Studio.
 
+For Codex tickets, reusable prompts, and structured LLM instructions, use `XML_PROMPT_PROTOCOL.md` as the controlling prompt-format protocol.
+
 For future authorized repository intake and project understanding, use `REPO_ONBOARDING_PROTOCOL.md` as the controlling protocol.
 
 For future proprietary code asset extraction and reuse, use `CODE_ASSET_PROTOCOL.md` as the controlling protocol. This repository remains markdown-first until a separate scoped decision converts any part of those protocols into implementation work.

@@ -10,6 +10,28 @@ Each decision must include:
 - rejected alternatives
 - revisit condition
 
+## 2026-05-26 - RuizTech Studio adopts XML-style prompt structure
+
+### Decision
+
+RuizTech Studio will use XML-style structure for Codex tickets, reusable prompts, and multi-step LLM instructions going forward unless there is a clear reason not to.
+
+`XML_PROMPT_PROTOCOL.md` is the controlling prompt-format protocol.
+
+### Reason
+
+XML-style prompts make goals, context, scope, constraints, acceptance criteria, validation, and final response requirements easier for humans and models to parse. This supports scoped Codex work, repeatable prompt reuse, and clearer review.
+
+### Rejected
+
+- Continuing with loose plain text prompt templates as the default
+- Requiring strict machine-validated XML before the workflow needs it
+- Embedding prompt standards only in scattered tickets instead of a protocol file
+
+### Revisit
+
+When RuizTech Studio needs automated prompt validation, prompt builders, or a schema-backed prompt registry.
+
 ## 2026-05-26 - RuizTech Studio adopts Repo Onboarding Protocol direction
 
 ### Decision
