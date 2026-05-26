@@ -1,228 +1,101 @@
-===
-## Source of Truth Rule
+# RuizTech Studio Dashboard
+
+This dashboard is the first file to open when resuming RuizTech Studio work.
+
+## Source-of-Truth Rule
 
 This repository is the source of truth for RuizTech Studio.
 
-Do not rely on scattered chats, screenshots, memory, or loose notes when resuming work.
+Do not rely on scattered chats, screenshots, memory, or loose notes when resuming work. Every serious decision, active app, milestone, Codex task, and next action must be reflected in this repository.
 
-Every serious decision, active app, milestone, Codex task, and next action must be reflected in this repository.
-===
+## Studio Purpose
 
-===
-## Active App Rule
+RuizTech Studio exists to help build, launch, sell, and maintain focused software products without losing context between work sessions.
 
-Only one app can be the primary active app at a time.
+The goal is not to build many half-finished apps. The goal is to build focused, sellable, maintainable products that can become real businesses.
 
-The active app receives the main build energy, Codex tasks, architecture work, and weekly planning.
+## Current Active App
 
-Secondary apps may only receive work if:
-- they create immediate cash flow
-- they unblock the active app
-- they are being documented, not expanded
+**TinySheets Worksheet Generator**
 
-Current active app(NOTE: UPDATE THIS WHEN CHANGING ACTIVE APP): TinySheets Worksheet Generator.
-===
-
-===
-
-## Daily Resume Loop
-
-Start every session here.
-
-1. Confirm the active app.
-2. Confirm the current milestone.
-3. Review the next task.
-4. Check blockers.
-5. Create or use one Codex-ready ticket.
-6. Implement, review, test, commit, and push.
-7. Update this dashboard before stopping.
-
-If the dashboard does not reflect the current state, the session is not finished.
-
-===
-
-===
-## Active App Rule
-
-Only one app can be the primary active app at a time.
-
-The active app receives the main build energy, Codex tasks, architecture work, and weekly planning.
-
-Secondary apps may only receive work if:
-- they create immediate cash flow
-- they unblock the active app
-- they are being documented, not expanded
-
-Current active app(NOTE: UPDATE THIS WHEN CHANGING ACTIVE APP): TinySheets Worksheet Generator.
-===
-
-===
-
-# App Record: TinySheets
-
-## Status
-Active
-
-## Priority
-1
-
-## One-Sentence Pitch
 K-2 teachers, tutors, and homeschool parents generate clean one-page math and vocabulary worksheets in under 60 seconds.
 
 ## Current Milestone
+
 Build the first usable MVP workflow.
 
 ## MVP Test
-A logged-in user can generate, preview, save, and export one worksheet as a PDF.
+
+A logged-in user can generate a simple K-2 worksheet, preview it, save it, and export it as a PDF.
 
 ## Revenue Hypothesis
+
 Users may pay around $12/month or a low one-time fee for faster worksheet creation.
 
-## Next Task
+## Next Smallest Task
+
 Create active app context docs.
 
 ## Blockers
+
 None yet.
 
-## Do Not Build Yet
+## Canonical Studio Operating Loop
+
+Every work session follows this loop:
+
+1. Open `STUDIO_DASHBOARD.md`.
+2. Confirm the current active app.
+3. Confirm the current milestone.
+4. Review the latest relevant decisions in `DECISIONS.md`.
+5. Review the active app entry in `APP_REGISTRY.md`.
+6. Choose the next smallest revenue-relevant task.
+7. Convert that task into a Codex-ready ticket.
+8. Give Codex only that ticket.
+9. Review Codex's diff before accepting it.
+10. Run validation commands.
+11. Manually test the affected workflow.
+12. Commit only working changes.
+13. Push to GitHub.
+14. Update the studio docs with the new state.
+15. Record any new decision that affects scope, architecture, business direction, or app priority.
+
+A session is not complete until the repo accurately describes where the project stands.
+
+## Active App Rule
+
+Only one app can be the primary active app at a time.
+
+The active app receives the main build energy, Codex tasks, architecture work, and weekly planning.
+
+Secondary apps may only receive work if:
+
+- they create immediate cash flow
+- they unblock the active app
+- they are being documented, not expanded
+
+## Active App Registry
+
+| App | Status | Priority | Revenue Path | Next Action |
+|---|---|---:|---|---|
+| TinySheets Worksheet Generator | Active | 1 | SaaS/subscription or low-cost paid tool | Create active app context docs |
+| Tech Rescue Sprint | Secondary | 2 | Local service sales / lead capture | Improve offer and intake notes |
+| 24HourGPT | Paused | 3 | Low-cost temporary AI access | Revisit after one product ships |
+| LetMeExplain | Paused | 4 | SaaS for feedback rewriting | Revisit after TinySheets MVP |
+| Nucleus | Research | 5 | Desktop AI assistant subscription | Keep as long-term R&D |
+
+## What Not To Build Yet
+
+- custom studio dashboard
+- another new primary app
+- app source code in this repository unless explicitly instructed
 - payments
 - admin dashboard
 - multi-page worksheet books
 - school management features
 - marketplace
-===
-
-
-# RUIZTECH STUDIO DASHBOARD
-### Master Issue
-#### Build focused, sellable, maintainable software products.
-
----
-
-## Studio Purpose
-
-> RuizTech Studio exists to help me build, launch, sell, and maintain profitable software products without losing context between work sessions.
-
-### In This Issue
-
-This is the master source of truth for:
-
-- active app focus
-- app statuses
-- revenue goals
-- next actions
-- paused projects
-- blockers
-- Codex prompts
-- decisions
-- launch priorities
-
-### Editorial Note
-
-The goal is not to build many half-finished apps.
-
-The goal is to build focused, sellable, maintainable products that can become real businesses.
-
----
-
-## Cover Story
-## Current Active App
-
-### App Name
-**TinySheets Worksheet Generator**
-
-### One-Sentence Product Description
-*K-2 teachers, tutors, and homeschool parents generate clean one-page math and vocabulary worksheets in under 60 seconds.*
-
-### Current Stage
-MVP planning / early build
-
-### Current Goal
-Create the first usable version that allows a logged-in user to generate and export one worksheet.
-
-### Revenue Goal
-Validate whether teachers/tutors will pay approximately $12/month or a low one-time fee for quick worksheet generation.
-
-### Why This App Matters
-This app has a clear user, clear pain, and clear output.
-
-Teachers and tutors constantly need printable materials. If TinySheets saves them time and produces clean worksheets, it has a realistic chance of becoming a small SaaS product.
-
----
-
-## Feature Section
-## Current Weekly Objective
-
-**Build the minimum working TinySheets MVP foundation.**
-
-### The MVP Foundation Means
-
-- landing page
-- login/auth shell
-- dashboard shell
-- worksheet generation form
-- one-page worksheet output
-- PDF export
-- saved worksheet history
-
-> Only the smallest working version matters right now.
-
----
-
-## Daily Brief
-## Today's Objective
-
-**Define the studio structure and create the master dashboard.**
-
-Today is not for building the app.
-
-Today is for creating the system that lets me resume work without confusion.
-
----
-
-## Studio Index
-## Active App Registry
-
-| App | Status | Priority | Revenue Path | Next Action |
-|---|---|---:|---|---|
-| TinySheets | Active | 1 | SaaS/subscription or low-cost paid tool | Finish MVP foundation |
-| Tech Rescue Sprint | Secondary | 2 | Local service sales / lead capture | Improve offer and intake flow |
-| 24HourGPT | Paused | 3 | $1 temporary AI access | Revisit after one product ships |
-| LetMeExplain | Paused | 4 | SaaS for feedback rewriting | Revisit after TinySheets |
-| Nucleus | Research | 5 | Desktop AI assistant subscription | Keep as long-term R&D |
-
----
-
-## House Rule
-## Current Rule
-
-Only one app gets primary focus at a time.
-
-### Current Primary App
-
-**TinySheets Worksheet Generator**
-
-Everything else is secondary unless it produces immediate cash.
-
----
-
-## Out of Scope
-## What I Am NOT Doing Right Now
-
-- I am not building a custom studio dashboard yet.
-- I am not starting another new app.
-- I am not rebuilding architecture from scratch.
-- I am not adding unnecessary AI agents.
-- I am not adding ten model providers.
-- I am not designing complex admin systems before the MVP works.
-- I am not wasting time on perfect UI before the core workflow works.
-- I am not using Codex without a clear ticket.
-- I am not letting Codex make product decisions.
-
----
 
 ## Operating Model
-## Studio Operating Rule
 
 ### ChatGPT / Ada Is Used For
 
@@ -238,98 +111,24 @@ Everything else is secondary unless it produces immediate cash.
 ### Codex Is Used For
 
 - implementing scoped tickets
-- modifying existing code
-- writing tests
+- modifying existing files
+- writing tests when the ticket requires it
 - fixing bugs
-- running lint/typecheck/tests
+- running lint, typecheck, and tests when available
 - summarizing changed files
 
 ### Final Decision
 
-I make the final decisions.
+The studio owner makes final product and business decisions.
 
----
+## Current Technical Assumptions For TinySheets
 
-## Product Definition
-## Current TinySheets MVP Definition
+These are app planning assumptions, not instructions to create app code in this repo.
 
-The first version only needs to prove this:
-
-> A logged-in user can generate a simple K-2 worksheet and export it as a PDF.
-
-**That is the MVP.**
-
-Not multi-page workbooks.  
-Not AI books.  
-Not school management.  
-Not full curriculum planning.  
-Not marketplace features.  
-Not advanced analytics.
-
----
-
-## Requirements
-## TinySheets MVP Features
-
-### Required
-
-- Landing page
-- Auth/login
-- Protected dashboard
-- Worksheet creation form
-- Math worksheet mode
-- Vocabulary worksheet mode
-- One-page worksheet preview
-- PDF export
-- Save generated worksheet
-- Basic worksheet history
-
-### Not Required Yet
-
-- Payments
-- Admin dashboard
-- Multiple classrooms
-- Student accounts
-- Multi-page worksheet packets
-- AI-generated books
-- Advanced customization
-- Marketplace
-- Parent/student portal
-
----
-
-## Production Notes
-## Current Technical Assumptions
-
-### Frontend
-Next.js App Router
-
-### Styling
-Tailwind CSS  
-ShadCN UI where useful
-
-### Auth
-Supabase Auth
-
-### Database
-Supabase Postgres
-
-### File Storage
-Supabase Storage for generated PDF/spec files when needed
-
-### PDF Generation
-To be decided after the worksheet rendering structure is clear
-
-### Deployment
-Vercel
-
----
-
-## Back Page
-## Current Local Paths
-
-### Studio Root
-
-```txt
-C:\Users\giost\CascadeProjects\ruiztech-studio
-```
+- Frontend: Next.js App Router
+- Styling: Tailwind CSS and ShadCN UI where useful
+- Auth: Supabase Auth
+- Database: Supabase Postgres
+- File Storage: Supabase Storage for generated PDF/spec files when needed
+- PDF Generation: To be decided after worksheet rendering structure is clear
+- Deployment: Vercel

@@ -1,40 +1,48 @@
-===
-## Source of Truth Rule
+# Studio Protocol
+
+This is the canonical operating system for RuizTech Studio.
+
+## Source-of-Truth Rule
 
 This repository is the source of truth for RuizTech Studio.
 
-Do not rely on scattered chats, screenshots, memory, or loose notes when resuming work.
+Do not rely on scattered chats, screenshots, memory, or loose notes when resuming work. Every serious decision, active app, milestone, Codex task, and next action must be reflected in this repository.
 
-Every serious decision, active app, milestone, Codex task, and next action must be reflected in this repository.
-===
+## Active App Rule
 
-===
+Only one app can be the primary active app at a time.
 
-## Work Session Operating Loop
+The active app receives the main build energy, Codex tasks, architecture work, and weekly planning.
 
-Every work session must follow this loop:
+Secondary apps may only receive work if:
+
+- they create immediate cash flow
+- they unblock the active app
+- they are being documented, not expanded
+
+Current active app: **TinySheets Worksheet Generator**
+
+## Canonical Studio Operating Loop
+
+Every work session follows this loop:
 
 1. Open `STUDIO_DASHBOARD.md`.
-2. Confirm the active app.
+2. Confirm the current active app.
 3. Confirm the current milestone.
-4. Read the latest relevant decision in `DECISIONS.md`.
-5. Open the active app record in `APP_REGISTRY.md`.
-6. Choose one small task.
+4. Review the latest relevant decisions in `DECISIONS.md`.
+5. Review the active app entry in `APP_REGISTRY.md`.
+6. Choose the next smallest revenue-relevant task.
 7. Convert that task into a Codex-ready ticket.
-8. Let Codex implement only that ticket.
-9. Review the diff.
+8. Give Codex only that ticket.
+9. Review Codex's diff before accepting it.
 10. Run validation commands.
-11. Test manually.
+11. Manually test the affected workflow.
 12. Commit only working changes.
 13. Push to GitHub.
-14. Update the relevant studio docs.
-15. Record new decisions if the task changed direction.
+14. Update the studio docs with the new state.
+15. Record any new decision that affects scope, architecture, business direction, or app priority.
 
-A work session is not complete until the studio notes reflect the current state.
-
-===
-
-===
+A session is not complete until the repo accurately describes where the project stands.
 
 ## Task Decomposition Rule
 
@@ -43,6 +51,7 @@ Never ask Codex to build a whole product.
 Every Codex task must be reduced to one bounded implementation unit.
 
 A valid task includes:
+
 - goal
 - context
 - scope
@@ -52,17 +61,37 @@ A valid task includes:
 - validation steps
 - final response format
 
-Invalid task:
+## Codex Handoff Rule
 
-“Build the app.”
+Codex receives only scoped tickets.
 
-Valid task:
+Codex may implement, edit, test, inspect diffs, and summarize work, but it does not decide product direction, business priorities, active app priority, pricing, or launch strategy.
 
-“Create `APP_REGISTRY.md` using the current studio dashboard as the source of truth.”
+## Review Rule
 
-===
+Review Codex's diff before accepting the work.
 
-===
+Check that the change:
+
+- matches the ticket
+- avoids unrelated rewrites
+- preserves this repo as the source of truth
+- does not create app code unless explicitly requested
+- does not introduce secrets, generated files, dependency folders, or build outputs
+
+## Manual Test Rule
+
+Run validation commands when available.
+
+Manually test the affected workflow when the task changes behavior or content that a human must read, follow, or use.
+
+For documentation-only tasks, manual testing means reading the changed docs and confirming they answer the session continuity questions.
+
+## Commit Rule
+
+Commit only working changes.
+
+Keep commits small and scoped to one task. Do not mix unrelated cleanup, restructuring, or app code with studio documentation updates.
 
 ## End-of-Session Continuity Rule
 
@@ -78,9 +107,6 @@ Every work session must end with the repo able to answer:
 
 If those answers are not captured, the session is not complete.
 
-===
-
-===
 ## Decision Logging Rule
 
 Any decision that changes product direction, architecture, stack, scope, pricing, active app priority, or launch path must be recorded in `DECISIONS.md`.
@@ -93,72 +119,8 @@ A decision entry must include:
 - rejected alternatives
 - revisit condition
 
-#### EXAMPLE: ```## 2026-05-26 — TinySheets remains the active app
+## AI Integration Boundary
 
-### Decision
-TinySheets remains the primary active app for the studio.
+AI is used to support strategy, scope control, implementation, review, validation, and documentation.
 
-### Reason
-It has the clearest user, smallest MVP, and strongest path to a paid SaaS test.
-
-### Rejected
-- Switching focus to 24HourGPT
-- Building the studio dashboard first
-- Starting a new AI agent app
-
-### Revisit
-After TinySheets has a working MVP or a clear blocker.
-```
-
-===
-
-===
-## Active App Rule
-
-Only one app can be the primary active app at a time.
-
-The active app receives the main build energy, Codex tasks, architecture work, and weekly planning.
-
-Secondary apps may only receive work if:
-- they create immediate cash flow
-- they unblock the active app
-- they are being documented, not expanded
-
-Current active app(NOTE: UPDATE THIS WHEN CHANGING ACTIVE APP): TinySheets Worksheet Generator.
-===
-
-===
-
-# App Record: TinySheets
-
-## Status
-Active
-
-## Priority
-1
-
-## One-Sentence Pitch
-K-2 teachers, tutors, and homeschool parents generate clean one-page math and vocabulary worksheets in under 60 seconds.
-
-## Current Milestone
-Build the first usable MVP workflow.
-
-## MVP Test
-A logged-in user can generate, preview, save, and export one worksheet as a PDF.
-
-## Revenue Hypothesis
-Users may pay around $12/month or a low one-time fee for faster worksheet creation.
-
-## Next Task
-Create active app context docs.
-
-## Blockers
-None yet.
-
-## Do Not Build Yet
-- payments
-- admin dashboard
-- multi-page worksheet books
-- school management features
-- marketplace
-===
+AI does not replace the studio source of truth. If a conclusion matters, it belongs in this repo.

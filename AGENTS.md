@@ -1,57 +1,136 @@
-===
-## Source of Truth Rule
+# AGENTS.md
 
-This repository is the source of truth for RuizTech Studio.
+This file defines how Codex and other AI coding agents must work inside the `ruizTechServices/studio-1` repository.
 
-Do not rely on scattered chats, screenshots, memory, or loose notes when resuming work.
+Read this file before making changes.
 
-Every serious decision, active app, milestone, Codex task, and next action must be reflected in this repository.
-===
+## Read Order
 
-===
-## Active App Rule
+Before making changes, agents must read:
 
-Only one app can be the primary active app at a time.
+1. `STUDIO_DASHBOARD.md`
+2. `README.md`
+3. `STUDIO_PROTOCOL.md`
+4. `DECISIONS.md`
+5. `APP_REGISTRY.md`
+6. `CODEX_RULES.md` when creating or executing Codex tickets
 
-The active app receives the main build energy, Codex tasks, architecture work, and weekly planning.
+## Repository Identity
 
-Secondary apps may only receive work if:
-- they create immediate cash flow
-- they unblock the active app
-- they are being documented, not expanded
+This repo is the source-of-truth operating workspace for RuizTech Studio.
 
-Current active app(NOTE: UPDATE THIS WHEN CHANGING ACTIVE APP): TinySheets Worksheet Generator.
-===
+It is not currently a production application.
 
-===
+It is not currently a Next.js app.
 
-## Required Session Behavior for Agents
+It is not currently a monorepo.
 
-Before making changes, agents must:
+It is a planning, continuity, prompt, playbook, and template repository for building future apps deliberately.
 
-1. Read `STUDIO_DASHBOARD.md`.
-2. Confirm the active app and current milestone.
-3. Check `DECISIONS.md` for relevant prior decisions.
-4. Check `APP_REGISTRY.md` for the current app state.
-5. Work only on the assigned task.
-6. Avoid unrelated rewrites or new architecture.
-7. Validate the change when possible.
-8. Summarize changed files, validation results, risks, and the suggested next task.
+## Current Primary Product
 
-Agents must not treat this repository as a generic coding sandbox.
+TinySheets Worksheet Generator is the current primary app.
 
-This repo is the continuity system for RuizTech Studio.
-===
+The MVP goal is:
 
-===
+A logged-in user can generate a simple K-2 worksheet, preview it, save it, and export it as a PDF.
 
-## Task Decomposition Rule
+## Primary Rule
 
-Never ask Codex to build a whole product.
+Do not build app code in this repository unless explicitly instructed.
 
-Every Codex task must be reduced to one bounded implementation unit.
+This repository currently exists to organize studio operations, documentation, prompts, playbooks, templates, and continuity files.
+
+## Hard Constraints
+
+- Do not create a root-level `/context/` folder in this repo.
+- Do not commit secrets.
+- Do not commit environment files.
+- Do not commit generated caches.
+- Do not commit dependency folders.
+- Do not commit build outputs.
+- Do not create application source code unless the task explicitly asks for it.
+- Do not initialize Next.js, React, Supabase, Prisma, Tailwind, or any application framework unless the user explicitly instructs it.
+- Do not add package managers or lockfiles unless the repo is deliberately being converted into an executable project.
+- Do not perform greenfield rewrites.
+- Do not remove existing structure unless explicitly instructed.
+
+## Allowed Root-Level Files
+
+- `README.md`
+- `AGENTS.md`
+- `STUDIO_DASHBOARD.md`
+- `STUDIO_PROTOCOL.md`
+- `APP_REGISTRY.md`
+- `DECISIONS.md`
+- `PROMPTS.md`
+- `CODEX_RULES.md`
+- `.gitignore`
+
+## Allowed Folders
+
+- `apps/`
+- `clients/`
+- `logs/`
+- `playbooks/`
+- `prompts/`
+- `templates/`
+
+## Folder Rules
+
+### `apps/`
+
+Use for app-level notes, links, summaries, and continuity records.
+
+Do not dump full application source code here unless a deliberate monorepo decision is made.
+
+### `clients/`
+
+Use for lead notes, offer notes, outreach notes, objections, and service workflows.
+
+Do not store sensitive client data.
+
+### `logs/`
+
+Use for session logs, weekly reviews, and progress records.
+
+### `playbooks/`
+
+Use for repeatable processes.
+
+Examples:
+
+- Codex workflow
+- app validation
+- launch process
+- bug triage
+- security review
+- Supabase RLS review
+- Stripe payment review
+- Vercel deployment review
+
+### `prompts/`
+
+Use for reusable prompts.
+
+Examples:
+
+- Codex feature implementation prompt
+- Codex bugfix prompt
+- ChatGPT architecture review prompt
+- strict code review prompt
+- MVP scope reduction prompt
+
+### `templates/`
+
+Use for reusable file templates, app starter documentation, and future boilerplate structures.
+
+## Task Size Limits
+
+Every Codex task must be one bounded implementation unit.
 
 A valid task includes:
+
 - goal
 - context
 - scope
@@ -61,448 +140,31 @@ A valid task includes:
 - validation steps
 - final response format
 
-Invalid task:
+Do not accept vague tasks like:
 
-“Build the app.”
-
-Valid task:
-
-“Create `APP_REGISTRY.md` using the current studio dashboard as the source of truth.”
-
-===
-
-===
-
-## End-of-Session Continuity Rule
-
-Every work session must end with the repo able to answer:
-
-1. What changed?
-2. Why did it change?
-3. What is the active app?
-4. What milestone is active?
-5. What is the next smallest task?
-6. What is blocked?
-7. What should not be touched yet?
-
-If those answers are not captured, the session is not complete.
-
-===
-
-===
-## Decision Logging Rule
-
-Any decision that changes product direction, architecture, stack, scope, pricing, active app priority, or launch path must be recorded in `DECISIONS.md`.
-
-A decision entry must include:
-
-- date
-- decision
-- reason
-- rejected alternatives
-- revisit condition
-
-#### EXAMPLE: ```## 2026-05-26 — TinySheets remains the active app
-
-### Decision
-TinySheets remains the primary active app for the studio.
-
-### Reason
-It has the clearest user, smallest MVP, and strongest path to a paid SaaS test.
-
-### Rejected
-- Switching focus to 24HourGPT
-- Building the studio dashboard first
-- Starting a new AI agent app
-
-### Revisit
-After TinySheets has a working MVP or a clear blocker.
+```txt
+Build the whole app.
 ```
 
-===
-
-    
-# AGENTS.md
-
-This file defines how AI coding agents must work inside the `ruizTechServices/studio-1` repository.
-
-Read this file before making changes.
-
-
-## Repository Identity
-
-This repo is the source-of-truth operating workspace for RuizTech Studio.
-
-It is not currently a production application.
-
-It is not currently a Next.js app.
-
-It is not currently a monorepo.
-
-It is a planning, continuity, prompt, playbook, and template repository for building future apps deliberately.
-
-## Current Primary Product
-
-TinySheets Worksheet Generator is the current primary app.
-
-The MVP goal is:
-
-A logged-in user can generate a simple K-2 worksheet, preview it, save it, and export it as a PDF.
-
-## Primary Rule
-
-Do not build app code in this repository unless explicitly instructed.
-
-This repository currently exists to organize studio operations, documentation, prompts, playbooks, templates, and continuity files.
-
-## Required Behavior
-
-When asked to modify this repo:
-
-1. Read `STUDIO_DASHBOARD.md`.
-2. Read `README.md` if it exists.
-3. Follow this `AGENTS.md`.
-4. Make the smallest correct change.
-5. Do not perform greenfield rewrites.
-6. Do not create unrelated files.
-7. Do not remove existing structure unless explicitly instructed.
-8. Preserve the source-of-truth purpose of the repo.
-9. Update documentation deliberately.
-10. Summarize all changes clearly.
-
-## Hard Constraints
-
-Do not create a root-level `/context/` folder in this repo.
-
-Do not commit secrets.
-
-Do not commit environment files.
-
-Do not commit generated caches.
-
-Do not commit dependency folders.
-
-Do not commit build outputs.
-
-Do not create application source code unless the task explicitly asks for it.
-
-Do not initialize Next.js, React, Supabase, Prisma, Tailwind, or any application framework unless the user explicitly instructs it.
-
-Do not add package managers or lockfiles unless the repo is deliberately being converted into an executable project.
-
-## What This Repo Should Contain
-
-Allowed root-level docs:
-
-- `README.md`
-- `AGENTS.md`
-- `STUDIO_DASHBOARD.md`
-- `APP_REGISTRY.md`
-- `DECISIONS.md`
-- `PROMPTS.md`
-- `CODEX_RULES.md`
-- `BUSINESS_RULES.md`
-- `WEEKLY_PLAN.md`
-
-Allowed folders:
-
-- `apps/`
-- `clients/`
-- `logs/`
-- `playbooks/`
-- `prompts/`
-- `templates/`
-
-## Folder Rules
-
-### `apps/`
-
-Use for app-level notes, links, summaries, and continuity records.
-
-Do not dump full application source code here unless a deliberate monorepo decision is made.
-
-### `clients/`
-
-Use for lead notes, offer notes, outreach notes, objections, and service workflows.
-
-Do not store sensitive client data.
-
-### `logs/`
-
-Use for session logs, weekly reviews, and progress records.
-
-### `playbooks/`
-
-Use for repeatable processes.
-
-Examples:
-
-- Codex workflow
-- app validation
-- launch process
-- bug triage
-- security review
-- Supabase RLS review
-- Stripe payment review
-- Vercel deployment review
-
-### `prompts/`
-
-Use for reusable prompts.
-
-Examples:
-
-- Codex feature implementation prompt
-- Codex bugfix prompt
-- ChatGPT architecture review prompt
-- strict code review prompt
-- MVP scope reduction prompt
-
-### `templates/`
-
-Use for reusable file templates, app starter documentation, and future boilerplate structures.
-
-## Codex Work Rules
-
-Every Codex task should have:
-
-- goal
-- context
-- scope
-- constraints
-- acceptance criteria
-- files likely involved
-- tests or validation steps
-- final response format
-
-Do not accept vague tasks like:
-
-```txt
-Build the whole app.
-
 Prefer scoped tasks like:
 
-Create `APP_REGISTRY.md` using the existing studio dashboard as the source of truth.
-Final Response Format for Agents
+```txt
+Create `APP_REGISTRY.md` using the current studio dashboard as the source of truth.
+```
+
+## Final Response Format
 
 When completing work, respond with:
 
-Summary
-Files changed
-Why the change was made
-Validation performed
-Risks or open questions
-Suggested next task
-Current Operating Bias
+- Summary
+- Files changed
+- Why the change was made
+- Validation performed
+- Risks or open questions
+- Suggested next task
 
-Bias toward:
+## Operating Bias
 
-clarity
-continuity
-small commits
-scope control
-revenue relevance
-maintainable structure
-readable documentation
+Bias toward clarity, continuity, small commits, scope control, revenue relevance, maintainable structure, and readable documentation.
 
-Bias against:
-
-overbuilding
-vague architecture
-premature frameworks
-scattered notes
-hidden assumptions
-disconnected rewrites
-fake progress
-EOFcat > AGENTS.md <<'EOF'
-# AGENTS.md
-
-This file defines how AI coding agents must work inside the `ruizTechServices/studio-1` repository.
-
-Read this file before making changes.
-
-## Repository Identity
-
-This repo is the source-of-truth operating workspace for RuizTech Studio.
-
-It is not currently a production application.
-
-It is not currently a Next.js app.
-
-It is not currently a monorepo.
-
-It is a planning, continuity, prompt, playbook, and template repository for building future apps deliberately.
-
-## Current Primary Product
-
-TinySheets Worksheet Generator is the current primary app.
-
-The MVP goal is:
-
-A logged-in user can generate a simple K-2 worksheet, preview it, save it, and export it as a PDF.
-
-## Primary Rule
-
-Do not build app code in this repository unless explicitly instructed.
-
-This repository currently exists to organize studio operations, documentation, prompts, playbooks, templates, and continuity files.
-
-## Required Behavior
-
-When asked to modify this repo:
-
-1. Read `STUDIO_DASHBOARD.md`.
-2. Read `README.md` if it exists.
-3. Follow this `AGENTS.md`.
-4. Make the smallest correct change.
-5. Do not perform greenfield rewrites.
-6. Do not create unrelated files.
-7. Do not remove existing structure unless explicitly instructed.
-8. Preserve the source-of-truth purpose of the repo.
-9. Update documentation deliberately.
-10. Summarize all changes clearly.
-
-## Hard Constraints
-
-Do not create a root-level `/context/` folder in this repo.
-
-Do not commit secrets.
-
-Do not commit environment files.
-
-Do not commit generated caches.
-
-Do not commit dependency folders.
-
-Do not commit build outputs.
-
-Do not create application source code unless the task explicitly asks for it.
-
-Do not initialize Next.js, React, Supabase, Prisma, Tailwind, or any application framework unless the user explicitly instructs it.
-
-Do not add package managers or lockfiles unless the repo is deliberately being converted into an executable project.
-
-## What This Repo Should Contain
-
-Allowed root-level docs:
-
-- `README.md`
-- `AGENTS.md`
-- `STUDIO_DASHBOARD.md`
-- `APP_REGISTRY.md`
-- `DECISIONS.md`
-- `PROMPTS.md`
-- `CODEX_RULES.md`
-- `BUSINESS_RULES.md`
-- `WEEKLY_PLAN.md`
-
-Allowed folders:
-
-- `apps/`
-- `clients/`
-- `logs/`
-- `playbooks/`
-- `prompts/`
-- `templates/`
-
-## Folder Rules
-
-### `apps/`
-
-Use for app-level notes, links, summaries, and continuity records.
-
-Do not dump full application source code here unless a deliberate monorepo decision is made.
-
-### `clients/`
-
-Use for lead notes, offer notes, outreach notes, objections, and service workflows.
-
-Do not store sensitive client data.
-
-### `logs/`
-
-Use for session logs, weekly reviews, and progress records.
-
-### `playbooks/`
-
-Use for repeatable processes.
-
-Examples:
-
-- Codex workflow
-- app validation
-- launch process
-- bug triage
-- security review
-- Supabase RLS review
-- Stripe payment review
-- Vercel deployment review
-
-### `prompts/`
-
-Use for reusable prompts.
-
-Examples:
-
-- Codex feature implementation prompt
-- Codex bugfix prompt
-- ChatGPT architecture review prompt
-- strict code review prompt
-- MVP scope reduction prompt
-
-### `templates/`
-
-Use for reusable file templates, app starter documentation, and future boilerplate structures.
-
-## Codex Work Rules
-
-Every Codex task should have:
-
-- goal
-- context
-- scope
-- constraints
-- acceptance criteria
-- files likely involved
-- tests or validation steps
-- final response format
-
-Do not accept vague tasks like:
-
-```txt
-Build the whole app.
-
-Prefer scoped tasks like:
-
-Create `APP_REGISTRY.md` using the existing studio dashboard as the source of truth.
-Final Response Format for Agents
-
-When completing work, respond with:
-
-Summary
-Files changed
-Why the change was made
-Validation performed
-Risks or open questions
-Suggested next task
-Current Operating Bias
-
-Bias toward:
-
-clarity
-continuity
-small commits
-scope control
-revenue relevance
-maintainable structure
-readable documentation
-
-Bias against:
-
-overbuilding
-vague architecture
-premature frameworks
-scattered notes
-hidden assumptions
-disconnected rewrites
-fake progress
+Bias against overbuilding, vague architecture, premature frameworks, scattered notes, hidden assumptions, disconnected rewrites, and fake progress.
