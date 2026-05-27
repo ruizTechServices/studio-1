@@ -13,7 +13,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const execFileAsync = promisify(execFile);
 const app = express();
-const port = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000;
 
 const dataDir = path.join(__dirname, "data");
 const reposDir = path.join(dataDir, "repos");
@@ -881,15 +881,15 @@ app.use((error, request, response, _next) => {
   response.status(500).json({ error: error.message || "Server error" });
 });
 
-app.listen(port, () => {
-  console.log(`studio-1 running at http://localhost:${port}`);
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`studio-1 running at ${PORT}`);
   recordEventSafely({
     level: "success",
     area: "system",
     source: "system",
     phase: "startup",
     action: "server_started",
-    message: `studio-1 running at http://localhost:${port}`,
-    details: { port }
+    message: `studio-1 running at ${PORT}`,
+    details: { port: PORT }
   });
 });
