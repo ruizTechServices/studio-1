@@ -1,9 +1,10 @@
 import express from "express";
 import { recordEvent, eventsForQuery } from "../lib/index.js";
+import { validate, eventsQuery } from "../lib/validation/index.js";
 
 const router = express.Router();
 
-router.get("/", (request, response, next) => {
+router.get("/", validate({ query: eventsQuery }), (request, response, next) => {
   try {
     response.json(eventsForQuery(request.query));
   } catch (error) {
@@ -11,16 +12,12 @@ router.get("/", (request, response, next) => {
   }
 });
 
-router.post("/", (request, response, _next) => {
-  try {
-    const event = recordEvent({
-      ...request.body,
-      requestId: request.body?.requestId || request.requestId
-    });
-    response.status(201).json(event);
-  } catch (error) {
-    response.status(400).json({ error: error.message });
-  }
+router.post("/", (request, response) => {
+  const event = recordEvent({
+    ...request.body,
+    requestId: request.body?.requestId || request.requestId
+  });
+  response.status(201).json(event);
 });
 
 export default router;

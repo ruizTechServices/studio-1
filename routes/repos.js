@@ -4,6 +4,12 @@ import path from "node:path";
 import express from "express";
 import { upload } from "../lib/middleware/index.js";
 import {
+  validate,
+  repoIdParams,
+  deleteRepoBody,
+  importGithubBody
+} from "../lib/validation/index.js";
+import {
   db,
   reposDir,
   importsDir,
@@ -111,7 +117,7 @@ router.post("/upload", upload.array("files"), (request, response) => {
   response.status(201).json(repoSummary(row));
 });
 
-router.post("/import-github", async (request, response, next) => {
+router.post("/import-github", validate({ body: importGithubBody }), async (request, response, next) => {
   const correlationId = normalizeNullableString(request.body?.correlationId) || createId("corr");
   let repoName = null;
   let repoId = null;
@@ -211,7 +217,7 @@ router.post("/import-github", async (request, response, next) => {
   }
 });
 
-router.get("/:id", (request, response) => {
+router.get("/:id", validate({ params: repoIdParams }), (request, response) => {
   const row = db.prepare("SELECT * FROM repos WHERE id = ?").get(request.params.id);
   if (!row) {
     response.status(404).json({ error: "Repo not found" });
@@ -221,7 +227,7 @@ router.get("/:id", (request, response) => {
   response.json(repoSummary(row));
 });
 
-router.delete("/:id", (request, response, next) => {
+router.delete("/:id", validate({ params: repoIdParams, body: deleteRepoBody }), (request, response, next) => {
   const correlationId = normalizeNullableString(request.body?.correlationId) || createId("corr");
   const row = db.prepare("SELECT * FROM repos WHERE id = ?").get(request.params.id);
   if (!row) {

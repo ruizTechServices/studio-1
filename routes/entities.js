@@ -1,9 +1,10 @@
 import express from "express";
 import { eventsForQuery } from "../lib/index.js";
+import { validate, entitiesParams, eventsQuery } from "../lib/validation/index.js";
 
 const router = express.Router();
 
-router.get("/:type/:id/events", (request, response, next) => {
+router.get("/:type/:id/events", validate({ params: entitiesParams, query: eventsQuery }), (request, response, next) => {
   try {
     response.json(eventsForQuery({
       ...request.query,
