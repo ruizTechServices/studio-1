@@ -608,7 +608,12 @@ async function readApiJson(response) {
     try {
       result = JSON.parse(text);
     } catch {
-      result = { error: text.slice(0, 180) || "Server returned an unreadable response." };
+      const routeMissing = text.match(/Cannot\s+(GET|POST|PUT|PATCH|DELETE)\s+([^\s<]+)/i);
+      result = {
+        error: routeMissing
+          ? `Server route unavailable for ${routeMissing[1].toUpperCase()} ${routeMissing[2]}. Restart the Express server and reload.`
+          : "Server returned a non-JSON response."
+      };
     }
   }
 
