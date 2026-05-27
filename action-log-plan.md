@@ -4,8 +4,6 @@
 
 The logging system records important interactions, system steps, decisions, warnings, and errors across the entire `studio-1` app.
 
-It is not exclusive to Repo Map intake.
-
 It should be a reusable, stateless event system that any feature can use:
 
 - Repo Map Intake

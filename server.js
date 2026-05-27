@@ -7,6 +7,7 @@ import { fileURLToPath } from "node:url";
 import { DatabaseSync } from "node:sqlite";
 import express from "express";
 import multer from "multer";
+import { z } from "zod";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -47,6 +48,24 @@ db.exec(`
     size_bytes INTEGER NOT NULL,
     category TEXT NOT NULL,
     FOREIGN KEY (repo_id) REFERENCES repos(id) ON DELETE CASCADE
+  );
+
+  CREATE TABLE IF NOT EXISTS action_events (
+    id TEXT PRIMARY KEY,
+    timestamp TEXT NOT NULL,
+    level TEXT NOT NULL,
+    area TEXT NOT NULL,
+    source TEXT NOT NULL,
+    phase TEXT NOT NULL,
+    action TEXT NOT NULL,
+    message TEXT NOT NULL,
+    details_json TEXT,
+    entity_type TEXT,
+    entity_id TEXT,
+    entity_name TEXT,
+    correlation_id TEXT,
+    request_id TEXT,
+    parent_event_id TEXT
   );
 `);
 
@@ -130,6 +149,172 @@ const importantNames = new Set([
   "readme",
   "license"
 ]);
+
+const logEventSchema = z.object({
+  id: z.string().trim().min(1).optional().nullable(),
+  timestamp: z.string().datetime().optional().nullable(),
+  level: z.enum(["debug", "info", "success", "warning", "error"]).default("info"),
+  area: z.string().trim().min(1),
+  source: z.string().trim().min(1),
+  phase: z.string().trim().min(1),
+  action: z.string().trim().min(1),
+  message: z.string().trim().min(1),
+  details: z.record(z.string(), z.unknown()).optional().nullable(),
+  entity: z
+    .object({
+      type: z.string().trim().min(1),
+      id: z.string().optional().nullable(),
+      name: z.string().optional().nullable()
+    })
+    .optional()
+    .nullable(),
+  correlationId: z.string().optional().nullable(),
+  requestId: z.string().optional().nullable(),
+  parentEventId: z.string().optional().nullable()
+});
+
+function createId(prefix) {
+  return `${prefix}_${Date.now()}_${crypto.randomBytes(4).toString("hex")}`;
+}
+
+function normalizeNullableString(value) {
+  if (value === null || value === undefined || value === "") {
+    return null;
+  }
+
+  return String(value);
+}
+
+function normalizeLogEvent(input = {}) {
+  const parsed = logEventSchema.parse(input);
+  const event = {
+    id: normalizeNullableString(parsed.id) || createId("evt"),
+    timestamp: normalizeNullableString(parsed.timestamp) || new Date().toISOString(),
+    level: parsed.level,
+    area: parsed.area,
+    source: parsed.source,
+    phase: parsed.phase,
+    action: parsed.action,
+    message: parsed.message,
+    details: parsed.details || null,
+    entity: parsed.entity
+      ? {
+          type: normalizeNullableString(parsed.entity.type),
+          id: normalizeNullableString(parsed.entity.id),
+          name: normalizeNullableString(parsed.entity.name)
+        }
+      : null,
+    correlationId: normalizeNullableString(parsed.correlationId),
+    requestId: normalizeNullableString(parsed.requestId),
+    parentEventId: normalizeNullableString(parsed.parentEventId)
+  };
+
+  return event;
+}
+
+function rowToEvent(row) {
+  return {
+    id: row.id,
+    timestamp: row.timestamp,
+    level: row.level,
+    area: row.area,
+    source: row.source,
+    phase: row.phase,
+    action: row.action,
+    message: row.message,
+    details: row.details_json ? JSON.parse(row.details_json) : null,
+    entity: row.entity_type
+      ? {
+          type: row.entity_type,
+          id: row.entity_id,
+          name: row.entity_name
+        }
+      : null,
+    correlationId: row.correlation_id,
+    requestId: row.request_id,
+    parentEventId: row.parent_event_id
+  };
+}
+
+function recordEvent(input) {
+  const event = normalizeLogEvent(input);
+  db.prepare(`
+    INSERT INTO action_events (
+      id,
+      timestamp,
+      level,
+      area,
+      source,
+      phase,
+      action,
+      message,
+      details_json,
+      entity_type,
+      entity_id,
+      entity_name,
+      correlation_id,
+      request_id,
+      parent_event_id
+    )
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ON CONFLICT(id) DO NOTHING
+  `).run(
+    event.id,
+    event.timestamp,
+    event.level,
+    event.area,
+    event.source,
+    event.phase,
+    event.action,
+    event.message,
+    event.details ? JSON.stringify(event.details) : null,
+    event.entity?.type || null,
+    event.entity?.id || null,
+    event.entity?.name || null,
+    event.correlationId,
+    event.requestId,
+    event.parentEventId
+  );
+  return event;
+}
+
+function recordEventSafely(input) {
+  try {
+    return recordEvent(input);
+  } catch (error) {
+    console.error("Failed to record action event:", error.message);
+    return null;
+  }
+}
+
+function eventsForQuery(query) {
+  const clauses = [];
+  const values = [];
+  const filterMap = {
+    level: "level",
+    area: "area",
+    source: "source",
+    entityType: "entity_type",
+    entityId: "entity_id",
+    correlationId: "correlation_id",
+    requestId: "request_id"
+  };
+
+  for (const [queryKey, column] of Object.entries(filterMap)) {
+    if (query[queryKey]) {
+      clauses.push(`${column} = ?`);
+      values.push(String(query[queryKey]));
+    }
+  }
+
+  const requestedLimit = Number.parseInt(query.limit, 10);
+  const limit = Number.isFinite(requestedLimit) ? Math.min(Math.max(requestedLimit, 1), 500) : 100;
+  const where = clauses.length ? `WHERE ${clauses.join(" AND ")}` : "";
+  return db
+    .prepare(`SELECT * FROM action_events ${where} ORDER BY timestamp DESC LIMIT ?`)
+    .all(...values, limit)
+    .map(rowToEvent);
+}
 
 function cleanRelativePath(value) {
   const normalized = String(value || "")
@@ -266,6 +451,41 @@ function repoSummary(row) {
   };
 }
 
+function assertDataPath(targetPath) {
+  const resolvedDataDir = path.resolve(dataDir);
+  const resolvedTarget = path.resolve(targetPath);
+  const relative = path.relative(resolvedDataDir, resolvedTarget);
+
+  if (!relative || relative.startsWith("..") || path.isAbsolute(relative)) {
+    throw new Error("Refusing to delete a path outside the app data directory.");
+  }
+
+  return resolvedTarget;
+}
+
+function deleteRepo(row) {
+  const repoPath = assertDataPath(row.root_path);
+  const importParent = path.dirname(repoPath);
+  const shouldRemoveImportParent =
+    path.dirname(importParent) === path.resolve(importsDir) &&
+    path.basename(importParent) === row.id;
+
+  fs.rmSync(repoPath, { recursive: true, force: true });
+  if (shouldRemoveImportParent) {
+    fs.rmSync(importParent, { recursive: true, force: true });
+  }
+
+  try {
+    db.exec("BEGIN");
+    db.prepare("DELETE FROM repo_files WHERE repo_id = ?").run(row.id);
+    db.prepare("DELETE FROM repos WHERE id = ?").run(row.id);
+    db.exec("COMMIT");
+  } catch (error) {
+    db.exec("ROLLBACK");
+    throw error;
+  }
+}
+
 function saveRepo({ repoId, repoName, sourceType, repoPath, records }) {
   const now = new Date().toISOString();
   const totalBytes = records.reduce((sum, file) => sum + file.sizeBytes, 0);
@@ -337,6 +557,11 @@ async function cloneGitHubRepo(url, destination) {
 app.use(express.static(path.join(__dirname, "app")));
 app.use(express.json());
 
+app.use((request, _response, next) => {
+  request.requestId = createId("req");
+  next();
+});
+
 app.get("/", (_request, response) => {
   response.sendFile(path.join(__dirname, "app", "index.html"));
 });
@@ -354,6 +579,38 @@ app.get("/api/repos", (_request, response) => {
   response.json(rows.map(repoSummary));
 });
 
+app.get("/api/events", (request, response, next) => {
+  try {
+    response.json(eventsForQuery(request.query));
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.post("/api/events", (request, response, next) => {
+  try {
+    const event = recordEvent({
+      ...request.body,
+      requestId: request.body?.requestId || request.requestId
+    });
+    response.status(201).json(event);
+  } catch (error) {
+    response.status(400).json({ error: error.message });
+  }
+});
+
+app.get("/api/entities/:type/:id/events", (request, response, next) => {
+  try {
+    response.json(eventsForQuery({
+      ...request.query,
+      entityType: request.params.type,
+      entityId: request.params.id
+    }));
+  } catch (error) {
+    next(error);
+  }
+});
+
 app.get("/api/repos/:id", (request, response) => {
   const row = db.prepare("SELECT * FROM repos WHERE id = ?").get(request.params.id);
   if (!row) {
@@ -364,9 +621,76 @@ app.get("/api/repos/:id", (request, response) => {
   response.json(repoSummary(row));
 });
 
+app.delete("/api/repos/:id", (request, response, next) => {
+  const correlationId = normalizeNullableString(request.body?.correlationId) || createId("corr");
+  const row = db.prepare("SELECT * FROM repos WHERE id = ?").get(request.params.id);
+  if (!row) {
+    recordEventSafely({
+      level: "warning",
+      area: "repo_map",
+      source: "sqlite",
+      phase: "delete",
+      action: "repo_delete_missing",
+      message: "Repo delete requested for a missing repo.",
+      details: { repoId: request.params.id },
+      correlationId,
+      requestId: request.requestId
+    });
+    response.status(404).json({ error: "Repo not found" });
+    return;
+  }
+
+  try {
+    deleteRepo(row);
+    recordEventSafely({
+      level: "success",
+      area: "repo_map",
+      source: "sqlite",
+      phase: "delete",
+      action: "repo_deleted",
+      message: `${row.name} deleted.`,
+      details: {
+        repoId: row.id,
+        sourceType: row.source_type,
+        rootPath: row.root_path
+      },
+      entity: { type: "repo", id: row.id, name: row.name },
+      correlationId,
+      requestId: request.requestId
+    });
+    response.json({ deleted: true, repoId: row.id, name: row.name });
+  } catch (error) {
+    recordEventSafely({
+      level: "error",
+      area: "repo_map",
+      source: "sqlite",
+      phase: "delete",
+      action: "repo_delete_failed",
+      message: error.message || "Repo delete failed.",
+      details: { repoId: row.id, rootPath: row.root_path },
+      entity: { type: "repo", id: row.id, name: row.name },
+      correlationId,
+      requestId: request.requestId
+    });
+    next(error);
+  }
+});
+
 app.post("/api/repos/upload", upload.array("files"), (request, response) => {
+  const correlationId = normalizeNullableString(request.body.correlationId) || createId("corr");
   const files = request.files || [];
   if (!files.length) {
+    recordEventSafely({
+      level: "error",
+      area: "repo_map",
+      source: "local_upload",
+      phase: "input",
+      action: "local_upload_failed",
+      message: "Local upload failed because no files were received.",
+      details: { reason: "empty_file_list" },
+      correlationId,
+      requestId: request.requestId
+    });
     response.status(400).json({ error: "Choose a repo folder to upload." });
     return;
   }
@@ -391,6 +715,18 @@ app.post("/api/repos/upload", upload.array("files"), (request, response) => {
   }
 
   if (!records.length) {
+    recordEventSafely({
+      level: "error",
+      area: "repo_map",
+      source: "local_upload",
+      phase: "filter",
+      action: "local_upload_failed",
+      message: "No scannable repo files found after filtering.",
+      details: { selectedFiles: files.length, keptFiles: 0, skippedFiles: files.length },
+      entity: { type: "repo", id: repoId, name: repoName },
+      correlationId,
+      requestId: request.requestId
+    });
     response.status(400).json({ error: "No scannable repo files found after filtering." });
     return;
   }
@@ -402,18 +738,61 @@ app.post("/api/repos/upload", upload.array("files"), (request, response) => {
     repoPath,
     records
   });
+  recordEventSafely({
+    level: "success",
+    area: "repo_map",
+    source: "sqlite",
+    phase: "save",
+    action: "repo_saved",
+    message: `${repoName} saved with ${records.length} files.`,
+    details: {
+      fileCount: records.length,
+      totalBytes: records.reduce((sum, file) => sum + file.sizeBytes, 0),
+      sourceType: "folder_upload_filtered"
+    },
+    entity: { type: "repo", id: repoId, name: repoName },
+    correlationId,
+    requestId: request.requestId
+  });
 
   response.status(201).json(repoSummary(row));
 });
 
 app.post("/api/repos/import-github", async (request, response, next) => {
+  const correlationId = normalizeNullableString(request.body?.correlationId) || createId("corr");
+  let repoName = null;
+  let repoId = null;
   try {
     const url = assertGitHubUrl(request.body.repoUrl);
-    const repoId = `${Date.now()}-${crypto.randomBytes(4).toString("hex")}`;
-    const repoName = repoNameFromUrl(url);
+    repoId = `${Date.now()}-${crypto.randomBytes(4).toString("hex")}`;
+    repoName = repoNameFromUrl(url);
     const repoPath = path.join(importsDir, repoId, repoName);
 
+    recordEventSafely({
+      level: "info",
+      area: "repo_map",
+      source: "github",
+      phase: "clone",
+      action: "github_clone_started",
+      message: `Started cloning ${repoName}.`,
+      details: { repoUrl: url },
+      entity: { type: "repo", id: repoId, name: repoName },
+      correlationId,
+      requestId: request.requestId
+    });
     await cloneGitHubRepo(url, repoPath);
+    recordEventSafely({
+      level: "success",
+      area: "repo_map",
+      source: "github",
+      phase: "clone",
+      action: "github_clone_succeeded",
+      message: `${repoName} cloned successfully.`,
+      details: { repoUrl: url },
+      entity: { type: "repo", id: repoId, name: repoName },
+      correlationId,
+      requestId: request.requestId
+    });
 
     const records = walkRepoFiles(repoPath).map((record) => ({
       ...record,
@@ -421,6 +800,18 @@ app.post("/api/repos/import-github", async (request, response, next) => {
     }));
 
     if (!records.length) {
+      recordEventSafely({
+        level: "error",
+        area: "repo_map",
+        source: "github",
+        phase: "filter",
+        action: "github_import_no_scannable_files",
+        message: "GitHub import found no scannable files after filtering.",
+        details: { repoUrl: url, keptFiles: 0 },
+        entity: { type: "repo", id: repoId, name: repoName },
+        correlationId,
+        requestId: request.requestId
+      });
       response.status(400).json({ error: "No scannable repo files found after filtering." });
       return;
     }
@@ -432,14 +823,56 @@ app.post("/api/repos/import-github", async (request, response, next) => {
       repoPath,
       records
     });
+    recordEventSafely({
+      level: "success",
+      area: "repo_map",
+      source: "sqlite",
+      phase: "save",
+      action: "repo_saved",
+      message: `${repoName} saved with ${records.length} files.`,
+      details: {
+        fileCount: records.length,
+        totalBytes: records.reduce((sum, file) => sum + file.sizeBytes, 0),
+        sourceType: "github_url_filtered"
+      },
+      entity: { type: "repo", id: repoId, name: repoName },
+      correlationId,
+      requestId: request.requestId
+    });
 
     response.status(201).json(repoSummary(row));
   } catch (error) {
+    recordEventSafely({
+      level: "error",
+      area: "repo_map",
+      source: "github",
+      phase: "clone",
+      action: "github_clone_failed",
+      message: error.message || "GitHub import failed.",
+      details: { repoUrl: request.body?.repoUrl || null },
+      entity: repoName ? { type: "repo", id: repoId, name: repoName } : null,
+      correlationId,
+      requestId: request.requestId
+    });
     next(error);
   }
 });
 
-app.use((error, _request, response, _next) => {
+app.use((error, request, response, _next) => {
+  recordEventSafely({
+    level: "error",
+    area: "system",
+    source: "api",
+    phase: "error",
+    action: "api_request_failed",
+    message: error.message || "Server error",
+    details: {
+      method: request.method,
+      path: request.path
+    },
+    requestId: request.requestId
+  });
+
   if (error instanceof multer.MulterError) {
     response.status(400).json({ error: error.message });
     return;
@@ -450,4 +883,13 @@ app.use((error, _request, response, _next) => {
 
 app.listen(port, () => {
   console.log(`studio-1 running at http://localhost:${port}`);
+  recordEventSafely({
+    level: "success",
+    area: "system",
+    source: "system",
+    phase: "startup",
+    action: "server_started",
+    message: `studio-1 running at http://localhost:${port}`,
+    details: { port }
+  });
 });

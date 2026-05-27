@@ -28,6 +28,7 @@ const iconPaths = {
   "settings": '<path d="M12 15.5A3.5 3.5 0 1 0 12 8a3.5 3.5 0 0 0 0 7.5Z"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 0 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1A2 2 0 0 1 4.2 17l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L4.3 7A2 2 0 0 1 7.1 4.2l.1.1a1.7 1.7 0 0 0 1.9.3h.1a1.7 1.7 0 0 0 .9-1.6V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1A2 2 0 0 1 19.8 7l-.1.1a1.7 1.7 0 0 0-.3 1.9v.1a1.7 1.7 0 0 0 1.6.9h.1a2 2 0 0 1 0 4H21a1.7 1.7 0 0 0-1.6 1Z"/>',
   "share": '<path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"/><path d="M16 6l-4-4-4 4"/><path d="M12 2v13"/>',
   "spark": '<path d="M13 2 8.5 12H13l-2 10 5.5-12H12l1-8Z"/>',
+  "trash": '<path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/>',
   "upload": '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M17 8l-5-5-5 5"/><path d="M12 3v12"/>',
   "workflow": '<path d="M6 4v6"/><path d="M18 14v6"/><rect x="3" y="10" width="6" height="6" rx="1.5"/><rect x="15" y="8" width="6" height="6" rx="1.5"/><path d="M9 13h2a3 3 0 0 0 3-3V8a4 4 0 0 1 4-4"/><path d="M15 11h-2a3 3 0 0 0-3 3v2a4 4 0 0 1-4 4"/>'
 };
@@ -138,6 +139,83 @@ let filterRules = {
   allowedExtensions: [".js", ".jsx", ".ts", ".tsx", ".html", ".css", ".json", ".md"],
   maxFileSizeBytes: 2 * 1024 * 1024
 };
+let actionEvents = [];
+let actionLogFilters = {
+  repoActionLog: "all",
+  globalActionLog: "all"
+};
+
+function createClientId(prefix) {
+  if (window.crypto?.randomUUID) {
+    return `${prefix}_${Date.now()}_${window.crypto.randomUUID().slice(0, 8)}`;
+  }
+
+  return `${prefix}_${Date.now()}_${Math.random().toString(16).slice(2, 10)}`;
+}
+
+function normalizeActionEvent(input = {}) {
+  return {
+    id: input.id || createClientId("evt"),
+    timestamp: input.timestamp || new Date().toISOString(),
+    level: input.level || "info",
+    area: input.area || "system",
+    source: input.source || "ui",
+    phase: input.phase || "input",
+    action: input.action || "event_recorded",
+    message: input.message || "Event recorded.",
+    details: input.details || null,
+    entity: input.entity || null,
+    correlationId: input.correlationId || null,
+    requestId: input.requestId || null,
+    parentEventId: input.parentEventId || null
+  };
+}
+
+function sortActionEvents(events) {
+  return events.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+}
+
+function upsertActionEvent(event) {
+  actionEvents = sortActionEvents([
+    event,
+    ...actionEvents.filter((item) => item.id !== event.id)
+  ]).slice(0, 150);
+  renderActionLogs();
+}
+
+function mergeActionEvents(events) {
+  const byId = new Map(actionEvents.map((event) => [event.id, event]));
+  events.forEach((event) => byId.set(event.id, normalizeActionEvent(event)));
+  actionEvents = sortActionEvents(Array.from(byId.values())).slice(0, 150);
+  renderActionLogs();
+}
+
+function logEvent(input, options = {}) {
+  const event = normalizeActionEvent(input);
+  upsertActionEvent(event);
+
+  if (options.persist === false) {
+    return event;
+  }
+
+  fetch("/api/events", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(event)
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`Event persistence failed with ${response.status}.`);
+      }
+      return response.json();
+    })
+    .then((savedEvent) => upsertActionEvent(normalizeActionEvent(savedEvent)))
+    .catch(() => {});
+
+  return event;
+}
 
 function showToast(message) {
   if (!toast) {
@@ -412,6 +490,106 @@ function escapeHtml(value) {
     .replaceAll("'", "&#039;");
 }
 
+function formatEventTime(timestamp) {
+  return new Intl.DateTimeFormat([], {
+    hour: "numeric",
+    minute: "2-digit",
+    second: "2-digit"
+  }).format(new Date(timestamp));
+}
+
+function eventMatchesFilter(event, filter) {
+  if (filter === "all") {
+    return true;
+  }
+
+  return event.level === filter;
+}
+
+function actionLogRows(events, emptyMessage) {
+  if (!events.length) {
+    return `
+      <div class="action-log-empty">
+        <span>${icon("message")}</span>
+        <p>${escapeHtml(emptyMessage)}</p>
+      </div>
+    `;
+  }
+
+  return events.map((event) => {
+    const details = event.details ? JSON.stringify(event.details, null, 2) : "";
+    return `
+      <details class="action-log-row log-${escapeHtml(event.level)}">
+        <summary>
+          <span class="log-level">${escapeHtml(event.level)}</span>
+          <span class="log-time">${formatEventTime(event.timestamp)}</span>
+          <span class="log-action">${escapeHtml(event.action)}</span>
+          <span class="log-message">${escapeHtml(event.message)}</span>
+        </summary>
+        <div class="log-meta">
+          <span>${escapeHtml(event.area)}</span>
+          <span>${escapeHtml(event.source)}</span>
+          <span>${escapeHtml(event.phase)}</span>
+          ${event.entity?.name ? `<span>${escapeHtml(event.entity.name)}</span>` : ""}
+        </div>
+        ${details ? `<pre>${escapeHtml(details)}</pre>` : ""}
+      </details>
+    `;
+  }).join("");
+}
+
+function renderActionLogPanel(targetId, events, emptyMessage) {
+  const target = document.querySelector(`#${targetId}`);
+  if (!target) {
+    return;
+  }
+
+  const activeFilter = actionLogFilters[targetId] || "all";
+  const filteredEvents = events.filter((event) => eventMatchesFilter(event, activeFilter)).slice(0, 24);
+  const filters = [
+    ["all", "All"],
+    ["error", "Errors"],
+    ["warning", "Warnings"],
+    ["success", "Success"]
+  ];
+
+  target.innerHTML = `
+    <div class="action-log-filters">
+      ${filters.map(([value, label]) => `
+        <button class="${activeFilter === value ? "active" : ""}" type="button" data-action-log="${targetId}" data-action-log-filter="${value}">
+          ${escapeHtml(label)}
+        </button>
+      `).join("")}
+    </div>
+    <div class="action-log-list">
+      ${actionLogRows(filteredEvents, emptyMessage)}
+    </div>
+  `;
+}
+
+function renderActionLogs() {
+  renderActionLogPanel(
+    "repoActionLog",
+    actionEvents.filter((event) => event.area === "repo_map"),
+    "Repo map events will appear here."
+  );
+  renderActionLogPanel("globalActionLog", actionEvents, "App-wide events will appear here.");
+}
+
+async function loadActionEvents() {
+  if (!document.querySelector("#globalActionLog") && !document.querySelector("#repoActionLog")) {
+    return;
+  }
+
+  try {
+    const response = await fetch("/api/events?limit=100");
+    const events = await readApiJson(response);
+    mergeActionEvents(events);
+  } catch {
+    return;
+  }
+}
+
 function formatBytes(bytes) {
   if (!bytes) {
     return "0 B";
@@ -537,10 +715,10 @@ function renderRepoList(repos) {
     </button>
   `).join("");
 
-  renderRepoDetail(repos[0]);
+  renderRepoDetail(repos[0], { log: false });
 }
 
-function renderRepoDetail(repo) {
+function renderRepoDetail(repo, options = {}) {
   const detail = document.querySelector("#repoDetail");
   if (!detail) {
     return;
@@ -581,7 +759,13 @@ function renderRepoDetail(repo) {
         <h2>${escapeHtml(repo.name)}</h2>
         <p>${repo.totalFiles} files saved to SQLite · ${formatBytes(repo.totalBytes)}</p>
       </div>
-      <span class="repo-saved-badge">${icon("database")} Saved</span>
+      <div class="repo-detail-actions">
+        <span class="repo-saved-badge">${icon("database")} Saved</span>
+        <button class="repo-delete-btn" id="deleteRepoBtn" type="button" data-delete-repo-id="${escapeHtml(repo.id)}" data-delete-repo-name="${escapeHtml(repo.name)}">
+          ${icon("trash")}
+          Delete
+        </button>
+      </div>
     </div>
     <div class="repo-category-grid">${categories}</div>
     <div class="repo-file-table">
@@ -593,6 +777,23 @@ function renderRepoDetail(repo) {
       ${files}
     </div>
   `;
+
+  if (options.log !== false) {
+    logEvent({
+      level: "success",
+      area: "repo_map",
+      source: "ui",
+      phase: "display",
+      action: "repo_displayed",
+      message: `${repo.name} displayed in Repo Map.`,
+      details: {
+        totalFiles: repo.totalFiles,
+        totalBytes: repo.totalBytes
+      },
+      entity: { type: "repo", id: repo.id, name: repo.name },
+      correlationId: options.correlationId || null
+    });
+  }
 }
 
 async function loadRepos() {
@@ -609,6 +810,67 @@ async function loadRepos() {
     renderRepoList(savedRepos);
   } catch (error) {
     repoList.innerHTML = `<div class="empty-repo-state"><span>${icon("database")}</span><p>${escapeHtml(error.message)}</p></div>`;
+  }
+}
+
+async function deleteSavedRepo(repoId) {
+  const repo = savedRepos.find((item) => item.id === repoId);
+  if (!repo) {
+    return;
+  }
+
+  const confirmed = window.confirm(`Delete ${repo.name}? This removes the saved repo and its stored files.`);
+  if (!confirmed) {
+    return;
+  }
+
+  const correlationId = createClientId("corr");
+  logEvent({
+    level: "info",
+    area: "repo_map",
+    source: "ui",
+    phase: "delete",
+    action: "repo_delete_clicked",
+    message: `Delete requested for ${repo.name}.`,
+    entity: { type: "repo", id: repo.id, name: repo.name },
+    correlationId
+  });
+
+  try {
+    const response = await fetch(`/api/repos/${encodeURIComponent(repo.id)}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ correlationId })
+    });
+    await readApiJson(response);
+
+    savedRepos = savedRepos.filter((item) => item.id !== repo.id);
+    renderRepoList(savedRepos);
+    logEvent({
+      level: "success",
+      area: "repo_map",
+      source: "ui",
+      phase: "delete",
+      action: "repo_removed_from_view",
+      message: `${repo.name} removed from the saved repo list.`,
+      entity: { type: "repo", id: repo.id, name: repo.name },
+      correlationId
+    });
+    showToast(`${repo.name} deleted`);
+  } catch (error) {
+    logEvent({
+      level: "error",
+      area: "repo_map",
+      source: "api",
+      phase: "delete",
+      action: "repo_delete_failed",
+      message: error.message,
+      entity: { type: "repo", id: repo.id, name: repo.name },
+      correlationId
+    });
+    showToast(error.message);
   }
 }
 
@@ -650,6 +912,56 @@ function bindHomeRepoUpload() {
     if (filterStatus) {
       filterStatus.textContent = files.length ? `${filtered.skipped} files skipped before upload.` : "Filters skip dependency folders, build output, cache folders, and large files.";
     }
+    if (files.length) {
+      const repoName = nameInput.value.trim() || firstFolder || "uploaded-repo";
+      const correlationId = createClientId("corr");
+      input.dataset.correlationId = correlationId;
+      logEvent({
+        level: "info",
+        area: "repo_map",
+        source: "local_upload",
+        phase: "input",
+        action: "local_folder_selected",
+        message: `${files.length} files selected from ${repoName}.`,
+        details: {
+          selectedFiles: files.length,
+          repoName
+        },
+        entity: { type: "repo", id: null, name: repoName },
+        correlationId
+      });
+      logEvent({
+        level: "info",
+        area: "repo_map",
+        source: "local_upload",
+        phase: "filter",
+        action: "local_files_filtered",
+        message: `${filtered.kept.length} scannable files selected. ${filtered.skipped} files skipped.`,
+        details: {
+          selectedFiles: files.length,
+          keptFiles: filtered.kept.length,
+          skippedFiles: filtered.skipped
+        },
+        entity: { type: "repo", id: null, name: repoName },
+        correlationId
+      });
+      if (files.length > 1000 || filtered.skipped > 1000) {
+        logEvent({
+          level: "warning",
+          area: "repo_map",
+          source: "local_upload",
+          phase: "filter",
+          action: "local_file_count_high",
+          message: `${files.length} selected files is a large local intake.`,
+          details: {
+            selectedFiles: files.length,
+            skippedFiles: filtered.skipped
+          },
+          entity: { type: "repo", id: null, name: repoName },
+          correlationId
+        });
+      }
+    }
   });
 
   form.addEventListener("submit", async (event) => {
@@ -659,21 +971,60 @@ function bindHomeRepoUpload() {
 
     if (!files.length) {
       status.textContent = "Choose a repo folder first.";
+      logEvent({
+        level: "warning",
+        area: "repo_map",
+        source: "local_upload",
+        phase: "input",
+        action: "local_upload_missing_files",
+        message: "Upload was submitted without a selected repo folder."
+      });
       return;
     }
 
     if (!filtered.kept.length) {
       status.textContent = "No scannable files left after filtering.";
+      logEvent({
+        level: "warning",
+        area: "repo_map",
+        source: "local_upload",
+        phase: "filter",
+        action: "local_upload_no_scannable_files",
+        message: "No scannable files were left after frontend filtering.",
+        details: {
+          selectedFiles: files.length,
+          skippedFiles: filtered.skipped
+        },
+        entity: { type: "repo", id: null, name: nameInput.value.trim() || "uploaded-repo" },
+        correlationId: input.dataset.correlationId || null
+      });
       return;
     }
 
+    const correlationId = input.dataset.correlationId || createClientId("corr");
     const formData = new FormData();
     formData.append("repoName", nameInput.value.trim());
+    formData.append("correlationId", correlationId);
     filtered.kept.forEach((file) => {
       formData.append("files", file, file.webkitRelativePath || file.name);
     });
 
     status.textContent = `Uploading ${filtered.kept.length} filtered files...`;
+    logEvent({
+      level: "info",
+      area: "repo_map",
+      source: "local_upload",
+      phase: "upload",
+      action: "local_upload_started",
+      message: `Uploading ${filtered.kept.length} filtered files.`,
+      details: {
+        selectedFiles: files.length,
+        keptFiles: filtered.kept.length,
+        skippedFiles: filtered.skipped
+      },
+      entity: { type: "repo", id: null, name: nameInput.value.trim() || files[0]?.webkitRelativePath?.split("/")[0] || "uploaded-repo" },
+      correlationId
+    });
 
     try {
       const response = await fetch("/api/repos/upload", {
@@ -686,21 +1037,71 @@ function bindHomeRepoUpload() {
       form.reset();
       savedRepos = [result, ...savedRepos.filter((repo) => repo.id !== result.id)];
       renderRepoList(savedRepos);
+      renderRepoDetail(result, { correlationId });
       showToast("Repo saved to SQLite");
     } catch (error) {
       status.textContent = error.message;
+      logEvent({
+        level: "error",
+        area: "repo_map",
+        source: "local_upload",
+        phase: "upload",
+        action: "local_upload_failed",
+        message: error.message,
+        details: {
+          selectedFiles: files.length,
+          keptFiles: filtered.kept.length
+        },
+        correlationId
+      });
     }
   });
 
   if (githubImportButton && urlInput) {
+    urlInput.addEventListener("change", () => {
+      const repoUrl = urlInput.value.trim();
+      if (!repoUrl) {
+        return;
+      }
+
+      logEvent({
+        level: "info",
+        area: "repo_map",
+        source: "ui",
+        phase: "input",
+        action: "github_url_changed",
+        message: "GitHub repo URL changed.",
+        details: { repoUrl }
+      });
+    });
+
     githubImportButton.addEventListener("click", async () => {
       const repoUrl = urlInput.value.trim();
       if (!repoUrl) {
         status.textContent = "Enter a GitHub repo URL first.";
+        logEvent({
+          level: "warning",
+          area: "repo_map",
+          source: "ui",
+          phase: "input",
+          action: "github_import_missing_url",
+          message: "GitHub import was clicked without a repo URL."
+        });
         return;
       }
 
+      const correlationId = createClientId("corr");
       status.textContent = "Cloning GitHub repo and applying filters...";
+      logEvent({
+        level: "info",
+        area: "repo_map",
+        source: "ui",
+        phase: "input",
+        action: "github_import_clicked",
+        message: "GitHub import clicked.",
+        details: { repoUrl },
+        correlationId
+      });
 
       try {
         const response = await fetch("/api/repos/import-github", {
@@ -708,7 +1109,7 @@ function bindHomeRepoUpload() {
           headers: {
             "Content-Type": "application/json"
           },
-          body: JSON.stringify({ repoUrl })
+          body: JSON.stringify({ repoUrl, correlationId })
         });
         const result = await readApiJson(response);
 
@@ -716,9 +1117,20 @@ function bindHomeRepoUpload() {
         urlInput.value = "";
         savedRepos = [result, ...savedRepos.filter((repo) => repo.id !== result.id)];
         renderRepoList(savedRepos);
+        renderRepoDetail(result, { correlationId });
         showToast("GitHub repo imported");
       } catch (error) {
         status.textContent = error.message;
+        logEvent({
+          level: "error",
+          area: "repo_map",
+          source: "github",
+          phase: "clone",
+          action: "github_clone_failed",
+          message: error.message,
+          details: { repoUrl },
+          correlationId
+        });
       }
     });
   }
@@ -728,6 +1140,12 @@ function bindHomeRepoUpload() {
   }
 
   document.addEventListener("click", (event) => {
+    const deleteButton = event.target.closest("[data-delete-repo-id]");
+    if (deleteButton) {
+      deleteSavedRepo(deleteButton.dataset.deleteRepoId);
+      return;
+    }
+
     const repoButton = event.target.closest("[data-repo-id]");
     if (!repoButton) {
       return;
@@ -738,7 +1156,7 @@ function bindHomeRepoUpload() {
     renderRepoDetail(savedRepos.find((repo) => repo.id === repoButton.dataset.repoId));
   });
 
-  loadFilterRules().then(loadRepos);
+  loadFilterRules().then(() => Promise.all([loadRepos(), loadActionEvents()]));
 }
 
 function bindInteractions() {
@@ -758,6 +1176,12 @@ function bindInteractions() {
     const toastTarget = event.target.closest("[data-toast]");
     if (toastTarget) {
       showToast(toastTarget.dataset.toast);
+    }
+
+    const actionLogFilter = event.target.closest("[data-action-log-filter]");
+    if (actionLogFilter) {
+      actionLogFilters[actionLogFilter.dataset.actionLog] = actionLogFilter.dataset.actionLogFilter;
+      renderActionLogs();
     }
   });
 
