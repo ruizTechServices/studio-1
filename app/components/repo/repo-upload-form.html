@@ -1,0 +1,64 @@
+<form class="repo-upload-card" id="repoUploadForm">
+  <label class="repo-name-field github-url-field">
+    <span>GitHub repo URL</span>
+
+    <div class="repo-url-row">
+      <input
+        id="repoUrlInput"
+        name="repoUrl"
+        type="url"
+        placeholder="https://github.com/owner/repository.git"
+      >
+
+      <button class="repo-import-btn" id="githubImportBtn" type="button">
+        <span data-icon="download"></span>
+        Import
+      </button>
+    </div>
+  </label>
+
+  <div class="repo-divider">
+    <span>or</span>
+  </div>
+
+  <div class="upload-dropzone">
+    <span class="upload-icon" data-icon="upload"></span>
+
+    <div>
+      <h2>Upload repo folder</h2>
+      <p>Choose a local repo. Dependency and build folders are filtered before upload.</p>
+    </div>
+
+    <input
+      id="repoFolderInput"
+      name="files"
+      type="file"
+      webkitdirectory
+      directory
+      multiple
+      required
+    >
+  </div>
+
+  <label class="repo-name-field">
+    <span>Repo name</span>
+
+    <input
+      id="repoNameInput"
+      name="repoName"
+      type="text"
+      placeholder="Auto-detected from folder"
+    >
+  </label>
+
+  <button class="repo-submit-btn" type="submit">
+    <span data-icon="spark"></span>
+    Upload and Save
+  </button>
+
+  <p class="repo-upload-status" id="repoUploadStatus">No repo selected.</p>
+
+  <p class="repo-filter-status" id="repoFilterStatus">
+    Filters skip dependency folders, build output, cache folders, and large files.
+  </p>
+</form>
