@@ -17,6 +17,7 @@ import {
   normalizeNullableString,
   recordEventSafely,
   repoSummary,
+  projectMap,
   deleteRepo,
   saveRepo,
   detectRepoName,
@@ -215,6 +216,16 @@ router.post("/import-github", validate({ body: importGithubBody }), async (reque
     });
     next(error);
   }
+});
+
+router.get("/:id/project-map", validate({ params: repoIdParams }), (request, response) => {
+  const row = db.prepare("SELECT * FROM repos WHERE id = ?").get(request.params.id);
+  if (!row) {
+    response.status(404).json({ error: "Repo not found" });
+    return;
+  }
+
+  response.json(projectMap(row));
 });
 
 router.get("/:id", validate({ params: repoIdParams }), (request, response) => {

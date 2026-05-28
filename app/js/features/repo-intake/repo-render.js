@@ -219,6 +219,64 @@ export function renderActionLogPanel(targetId, events, emptyMessage) {
   `;
 }
 
+export function renderProjectMap(data) {
+  const panel = document.querySelector("#projectMapPanel");
+  if (!panel) {
+    return;
+  }
+
+  if (!data) {
+    panel.innerHTML = "";
+    return;
+  }
+
+  const { repo, summary, sections } = data;
+
+  const langTags = summary.primaryLanguages
+    .map((lang) => `<span class="project-map-lang-tag">${escapeHtml(lang)}</span>`)
+    .join("");
+
+  const sectionItems = Object.entries(sections)
+    .filter(([, files]) => files.length > 0)
+    .sort((a, b) => b[1].length - a[1].length)
+    .map(([category, files]) => {
+      const fileRows = files
+        .map(
+          (file) => `
+          <div class="project-map-file-row">
+            <span class="repo-file-icon" style="--category-color:${categoryAccent(category)}">${icon("file")}</span>
+            <span class="project-map-file-path">${escapeHtml(file.path)}</span>
+            <span class="project-map-file-size">${formatBytes(file.sizeBytes)}</span>
+          </div>`
+        )
+        .join("");
+
+      return `
+        <details class="project-map-section">
+          <summary>
+            <span class="project-map-section-dot" style="background:${categoryAccent(category)}"></span>
+            <strong>${escapeHtml(categoryLabel(category))}</strong>
+            <span class="project-map-section-count">${files.length}</span>
+          </summary>
+          <div class="project-map-file-list">${fileRows}</div>
+        </details>`;
+    })
+    .join("");
+
+  panel.innerHTML = `
+    <div class="project-map-head">
+      <div>
+        <h2 id="projectMapTitle">Project Map</h2>
+        <p>${escapeHtml(repo.name)} · ${repo.totalFiles} files</p>
+      </div>
+      ${langTags.length ? `<div class="project-map-langs">${langTags}</div>` : ""}
+    </div>
+    <div class="project-map-sections">
+      ${sectionItems || `<p class="project-map-empty">No categorized files found.</p>`}
+    </div>
+  `;
+}
+
 export function renderActionLogs() {
   renderActionLogPanel(
     "repoActionLog",

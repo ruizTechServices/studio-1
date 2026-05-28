@@ -1,8 +1,8 @@
 import { repoState } from "./repo-state.js";
 import { filterSelectedFiles } from "./repo-filters.js";
-import { fetchRepos, uploadRepoFiles, importGithubRepo, deleteRepo, fetchFilterRules, fetchActionEvents } from "./repo-api.js";
+import { fetchRepos, uploadRepoFiles, importGithubRepo, deleteRepo, fetchFilterRules, fetchActionEvents, fetchProjectMap } from "./repo-api.js";
 import { createClientId, logEvent, mergeActionEvents, setEventsUpdatedCallback } from "./repo-events.js";
-import { renderRepoList, renderRepoDetail, renderActionLogs } from "./repo-render.js";
+import { renderRepoList, renderRepoDetail, renderProjectMap, renderActionLogs } from "./repo-render.js";
 import { showToast } from "../../core/toast.js";
 import { icon } from "../../core/icons.js";
 import { escapeHtml } from "../../core/formatters.js";
@@ -151,6 +151,7 @@ export function initRepoIntakePage() {
       repoState.savedRepos = [result, ...repoState.savedRepos.filter((repo) => repo.id !== result.id)];
       renderRepoList(repoState.savedRepos);
       renderRepoDetail(result, { correlationId });
+      loadAndRenderProjectMap(result.id);
       showToast("Repo saved to SQLite");
     } catch (error) {
       status.textContent = error.message;
@@ -221,6 +222,7 @@ export function initRepoIntakePage() {
         repoState.savedRepos = [result, ...repoState.savedRepos.filter((repo) => repo.id !== result.id)];
         renderRepoList(repoState.savedRepos);
         renderRepoDetail(result, { correlationId });
+        loadAndRenderProjectMap(result.id);
         showToast("GitHub repo imported");
       } catch (error) {
         status.textContent = error.message;
@@ -253,7 +255,9 @@ export function initRepoIntakePage() {
     if (repoButton) {
       document.querySelectorAll(".repo-row").forEach((row) => row.classList.remove("active"));
       repoButton.classList.add("active");
-      renderRepoDetail(repoState.savedRepos.find((repo) => repo.id === repoButton.dataset.repoId));
+      const selectedRepo = repoState.savedRepos.find((repo) => repo.id === repoButton.dataset.repoId);
+      renderRepoDetail(selectedRepo);
+      loadAndRenderProjectMap(repoButton.dataset.repoId);
       return;
     }
 
@@ -283,8 +287,25 @@ async function loadRepos() {
   try {
     repoState.savedRepos = await fetchRepos();
     renderRepoList(repoState.savedRepos);
+    if (repoState.savedRepos.length) {
+      loadAndRenderProjectMap(repoState.savedRepos[0].id);
+    }
   } catch (error) {
     repoList.innerHTML = `<div class="empty-repo-state"><span>${icon("database")}</span><p>${escapeHtml(error.message)}</p></div>`;
+  }
+}
+
+async function loadAndRenderProjectMap(repoId) {
+  const panel = document.querySelector("#projectMapPanel");
+  if (!panel) {
+    return;
+  }
+  panel.innerHTML = `<div class="project-map-loading">Loading project map...</div>`;
+  try {
+    const data = await fetchProjectMap(repoId);
+    renderProjectMap(data);
+  } catch {
+    panel.innerHTML = `<div class="project-map-loading">Could not load project map.</div>`;
   }
 }
 
