@@ -27,6 +27,11 @@ document.addEventListener("click", (event) => {
 });
 
 const pageInitializers = {
+  home: async () => {
+    const { initHomePage } = await import("./features/home/home-controller.js");
+    initHomePage();
+  },
+  
   files: async () => {
     const { initRepoIntakePage } = await import("./features/repo-intake/repo-controller.js");
     initRepoIntakePage();
