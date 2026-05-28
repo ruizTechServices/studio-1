@@ -1,0 +1,25 @@
+body {
+  color: var(--text-primary);
+  font-family: Inter, Geist, "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background:
+    radial-gradient(circle at 15% 0%, rgba(59, 130, 246, 0.12), transparent 32rem),
+    radial-gradient(circle at 82% 10%, rgba(16, 185, 129, 0.08), transparent 28rem),
+    #030711;
+  letter-spacing: 0;
+}
+
+.text-blue {
+  color: var(--accent-blue);
+}
+
+.text-green {
+  color: var(--accent-green);
+}
+
+.text-orange {
+  color: var(--accent-orange);
+}
+
+.text-purple {
+  color: var(--accent-purple);
+}
