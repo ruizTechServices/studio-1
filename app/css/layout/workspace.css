@@ -115,7 +115,8 @@ kbd {
   background: #2d3748;
 }
 
-.home-workspace {
+.home-workspace,
+.files-workspace {
   min-width: 0;
   min-height: 0;
   overflow: auto;

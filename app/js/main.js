@@ -26,10 +26,29 @@ document.addEventListener("click", (event) => {
   }
 });
 
-if (currentPage === "home") {
-  const { initRepoIntakePage } = await import("./features/repo-intake/repo-controller.js");
-  initRepoIntakePage();
-} else if (currentPage === "dashboard") {
-  const { initDashboardPage } = await import("./features/dashboard/dashboard-controller.js");
-  initDashboardPage();
+const pageInitializers = {
+  files: async () => {
+    const { initRepoIntakePage } = await import("./features/repo-intake/repo-controller.js");
+    initRepoIntakePage();
+  },
+
+  dashboard: async () => {
+    const { initDashboardPage } = await import("./features/dashboard/dashboard-controller.js");
+    initDashboardPage();
+  },
+};
+
+const initializePage = pageInitializers[currentPage];
+
+if (initializePage) {
+  await initializePage();
 }
+
+// Later, if you add pages, you add one entry:
+
+// projects: async () => {
+//   const { initProjectsPage } = await import("./features/projects/projects-controller.js");
+//   initProjectsPage();
+// }
+
+// No messy chain of if/else.

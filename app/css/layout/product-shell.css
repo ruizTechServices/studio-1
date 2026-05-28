@@ -7,11 +7,13 @@
   background: var(--bg-base);
 }
 
-body[data-page="home"] .product-shell {
+body[data-page="home"] .product-shell,
+body[data-page="files"] .product-shell {
   grid-template-columns: 232px 1fr;
 }
 
-body[data-page="home"] .sidebar {
+body[data-page="home"] .sidebar,
+body[data-page="files"] .sidebar {
   min-height: 100vh;
 }
 
