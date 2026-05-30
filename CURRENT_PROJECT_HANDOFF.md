@@ -20,22 +20,22 @@ This file is the current root-level handoff for `studio-1`. It should be read fi
 Current branch:
 
 ```bash
-feature/symbol-map-v1
+main
 ```
 
 Latest known main base:
 
 ```bash
-63e2067 (origin/main, main) merge: add project summary v1
+feature/symbol-map-v1 merged into main
 ```
 
 Recent commits on main:
 
 ```bash
+feat: add symbol map v1
 63e2067 merge: add project summary v1
 79d4dea feat: add project summary v1
 bad79eb docs: update handoff after project map v1
-5cdd2f6 fix: clean project map response and remove temp file
 044b1f4 feat: add Project Map v1 (GET /api/repos/:id/project-map + UI panel)
 ```
 
@@ -44,8 +44,7 @@ Current known state:
 ```text
 Project Map v1 is merged into main.
 Project Summary v1 is merged into main.
-Symbol Map v1 is implemented and verified on feature/symbol-map-v1.
-Symbol Map v1 is not merged into main yet.
+Symbol Map v1 is merged into main.
 The current handoff is root-level at CURRENT_PROJECT_HANDOFF.md.
 ```
 
@@ -727,7 +726,7 @@ Important rule:
 
 ## Symbol Map v1
 
-Symbol Map v1 is implemented, verified, and merged into the current working branch.
+Symbol Map v1 is implemented, verified, and merged into main.
 
 Backend endpoint:
 
@@ -1686,7 +1685,7 @@ Recommended first prompt for Claude, Codex, or another coding agent:
 ```text
 Read CURRENT_PROJECT_HANDOFF.md first.
 
-We are on branch feature/symbol-map-v1 after Symbol Map v1 was implemented.
+We are on main after Symbol Map v1 was merged.
 
 Create a new branch for Dependency Map v1 before implementation.
 
@@ -1753,7 +1752,7 @@ Home initializer works.
 `index.html` is the main home page.
 Project Map v1 is complete and merged into main.
 Project Summary v1 is complete and merged into main.
-Symbol Map v1 is complete on branch feature/symbol-map-v1.
+Symbol Map v1 is complete and merged into main.
 
 The next meaningful product layer is Dependency Map v1.
 
