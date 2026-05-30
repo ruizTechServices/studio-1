@@ -926,3 +926,328 @@
   background: rgba(139, 92, 246, 0.13);
   border: 1px solid rgba(139, 92, 246, 0.26);
 }
+
+/* ── Dependency Map ─────────────────────────────────────── */
+
+.repo-dependency-map-card {
+  margin-top: 16px;
+  padding: 18px;
+  border: 1px solid rgba(55, 65, 81, 0.86);
+  border-radius: 12px;
+  background:
+    linear-gradient(180deg, rgba(18, 27, 42, 0.98), rgba(10, 16, 28, 0.98)),
+    var(--bg-surface);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 18px 60px rgba(0, 0, 0, 0.22);
+}
+
+.repo-dependency-map-card:empty {
+  display: none;
+}
+
+.dep-map-loading {
+  padding: 24px 0;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.dep-map-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.dep-map-head h2 {
+  margin: 0;
+  font-size: 17px;
+}
+
+.dep-map-head p {
+  margin: 4px 0 0;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.dep-map-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.dep-map-stat-pill {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 10px;
+  border: 1px solid rgba(55, 65, 81, 0.74);
+  border-radius: 8px;
+  background: rgba(8, 13, 22, 0.48);
+}
+
+.dep-map-stat-pill strong {
+  color: var(--text-primary);
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+
+.dep-map-stat-pill span {
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.dep-map-sections {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.dep-map-section {
+  border: 1px solid rgba(55, 65, 81, 0.74);
+  border-radius: 9px;
+  background: rgba(8, 13, 22, 0.48);
+  overflow: hidden;
+}
+
+.dep-map-section > summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 8px 12px;
+  cursor: pointer;
+  user-select: none;
+  list-style: none;
+  font-size: 13px;
+}
+
+.dep-map-section > summary::-webkit-details-marker {
+  display: none;
+}
+
+.dep-map-section > summary:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.dep-map-section > summary strong {
+  color: var(--text-primary);
+}
+
+.dep-map-section-count {
+  margin-left: auto;
+  padding: 1px 7px;
+  border: 1px solid rgba(55, 65, 81, 0.6);
+  border-radius: 5px;
+  color: var(--text-secondary);
+  font-size: 11px;
+}
+
+.dep-map-hub-list {
+  display: grid;
+  gap: 2px;
+  padding: 6px 8px 8px;
+}
+
+.dep-map-hub-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 6px;
+  border-radius: 6px;
+}
+
+.dep-map-hub-row:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.dep-map-hub-count {
+  flex-shrink: 0;
+  min-width: 28px;
+  padding: 1px 6px;
+  border-radius: 5px;
+  color: #7dd3fc;
+  background: rgba(14, 165, 233, 0.13);
+  border: 1px solid rgba(14, 165, 233, 0.26);
+  font-size: 11.5px;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+.dep-map-hub-path {
+  flex: 1;
+  overflow: hidden;
+  color: #d7deeb;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 11.5px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.dep-map-hub-external {
+  color: #94a3b8;
+}
+
+.dep-map-orphan-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 8px 12px 10px;
+}
+
+.dep-map-orphan-path {
+  padding: 2px 8px;
+  border: 1px solid rgba(55, 65, 81, 0.6);
+  border-radius: 5px;
+  color: #94a3b8;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 11px;
+}
+
+.dep-map-files {
+  display: grid;
+  gap: 6px;
+}
+
+.dep-map-empty {
+  color: var(--text-secondary);
+  font-size: 13px;
+  margin: 0;
+  padding: 6px 0;
+}
+
+.dep-map-file {
+  border: 1px solid rgba(55, 65, 81, 0.74);
+  border-radius: 9px;
+  background: rgba(8, 13, 22, 0.48);
+  overflow: hidden;
+}
+
+.dep-map-file > summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 8px 12px;
+  cursor: pointer;
+  user-select: none;
+  list-style: none;
+}
+
+.dep-map-file > summary::-webkit-details-marker {
+  display: none;
+}
+
+.dep-map-file > summary:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.dep-map-file-icon {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  color: #64748b;
+}
+
+.dep-map-file-icon svg {
+  width: 13px;
+  height: 13px;
+}
+
+.dep-map-file-path {
+  flex: 1;
+  overflow: hidden;
+  color: #d7deeb;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 11.5px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.dep-map-file-count {
+  flex-shrink: 0;
+  padding: 1px 7px;
+  border: 1px solid rgba(55, 65, 81, 0.6);
+  border-radius: 5px;
+  color: var(--text-secondary);
+  font-size: 11px;
+}
+
+.dep-map-file-imported-by {
+  flex-shrink: 0;
+  padding: 1px 7px;
+  border: 1px solid rgba(14, 165, 233, 0.3);
+  border-radius: 5px;
+  color: #7dd3fc;
+  font-size: 11px;
+}
+
+.dep-map-file-imports {
+  display: grid;
+  gap: 2px;
+  padding: 6px 8px 8px;
+  border-top: 1px solid rgba(55, 65, 81, 0.5);
+}
+
+.dep-map-import-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 6px;
+  border-radius: 5px;
+  font-size: 12px;
+}
+
+.dep-map-import-row:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.dep-map-import-badge {
+  flex-shrink: 0;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.dep-map-resolved {
+  color: #86efac;
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.24);
+}
+
+.dep-map-unresolved {
+  color: #94a3b8;
+  background: rgba(100, 116, 139, 0.12);
+  border: 1px solid rgba(100, 116, 139, 0.24);
+}
+
+.dep-map-import-source {
+  flex: 1;
+  overflow: hidden;
+  color: #cbd5e1;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.dep-map-import-resolved {
+  flex-shrink: 0;
+  max-width: 240px;
+  overflow: hidden;
+  color: #64748b;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 11px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.dep-map-overflow {
+  margin: 4px 6px 0;
+  color: var(--text-secondary);
+  font-size: 11.5px;
+}

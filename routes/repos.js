@@ -20,6 +20,7 @@ import {
   projectMap,
   projectSummary,
   symbolMap,
+  dependencyMap,
   deleteRepo,
   saveRepo,
   detectRepoName,
@@ -238,6 +239,16 @@ router.get("/:id/symbol-map", validate({ params: repoIdParams }), (request, resp
   }
 
   response.json(symbolMap(row));
+});
+
+router.get("/:id/dependency-map", validate({ params: repoIdParams }), (request, response) => {
+  const row = db.prepare("SELECT * FROM repos WHERE id = ?").get(request.params.id);
+  if (!row) {
+    response.status(404).json({ error: "Repo not found" });
+    return;
+  }
+
+  response.json(dependencyMap(row));
 });
 
 router.get("/:id/project-map", validate({ params: repoIdParams }), (request, response) => {

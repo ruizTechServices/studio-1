@@ -451,6 +451,113 @@ export function renderSymbolMap(data) {
   `;
 }
 
+export function renderDependencyMap(data) {
+  const panel = document.querySelector("#dependencyMapPanel");
+  if (!panel) return;
+
+  if (!data) {
+    panel.innerHTML = "";
+    return;
+  }
+
+  const { repo, summary, files, mostImportedInternal, mostImportedExternal, orphans } = data;
+
+  const statPills = [
+    { label: "Files scanned", value: summary.totalFilesScanned },
+    { label: "Import edges", value: summary.totalEdges },
+    { label: "Resolved", value: summary.resolvedEdges },
+    { label: "Unresolved", value: summary.unresolvedEdges },
+    { label: "No dependents", value: summary.orphanCount }
+  ].map(({ label, value }) => `
+    <div class="dep-map-stat-pill">
+      <strong>${value}</strong>
+      <span>${escapeHtml(label)}</span>
+    </div>
+  `).join("");
+
+  const internalRows = mostImportedInternal.length
+    ? mostImportedInternal.map((f) => `
+      <div class="dep-map-hub-row">
+        <span class="dep-map-hub-count">${f.importedByCount}</span>
+        <span class="dep-map-hub-path">${escapeHtml(f.path)}</span>
+      </div>
+    `).join("")
+    : `<p class="dep-map-empty">No internal imports resolved.</p>`;
+
+  const externalRows = mostImportedExternal.length
+    ? mostImportedExternal.map((e) => `
+      <div class="dep-map-hub-row">
+        <span class="dep-map-hub-count">${e.count}</span>
+        <span class="dep-map-hub-path dep-map-hub-external">${escapeHtml(e.name)}</span>
+      </div>
+    `).join("")
+    : `<p class="dep-map-empty">No external modules detected.</p>`;
+
+  const fileSections = files.map((file) => {
+    const displayImports = file.imports.slice(0, 20);
+    const overflow = file.imports.length - displayImports.length;
+    const importRows = displayImports.map((imp) => `
+      <div class="dep-map-import-row">
+        <span class="dep-map-import-badge ${imp.resolved ? "dep-map-resolved" : "dep-map-unresolved"}">${imp.resolved ? "local" : "ext"}</span>
+        <span class="dep-map-import-source">${escapeHtml(imp.source)}</span>
+        ${imp.resolvedPath ? `<span class="dep-map-import-resolved">${escapeHtml(imp.resolvedPath)}</span>` : ""}
+      </div>
+    `).join("");
+
+    return `
+      <details class="dep-map-file">
+        <summary>
+          <span class="dep-map-file-icon">${icon("file")}</span>
+          <span class="dep-map-file-path">${escapeHtml(file.path)}</span>
+          <span class="dep-map-file-count">${file.importCount}</span>
+          ${file.importedBy.length ? `<span class="dep-map-file-imported-by">${file.importedBy.length} dependents</span>` : ""}
+        </summary>
+        <div class="dep-map-file-imports">
+          ${importRows}
+          ${overflow > 0 ? `<p class="dep-map-overflow">+${overflow} more imports</p>` : ""}
+        </div>
+      </details>
+    `;
+  }).join("");
+
+  const orphanList = orphans.length
+    ? orphans.map((p) => `<span class="dep-map-orphan-path">${escapeHtml(p)}</span>`).join("")
+    : "";
+
+  panel.innerHTML = `
+    <div class="dep-map-head">
+      <div>
+        <h2 id="dependencyMapTitle">Dependency Map</h2>
+        <p>${escapeHtml(repo.name)} · ${summary.totalFilesScanned} JS/TS files scanned</p>
+      </div>
+    </div>
+
+    <div class="dep-map-stats">${statPills}</div>
+
+    <div class="dep-map-sections">
+      <details class="dep-map-section" open>
+        <summary><strong>Most imported (internal)</strong><span class="dep-map-section-count">${mostImportedInternal.length}</span></summary>
+        <div class="dep-map-hub-list">${internalRows}</div>
+      </details>
+
+      <details class="dep-map-section">
+        <summary><strong>Most imported (external)</strong><span class="dep-map-section-count">${mostImportedExternal.length}</span></summary>
+        <div class="dep-map-hub-list">${externalRows}</div>
+      </details>
+
+      ${orphanList ? `
+      <details class="dep-map-section">
+        <summary><strong>No dependents</strong><span class="dep-map-section-count">${orphans.length}</span></summary>
+        <div class="dep-map-orphan-list">${orphanList}</div>
+      </details>` : ""}
+    </div>
+
+    <div class="dep-map-files">
+      ${fileSections || `<p class="dep-map-empty">No import statements found in JS/TS files.</p>`}
+    </div>
+  `;
+}
+
 export function renderActionLogs() {
   renderActionLogPanel(
     "repoActionLog",
