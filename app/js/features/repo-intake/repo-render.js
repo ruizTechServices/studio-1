@@ -277,6 +277,99 @@ export function renderProjectMap(data) {
   `;
 }
 
+export function renderProjectSummary(data) {
+  const panel = document.querySelector("#projectSummaryPanel");
+  if (!panel) {
+    return;
+  }
+
+  if (!data) {
+    panel.innerHTML = "";
+    return;
+  }
+
+  const { repo, summary } = data;
+  const {
+    projectType,
+    confidence,
+    primaryLanguage,
+    frameworks,
+    mainAreas,
+    detectedCapabilities,
+    missingOrLightAreas,
+    evidence
+  } = summary;
+
+  const confidenceClass = confidence === "high" ? "confidence-high" : confidence === "medium" ? "confidence-medium" : "confidence-low";
+
+  const frameworkTags = frameworks.length
+    ? frameworks.map((f) => `<span class="project-summary-tag">${escapeHtml(f)}</span>`).join("")
+    : `<span class="project-summary-tag-empty">None detected</span>`;
+
+  const capabilitiesList = detectedCapabilities.length
+    ? detectedCapabilities.map((c) => `<li class="project-summary-cap">${icon("check")} ${escapeHtml(c)}</li>`).join("")
+    : `<li class="project-summary-empty-item">No capabilities detected</li>`;
+
+  const missingList = missingOrLightAreas.length
+    ? missingOrLightAreas.map((m) => `<li class="project-summary-missing">${icon("warning")} ${escapeHtml(m)}</li>`).join("")
+    : `<li class="project-summary-empty-item">Nothing obviously missing</li>`;
+
+  const mainAreasList = mainAreas.length
+    ? mainAreas.map((a) => `<span class="project-summary-area-tag">${escapeHtml(a)}</span>`).join("")
+    : `<span class="project-summary-tag-empty">—</span>`;
+
+  const evidenceRows = evidence.length
+    ? evidence.map((e) => `<li>${escapeHtml(e)}</li>`).join("")
+    : "";
+
+  panel.innerHTML = `
+    <div class="project-summary-head">
+      <div>
+        <h2 id="projectSummaryTitle">Project Summary</h2>
+        <p>${escapeHtml(repo.name)}</p>
+      </div>
+      <span class="project-summary-confidence ${confidenceClass}">${escapeHtml(confidence)} confidence</span>
+    </div>
+
+    <div class="project-summary-type">
+      <span class="project-summary-type-label">Project type</span>
+      <strong class="project-summary-type-value">${escapeHtml(projectType)}</strong>
+    </div>
+
+    <div class="project-summary-row">
+      <div class="project-summary-block">
+        <span class="project-summary-block-label">Primary language</span>
+        <span class="project-summary-tag">${primaryLanguage ? escapeHtml(primaryLanguage) : "—"}</span>
+      </div>
+      <div class="project-summary-block">
+        <span class="project-summary-block-label">Frameworks</span>
+        <div class="project-summary-tags">${frameworkTags}</div>
+      </div>
+      <div class="project-summary-block">
+        <span class="project-summary-block-label">Main areas</span>
+        <div class="project-summary-tags">${mainAreasList}</div>
+      </div>
+    </div>
+
+    <div class="project-summary-row">
+      <div class="project-summary-block project-summary-block--half">
+        <span class="project-summary-block-label">Detected capabilities</span>
+        <ul class="project-summary-list">${capabilitiesList}</ul>
+      </div>
+      <div class="project-summary-block project-summary-block--half">
+        <span class="project-summary-block-label">Missing or light</span>
+        <ul class="project-summary-list">${missingList}</ul>
+      </div>
+    </div>
+
+    ${evidenceRows ? `
+    <details class="project-summary-evidence">
+      <summary>Evidence (${evidence.length})</summary>
+      <ul class="project-summary-evidence-list">${evidenceRows}</ul>
+    </details>` : ""}
+  `;
+}
+
 export function renderActionLogs() {
   renderActionLogPanel(
     "repoActionLog",

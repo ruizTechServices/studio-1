@@ -1,8 +1,8 @@
 import { repoState } from "./repo-state.js";
 import { filterSelectedFiles } from "./repo-filters.js";
-import { fetchRepos, uploadRepoFiles, importGithubRepo, deleteRepo, fetchFilterRules, fetchActionEvents, fetchProjectMap } from "./repo-api.js";
+import { fetchRepos, uploadRepoFiles, importGithubRepo, deleteRepo, fetchFilterRules, fetchActionEvents, fetchProjectMap, fetchProjectSummary } from "./repo-api.js";
 import { createClientId, logEvent, mergeActionEvents, setEventsUpdatedCallback } from "./repo-events.js";
-import { renderRepoList, renderRepoDetail, renderProjectMap, renderActionLogs } from "./repo-render.js";
+import { renderRepoList, renderRepoDetail, renderProjectMap, renderProjectSummary, renderActionLogs } from "./repo-render.js";
 import { showToast } from "../../core/toast.js";
 import { icon } from "../../core/icons.js";
 import { escapeHtml } from "../../core/formatters.js";
@@ -152,6 +152,7 @@ export function initRepoIntakePage() {
       renderRepoList(repoState.savedRepos);
       renderRepoDetail(result, { correlationId });
       loadAndRenderProjectMap(result.id);
+      loadAndRenderProjectSummary(result.id);
       showToast("Repo saved to SQLite");
     } catch (error) {
       status.textContent = error.message;
@@ -223,6 +224,7 @@ export function initRepoIntakePage() {
         renderRepoList(repoState.savedRepos);
         renderRepoDetail(result, { correlationId });
         loadAndRenderProjectMap(result.id);
+        loadAndRenderProjectSummary(result.id);
         showToast("GitHub repo imported");
       } catch (error) {
         status.textContent = error.message;
@@ -258,6 +260,7 @@ export function initRepoIntakePage() {
       const selectedRepo = repoState.savedRepos.find((repo) => repo.id === repoButton.dataset.repoId);
       renderRepoDetail(selectedRepo);
       loadAndRenderProjectMap(repoButton.dataset.repoId);
+      loadAndRenderProjectSummary(repoButton.dataset.repoId);
       return;
     }
 
@@ -289,6 +292,7 @@ async function loadRepos() {
     renderRepoList(repoState.savedRepos);
     if (repoState.savedRepos.length) {
       loadAndRenderProjectMap(repoState.savedRepos[0].id);
+      loadAndRenderProjectSummary(repoState.savedRepos[0].id);
     }
   } catch (error) {
     repoList.innerHTML = `<div class="empty-repo-state"><span>${icon("database")}</span><p>${escapeHtml(error.message)}</p></div>`;
@@ -306,6 +310,20 @@ async function loadAndRenderProjectMap(repoId) {
     renderProjectMap(data);
   } catch {
     panel.innerHTML = `<div class="project-map-loading">Could not load project map.</div>`;
+  }
+}
+
+async function loadAndRenderProjectSummary(repoId) {
+  const panel = document.querySelector("#projectSummaryPanel");
+  if (!panel) {
+    return;
+  }
+  panel.innerHTML = `<div class="project-summary-loading">Loading project summary...</div>`;
+  try {
+    const data = await fetchProjectSummary(repoId);
+    renderProjectSummary(data);
+  } catch {
+    panel.innerHTML = `<div class="project-summary-loading">Could not load project summary.</div>`;
   }
 }
 

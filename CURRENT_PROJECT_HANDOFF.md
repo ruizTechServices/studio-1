@@ -21,6 +21,49 @@ Current branch:
 
 ```bash
 main
+```
+
+Latest known local and remote head:
+
+```bash
+5cdd2f6 (HEAD -> main, origin/main, origin/feature/project-map-v1, feature/project-map-v1) fix: clean project map response and remove temp file
+```
+
+Recent commits:
+
+```bash
+5cdd2f6 fix: clean project map response and remove temp file
+044b1f4 feat: add Project Map v1 (GET /api/repos/:id/project-map + UI panel)
+3d6b77c docs: move current handoff to root and remove stale handoffs
+f5e044e docs: clarify home route and frontend initialization
+4312fc9 updated index.html
+```
+
+Current known state:
+
+```text
+main is aligned with origin/main.
+Project Map v1 is merged into main.
+The old handoff files were removed.
+The current handoff is root-level at CURRENT_PROJECT_HANDOFF.md.
+```
+
+Working tree status from the latest known check was clean enough that `git status --short` printed no modified/untracked files.
+
+Official repo:
+
+```text
+https://github.com/ruizTechServices/studio-1.git
+```
+
+Important rule:
+
+> The repo is the source of truth. Always confirm the current branch before giving implementation advice.
+
+Current branch:
+
+```bash
+main
 ````
 
 Latest known local and remote head:
@@ -218,6 +261,7 @@ GET    /api/filter-rules
 
 GET    /api/repos
 GET    /api/repos/:id
+GET    /api/repos/:id/project-map
 POST   /api/repos/upload
 POST   /api/repos/import-github
 DELETE /api/repos/:id
@@ -230,6 +274,7 @@ GET    /api/entities/:type/:id/events
 
 No API paths should be casually renamed. The frontend depends on this contract.
 
+`GET /api/repos/:id/project-map` is now implemented and returns a structured, read-only Project Map built from stored `repo_files`.
 ---
 
 ## Backend lib structure
@@ -537,6 +582,107 @@ These categories currently power the Repo Map UI.
 
 Future Project Map v1 should build on these categories instead of inventing a separate classification system too early.
 
+These categories now power Project Map v1.
+
+Project Map v1 groups files by existing category instead of inventing a separate classification system.
+
+---
+
+## Project Map v1
+
+Project Map v1 is implemented and merged into `main`.
+
+Backend endpoint:
+
+```text
+GET /api/repos/:id/project-map
+```
+
+Backend helper:
+
+```text
+lib/repos/projectMap.js
+```
+
+Frontend files involved:
+
+```text
+app/components/repo/repo-project-map.html
+app/components/repo/repo-page.html
+app/js/features/repo-intake/repo-api.js
+app/js/features/repo-intake/repo-controller.js
+app/js/features/repo-intake/repo-render.js
+app/css/pages/repo-intake.css
+```
+
+Project Map v1 is read-only.
+
+It answers:
+
+```text
+What repo is this?
+How many files does it have?
+What languages are present?
+What category counts exist?
+Where are the pages/routes?
+Where are the API endpoints?
+Where are the components?
+Where are the docs?
+Where are the tests?
+Where is auth/payment/AI/database logic?
+What files are unknown/other?
+```
+
+Current response shape:
+
+```json
+{
+  "repo": {
+    "id": "...",
+    "name": "...",
+    "sourceType": "...",
+    "totalFiles": 67,
+    "totalBytes": 539521,
+    "createdAt": "..."
+  },
+  "summary": {
+    "primaryLanguages": ["typescript", "markdown", "json", "javascript", "css"],
+    "categoryCounts": {
+      "components": 24,
+      "documentation": 13,
+      "pagesRoutes": 8
+    },
+    "languageCounts": {
+      "typescript": 44,
+      "markdown": 16
+    }
+  },
+  "sections": {
+    "pagesRoutes": [],
+    "apiEndpoints": [],
+    "components": [],
+    "databaseFiles": [],
+    "authLogic": [],
+    "paymentLogic": [],
+    "aiLogic": [],
+    "documentation": [],
+    "tests": [],
+    "configFiles": [],
+    "functions": [],
+    "other": []
+  }
+}
+```
+
+Current verified behavior:
+
+```text
+Project Map panel appears on files.html.
+Category sections render as expandable sections.
+Language tags render in the Project Map header.
+Switching repos updates the Project Map.
+No browser console errors were observed during the latest check.
+```
 ---
 
 ## Repo deletion
@@ -852,13 +998,13 @@ Expected structure:
 </div>
 ```
 
-The home page should have a matching page initializer in:
+The home page has a matching page initializer in:
 
 ```text
 app/js/features/home/home-controller.js
 ```
 
-`app/js/main.js` should include a `home` initializer:
+`app/js/main.js` includes a `home` initializer:
 
 ```js
 home: async () => {
@@ -911,6 +1057,19 @@ Current content:
 
 This is where the repo intake UI belongs.
 
+Current Files workspace features:
+
+```text
+local folder upload
+GitHub repo import
+saved repo list
+repo detail panel
+repo deletion
+Project Map panel
+Repo Map action log
+Global action log
+```
+
 ---
 
 ### `/dashboard.html`
@@ -931,6 +1090,86 @@ Current body page:
 
 ```html
 <body data-page="dashboard">
+```
+
+---
+
+## Frontend initialization
+
+`app/js/main.js` owns shared startup behavior.
+
+Startup flow:
+
+```text
+load HTML partials
+render icon placeholders
+read document.body.dataset.page
+render primary nav
+attach shared toast click handling
+run the matching page-specific initializer
+```
+
+Current page initializers include:
+
+```js
+const pageInitializers = {
+  home: async () => {
+    const { initHomePage } = await import("./features/home/home-controller.js");
+    initHomePage();
+  },
+
+  files: async () => {
+    const { initRepoIntakePage } = await import("./features/repo-intake/repo-controller.js");
+    initRepoIntakePage();
+  },
+
+  dashboard: async () => {
+    const { initDashboardPage } = await import("./features/dashboard/dashboard-controller.js");
+    initDashboardPage();
+  },
+};
+```
+
+Rules:
+
+- Add new page behavior by adding a new initializer entry.
+- Do not create a chain of `if/else` page checks.
+- Do not put page-specific behavior directly into `main.js`.
+- Keep `main.js` as the shared bootloader.
+- Keep each page’s behavior in its own `app/js/features/<page>/` folder.
+- Treat `/` as the real main home page, even if the design is temporarily incomplete.
+
+---
+
+## Home initializer status
+
+Home initializer work is complete.
+
+Relevant files:
+
+```text
+app/components/home/home-page.html
+app/js/features/home/home-controller.js
+app/js/features/home/home-render.js
+app/index.html
+app/js/main.js
+app/css/main.css
+```
+
+Manual browser checks:
+
+```text
+http://localhost:3000
+http://localhost:3000/files.html
+http://localhost:3000/dashboard.html
+```
+
+Expected behavior:
+
+```text
+/ loads the main home page
+/files.html loads the repo intake workspace
+/dashboard.html loads the dashboard
 ```
 
 ---
@@ -1361,55 +1600,71 @@ git status --short
 
 Do not jump to local model orchestration yet.
 
+Project Map v1 is now complete.
+
 The correct next step is:
 
 ```text
-Project Map v1
+Project Summary v1
 ```
 
 Reason:
 
-The app already imports repos, filters files, categorizes files, stores metadata, and logs events. The next useful product layer is to turn `repo_files` into a clear project map.
+The app already imports repos, filters files, categorizes files, stores metadata, logs events, and renders a Project Map. The next useful product layer is to summarize what the Project Map means.
 
-Project Map v1 should answer:
+Project Summary v1 should answer:
 
 ```text
 What kind of project is this?
-What pages/routes exist?
-What API endpoints exist?
-What components exist?
-What docs exist?
-What tests exist?
-What config files exist?
-What database files exist?
-What auth/payment/AI logic exists?
-What files are unknown/other?
-What should I inspect first?
+What framework does it appear to use?
+What languages are present?
+What are the main areas of the project?
+Does it have routes/pages?
+Does it have API endpoints?
+Does it have components?
+Does it have auth logic?
+Does it have payment logic?
+Does it have AI logic?
+Does it have database logic?
+Does it have tests?
+Does it have documentation?
+What looks missing or light based on file categories?
 ```
 
 ---
 
-## Recommended Project Map v1 scope
+## Recommended Project Summary v1 scope
 
-Build a read-only project map first.
+Build a read-only, rule-based project summary.
 
 Do not introduce AI yet.
+
+Do not introduce embeddings yet.
+
+Do not introduce model routing yet.
 
 ### Backend
 
 Add an endpoint like:
 
 ```text
-GET /api/repos/:id/project-map
+GET /api/repos/:id/project-summary
 ```
 
 It should:
 
 1. Validate `repoId`.
-2. Load repo row.
-3. Load related `repo_files`.
-4. Group files by category.
-5. Return a structured project map.
+2. Load the repo row.
+3. Return `404` if the repo does not exist.
+4. Reuse the existing `projectMap(row)` helper.
+5. Generate a deterministic summary from the Project Map.
+6. Return repo info, project type, confidence, primary language, detected frameworks, main areas, detected capabilities, missing/light areas, and evidence.
+
+Suggested helper:
+
+```text
+lib/repos/projectSummary.js
+```
 
 Possible response shape:
 
@@ -1417,57 +1672,63 @@ Possible response shape:
 {
   "repo": {
     "id": "...",
-    "name": "...",
-    "sourceType": "...",
-    "totalFiles": 444,
-    "totalBytes": 1902927,
-    "createdAt": "..."
+    "name": "website-one"
   },
   "summary": {
-    "primaryLanguages": ["typescript", "markdown", "css"],
-    "categoryCounts": {
-      "components": 129,
-      "apiEndpoints": 50,
-      "pagesRoutes": 30
-    }
-  },
-  "sections": {
-    "pagesRoutes": [],
-    "apiEndpoints": [],
-    "components": [],
-    "databaseFiles": [],
-    "authLogic": [],
-    "paymentLogic": [],
-    "aiLogic": [],
-    "documentation": [],
-    "tests": [],
-    "configFiles": [],
-    "functions": [],
-    "other": []
+    "projectType": "Next.js web application",
+    "confidence": "high",
+    "primaryLanguage": "typescript",
+    "frameworks": ["Next.js", "React"],
+    "mainAreas": [
+      "dashboard",
+      "authentication",
+      "design system"
+    ],
+    "detectedCapabilities": [
+      "frontend pages/routes",
+      "component system",
+      "authentication logic",
+      "documentation/spec files"
+    ],
+    "missingOrLightAreas": [
+      "API endpoints are missing or light",
+      "database files are missing or light",
+      "tests are missing or light",
+      "payment logic is missing or light"
+    ],
+    "evidence": [
+      "app/page.tsx exists",
+      "app/layout.tsx exists",
+      "next.config.ts exists",
+      "components/ contains component files"
+    ]
   }
 }
 ```
 
 ### Frontend
 
-Add a Project Map panel inside the repo detail UI.
+Add a Project Summary panel inside the repo detail UI near the Project Map panel.
 
 Initial UI should show:
 
 ```text
-Repo summary
-Category counts
-Expandable category sections
-File rows
+Project type
+Primary language
+Frameworks detected
+Main areas
+Detected capabilities
+Missing / light areas
+Evidence
 ```
+
+Keep the UI simple. Cards, badges, and short lists are enough.
 
 Do not overdesign it yet.
 
----
+## Recommended smoke tests before Project Summary v1
 
-## Recommended smoke tests before Project Map v1
-
-Add a simple smoke test script before expanding functionality.
+Add or maintain a simple smoke test script before expanding functionality further.
 
 Suggested file:
 
@@ -1484,6 +1745,8 @@ GET /api/events -> 200
 GET /api/events?limit=abc -> 400
 POST /api/repos/import-github with bad URL -> 400
 DELETE /api/repos/__missing__ -> 404
+GET /api/repos/:id/project-map -> 200 for a real repo id
+GET /api/repos/:id/project-summary -> 200 after Project Summary v1 is implemented
 ```
 
 Keep this script simple. Do not bring in Jest/Vitest yet unless the project actually needs it.
@@ -1493,8 +1756,6 @@ Suggested command later:
 ```bash
 node scripts/smoke-api.js
 ```
-
----
 
 ## Current risks
 
@@ -1550,10 +1811,14 @@ AI should come after:
 ```text
 repo intake
 file categorization
-project map generation
-basic project map UI
+Project Map v1
+Project Summary v1
+Symbol Map v1
+Behavior Map v1
 smoke tests
 ```
+
+The current next step is Project Summary v1, not AI orchestration.
 
 ---
 
@@ -1589,24 +1854,20 @@ curl http://localhost:3000/api/events
 curl "http://localhost:3000/api/events?limit=abc"
 ```
 
-Delete old handoff files:
+Check Project Map for a real repo id:
 
 ```bash
-rm docs/recent_modifications_5-27-2026.md docs/LLM_HANDOFF_2026-05-26.md
+curl -s "http://localhost:3000/api/repos" > repos.tmp.json
+REPO_ID=$(node -e "const repos = JSON.parse(require('fs').readFileSync('./repos.tmp.json', 'utf8')); console.log(repos[0].id)")
+echo "$REPO_ID"
+curl "http://localhost:3000/api/repos/$REPO_ID/project-map"
+rm repos.tmp.json
 ```
 
-Stage and commit this handoff replacement:
+After Project Summary v1 is implemented, also check:
 
 ```bash
-git add CURRENT_PROJECT_HANDOFF.md
-git rm docs/recent_modifications_5-27-2026.md docs/LLM_HANDOFF_2026-05-26.md
-git commit -m "docs: replace stale handoffs with current project handoff"
-```
-
-Push:
-
-```bash
-git push origin main
+curl "http://localhost:3000/api/repos/$REPO_ID/project-summary"
 ```
 
 ---
@@ -1623,7 +1884,22 @@ Before making recommendations:
 6. Do not reintroduce stale paths like `app/script.js` or `app/styles.css`.
 7. Do not move logic back into `server.js`.
 8. Do not expose server internals in client error responses.
-9. Do not jump to AI orchestration before Project Map v1 is stable.
+9. Do not jump to AI orchestration before Project Summary v1, Symbol Map v1, and Behavior Map v1 are stable.
+10. Keep new work layered and deterministic before adding LLM behavior.
+
+Current build order:
+
+```text
+Repo Intake ✅
+Project Map v1 ✅
+Project Summary v1 ← current next task
+Symbol Map v1
+Dependency Map v1
+Behavior Map v1
+Algorithm Map v1
+Recovery Assistant
+AI/local model router
+```
 
 ---
 
@@ -1632,22 +1908,115 @@ Before making recommendations:
 Build:
 
 ```text
-Project Map v1
+Project Summary v1
 ```
 
-Recommended first prompt for Codex or another coding agent:
+Recommended first prompt for Claude, Codex, or another coding agent:
 
 ```text
 Read CURRENT_PROJECT_HANDOFF.md first.
 
-Implement Project Map v1 as a read-only backend + frontend feature.
+We are on branch feature/project-summary-v1.
 
-Add GET /api/repos/:id/project-map. It should validate repo id, load the repo and its repo_files from SQLite, group files by existing category, calculate category counts and language counts, and return a structured JSON map. Reuse existing helpers and validation patterns. Do not change existing API contracts.
+Implement Project Summary v1 as a rule-based feature built on top of Project Map v1.
 
-Then update the repo detail UI on app/files.html through the existing repo-intake frontend modules to show a Project Map panel with category counts and expandable category sections. Reuse the existing frontend module structure and avoid adding a framework.
+Important:
+- No AI.
+- No embeddings.
+- No model routing.
+- No project recommendations yet.
+- This must be deterministic and based only on stored repo metadata, repo_files records, and the existing Project Map output.
 
-After implementation, run syntax checks and curl smoke checks. Do not add AI or local model routing in this task.
+Goal:
+Add a read-only project summary layer that answers:
+- What kind of project is this?
+- What framework does it appear to use?
+- What languages are present?
+- What are the main areas of the project?
+- What capabilities are detected?
+- What areas look missing or light based on file categories?
+
+Backend requirements:
+1. Add GET /api/repos/:id/project-summary.
+2. Reuse the existing repoIdParams validation pattern.
+3. Load the repo from SQLite.
+4. If the repo does not exist, return 404.
+5. Reuse the existing projectMap(row) helper instead of duplicating file grouping logic.
+6. Add a new helper under lib/repos/projectSummary.js.
+7. Export the helper through lib/index.js if needed.
+8. The response should include:
+   - repo id/name
+   - projectType
+   - confidence
+   - primaryLanguage
+   - frameworks
+   - mainAreas
+   - detectedCapabilities
+   - missingOrLightAreas
+   - evidence
+9. Keep server.js as the composition root.
+10. Do not break GET /api/repos, GET /api/repos/:id, or GET /api/repos/:id/project-map.
+
+Rule examples:
+- If files include app/page.tsx, app/layout.tsx, next.config.ts, or package.json with Next.js-style structure, classify as "Next.js web application".
+- If TypeScript is the top language, primaryLanguage should be "typescript".
+- If components exist, include "component system".
+- If pagesRoutes exist, include "frontend pages/routes".
+- If apiEndpoints exist, include "API layer".
+- If authLogic exists, include "authentication logic".
+- If paymentLogic exists, include "payment logic".
+- If aiLogic exists, include "AI-related logic".
+- If databaseFiles exists, include "database layer".
+- If tests is empty or very low, include "tests are missing or light".
+- If apiEndpoints is empty, include "API endpoints are missing or light".
+- If databaseFiles is empty, include "database files are missing or light".
+
+Frontend requirements:
+1. Add fetchProjectSummary(repoId) to the existing repo-intake API module.
+2. Add a Project Summary panel to the repo page partial.
+3. Add renderProjectSummary(data) to the existing repo-intake renderer.
+4. Update the repo-intake controller so the Project Summary loads when:
+   - initial repo loads
+   - user selects another repo
+   - user uploads a repo
+   - user imports a GitHub repo
+5. Keep the UI simple and readable.
+6. Reuse existing architecture and styling patterns.
+7. Do not add React, Vite, Next, Svelte, or any frontend framework.
+
+Verification:
+1. Run node --check on changed JS files.
+2. Start the server with npm start.
+3. Test GET /api/repos.
+4. Test GET /api/repos/:id/project-map.
+5. Test GET /api/repos/:id/project-summary.
+6. Open http://localhost:3000/files.html.
+7. Confirm Project Map still works.
+8. Confirm Project Summary appears.
+9. Confirm switching repos updates both Project Map and Project Summary.
+10. Confirm no console errors.
 ```
+
+---
+
+## Bottom line
+
+The current foundation is good enough to proceed.
+
+Backend modularization is done.
+Validation is done.
+Sanitized error handling is done.
+Repo intake works.
+File filtering works.
+SQLite persistence works.
+Event logging works.
+Repo deletion works.
+Home initializer works.
+`files.html` is the repo intake workspace.
+`index.html` is the main home page.
+Project Map v1 is complete and merged into main.
+
+The next meaningful product layer is Project Summary v1.
 
 ---
 

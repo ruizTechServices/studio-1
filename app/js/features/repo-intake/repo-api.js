@@ -46,6 +46,11 @@ export async function fetchProjectMap(repoId) {
   return readApiJson(response);
 }
 
+export async function fetchProjectSummary(repoId) {
+  const response = await fetch(`/api/repos/${encodeURIComponent(repoId)}/project-summary`);
+  return readApiJson(response);
+}
+
 export async function persistActionEvent(event) {
   const response = await fetch("/api/events", {
     method: "POST",
