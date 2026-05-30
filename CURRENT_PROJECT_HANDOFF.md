@@ -1,6 +1,6 @@
 # studio-1 Current Project Handoff
 
-_Last updated: 2026-05-29_
+_Last updated: 2026-05-30_
 
 ## Purpose of this file
 
@@ -20,16 +20,16 @@ This file is the current root-level handoff for `studio-1`. It should be read fi
 Current branch:
 
 ```bash
-main
+feature/symbol-map-v1
 ```
 
-Latest known local and remote head:
+Latest known main base:
 
 ```bash
-63e2067 (HEAD -> main, origin/main) merge: add project summary v1
+63e2067 (origin/main, main) merge: add project summary v1
 ```
 
-Recent commits:
+Recent commits on main:
 
 ```bash
 63e2067 merge: add project summary v1
@@ -42,9 +42,10 @@ bad79eb docs: update handoff after project map v1
 Current known state:
 
 ```text
-main is aligned with origin/main.
 Project Map v1 is merged into main.
 Project Summary v1 is merged into main.
+Symbol Map v1 is implemented and verified on feature/symbol-map-v1.
+Symbol Map v1 is not merged into main yet.
 The current handoff is root-level at CURRENT_PROJECT_HANDOFF.md.
 ```
 
@@ -227,6 +228,7 @@ GET    /api/repos
 GET    /api/repos/:id
 GET    /api/repos/:id/project-map
 GET    /api/repos/:id/project-summary
+GET    /api/repos/:id/symbol-map
 POST   /api/repos/upload
 POST   /api/repos/import-github
 DELETE /api/repos/:id
@@ -242,6 +244,8 @@ No API paths should be casually renamed. The frontend depends on this contract.
 `GET /api/repos/:id/project-map` is now implemented and returns a structured, read-only Project Map built from stored `repo_files`.
 
 `GET /api/repos/:id/project-summary` is implemented and returns a deterministic, rule-based Project Summary built from Project Map data.
+
+`GET /api/repos/:id/symbol-map` is implemented and returns a structured Symbol Map extracted from stored JS/TS repo files using conservative regex/string parsing. No code is executed.
 
 ---
 
@@ -271,9 +275,12 @@ Key files inside `lib/repos/`:
 ```text
 lib/repos/projectMap.js
 lib/repos/projectSummary.js
+lib/repos/symbolMap.js
 ```
 
 `projectSummary()` reuses `projectMap()` instead of duplicating file grouping logic.
+
+`symbolMap()` reads stored JS/TS files from disk using `row.root_path`, parses them line-by-line with conservative regex patterns, and returns a structured symbol inventory. No repo code is executed.
 
 ### `lib/index.js`
 
@@ -715,7 +722,77 @@ Important rule:
 
 > Project Summary v1 is complete.
 > Do not rebuild it unless the current implementation is broken.
-> The next product layer is Symbol Map v1.
+
+---
+
+## Symbol Map v1
+
+Symbol Map v1 is implemented, verified, and merged into the current working branch.
+
+Backend endpoint:
+
+```text
+GET /api/repos/:id/symbol-map
+```
+
+Backend helper:
+
+```text
+lib/repos/symbolMap.js
+```
+
+Frontend files/functions involved:
+
+```text
+app/components/repo/repo-symbol-map.html
+fetchSymbolMap()
+renderSymbolMap()
+```
+
+Symbol Map v1 is read-only and deterministic.
+
+It reads stored JS/TS files from disk using `row.root_path` and `repo_files` records.
+
+It parses source files line-by-line using conservative regex/string patterns.
+
+No imported repo code is executed at any point.
+
+Supported extensions:
+
+```text
+.js  .jsx  .ts  .tsx  .mjs  .cjs
+```
+
+Symbol types extracted:
+
+```text
+import        - ES module imports and CommonJS require()
+export        - stand-alone export { }, export default, export *
+function      - function declarations, arrow functions, assigned function expressions
+class         - class declarations
+method        - indented methods inside classes/objects
+constant      - const declarations (after function/class/schema are excluded)
+routeHandler  - Express-style router.get/post/put/patch/delete and app.*
+schema        - Zod, Yup, Mongoose, and defineSchema patterns
+```
+
+Files larger than 512 KB are skipped.
+
+Unreadable files are skipped silently.
+
+Verified output (website-one repo, 67 files):
+
+```text
+totalFilesScanned: 46
+totalSymbols: 291
+imports: 149, exports: 38, functions: 45, constants: 59
+```
+
+Important rule:
+
+> Symbol Map v1 is complete.
+> Do not rebuild it unless the current implementation is broken.
+> The next product layer is Dependency Map v1.
 
 ---
 
@@ -1101,6 +1178,7 @@ repo detail panel
 repo deletion
 Project Map panel
 Project Summary panel
+Symbol Map panel
 Repo Map action log
 Global action log
 ```
@@ -1242,9 +1320,11 @@ Verified checks:
 ```text
 Project Map endpoint works.
 Project Summary endpoint works.
+Symbol Map endpoint works.
 Project Map panel renders.
 Project Summary panel renders.
-Switching repos updates both Project Map and Project Summary.
+Symbol Map panel renders.
+Switching repos updates Project Map, Project Summary, and Symbol Map.
 ```
 
 API checks:
@@ -1395,7 +1475,7 @@ git status --short
 
 ---
 
-## Recommended smoke tests before Symbol Map v1
+## Recommended smoke tests before Dependency Map v1
 
 Add or maintain a simple smoke test script before expanding functionality further.
 
@@ -1416,6 +1496,7 @@ POST /api/repos/import-github with bad URL -> 400
 DELETE /api/repos/__missing__ -> 404
 GET /api/repos/:id/project-map -> 200 for a real repo id
 GET /api/repos/:id/project-summary -> 200 for a real repo id
+GET /api/repos/:id/symbol-map -> 200 for a real repo id
 ```
 
 Keep this script simple. Do not bring in Jest/Vitest yet unless the project actually needs it.
@@ -1484,12 +1565,13 @@ repo intake
 file categorization
 Project Map v1 ✅
 Project Summary v1 ✅
-Symbol Map v1 ← next
+Symbol Map v1 ✅
+Dependency Map v1 ← next
 Behavior Map v1
 smoke tests
 ```
 
-The current next step is Symbol Map v1, not AI orchestration.
+The current next step is Dependency Map v1, not AI orchestration.
 
 ---
 
@@ -1525,20 +1607,16 @@ curl http://localhost:3000/api/events
 curl "http://localhost:3000/api/events?limit=abc"
 ```
 
-Check Project Map for a real repo id:
+Check Project Map, Project Summary, and Symbol Map for a real repo id:
 
 ```bash
 curl -s "http://localhost:3000/api/repos" > repos.tmp.json
 REPO_ID=$(node -e "const repos = JSON.parse(require('fs').readFileSync('./repos.tmp.json', 'utf8')); console.log(repos[0].id)")
 echo "$REPO_ID"
 curl "http://localhost:3000/api/repos/$REPO_ID/project-map"
-rm repos.tmp.json
-```
-
-Check Project Summary for a real repo id:
-
-```bash
 curl "http://localhost:3000/api/repos/$REPO_ID/project-summary"
+curl "http://localhost:3000/api/repos/$REPO_ID/symbol-map"
+rm repos.tmp.json
 ```
 
 ---
@@ -1564,8 +1642,8 @@ Current build order:
 Repo Intake ✅
 Project Map v1 ✅
 Project Summary v1 ✅
-Symbol Map v1 ← current next task
-Dependency Map v1
+Symbol Map v1 ✅
+Dependency Map v1 ← current next task
 Behavior Map v1
 Algorithm Map v1
 Recovery Assistant
@@ -1579,22 +1657,18 @@ AI/local model router
 Build:
 
 ```text
-Symbol Map v1
+Dependency Map v1
 ```
 
-Symbol Map v1 should extract code-level symbols from the stored repo files.
+Dependency Map v1 should extract import-level relationships between files in the stored repo.
 
-It should extract:
+It should answer:
 
 ```text
-functions
-classes
-methods
-imports
-exports
-constants
-route handlers
-schemas
+Which files import which other files?
+Which modules are imported most frequently?
+Which files have no dependents (leaf nodes)?
+Which files are imported everywhere (shared utilities)?
 ```
 
 Rules:
@@ -1603,9 +1677,8 @@ Rules:
 No AI yet.
 No embeddings yet.
 No model routing yet.
-No project recommendations yet.
 Keep it deterministic.
-Build on top of the stored repo files and existing repo/project map structure.
+Build on top of the stored repo files and the Symbol Map import data.
 ```
 
 Recommended first prompt for Claude, Codex, or another coding agent:
@@ -1613,72 +1686,52 @@ Recommended first prompt for Claude, Codex, or another coding agent:
 ```text
 Read CURRENT_PROJECT_HANDOFF.md first.
 
-We are on main after Project Summary v1 was merged.
+We are on branch feature/symbol-map-v1 after Symbol Map v1 was implemented.
 
-Create a new branch for Symbol Map v1 before implementation.
+Create a new branch for Dependency Map v1 before implementation.
 
-Implement Symbol Map v1 as a deterministic code-symbol extraction feature.
+Implement Dependency Map v1 as a deterministic file-level dependency graph feature.
 
 Important:
 - No AI.
 - No embeddings.
 - No model routing.
-- No project recommendations yet.
 - Do not rewrite Project Map v1.
 - Do not rewrite Project Summary v1.
-- Build on the existing repo intake, file storage, Project Map, and Project Summary foundation.
+- Do not rewrite Symbol Map v1.
+- Build on the existing repo intake, file storage, and Symbol Map foundation.
 
 Goal:
-Add a read-only Symbol Map layer that extracts and displays:
-- functions
-- classes
-- methods
-- imports
-- exports
-- constants
-- route handlers
-- schemas
+Add a read-only Dependency Map layer that shows which files import which other files.
 
 Backend requirements:
-1. Add a Symbol Map helper under lib/repos/.
-2. Add a route like GET /api/repos/:id/symbol-map.
+1. Add a Dependency Map helper under lib/repos/dependencyMap.js.
+2. Add GET /api/repos/:id/dependency-map.
 3. Reuse existing repoIdParams validation.
 4. Load the repo from SQLite.
 5. Return 404 if the repo does not exist.
-6. Use stored repo_files records to locate relevant source files.
-7. Read only files that are already accepted by the repo intake filter.
-8. Start with practical regex/string parsing for JavaScript and TypeScript.
-9. Keep parsing conservative and safe.
-10. Return a structured response with repo info, summary counts, and symbols grouped by file.
-11. Do not execute imported repo code.
-12. Do not install heavy parser dependencies yet unless absolutely necessary.
+6. Use stored repo_files records and the same JS/TS file reading approach from symbolMap.js.
+7. Only read files that are already accepted by repo intake filtering.
+8. Extract import sources from import/require statements.
+9. Resolve relative imports to stored file paths.
+10. Return a structured response with: per-file dependency lists, most-imported modules, and orphan files.
 
 Frontend requirements:
-1. Add fetchSymbolMap(repoId) to the repo-intake API module.
-2. Add a Symbol Map panel to the repo detail UI.
-3. Add renderSymbolMap(data) to the repo renderer.
-4. Update the repo-intake controller so Symbol Map loads when:
-   - initial repo loads
-   - user selects another repo
-   - user uploads a repo
-   - user imports a GitHub repo
-5. Keep the UI simple.
-6. Reuse existing architecture and styling patterns.
-7. Do not add React, Vite, Next, Svelte, TypeScript, or any new frontend framework.
+1. Add fetchDependencyMap(repoId) to the repo-intake API module.
+2. Add a Dependency Map panel to the repo detail UI.
+3. Add renderDependencyMap(data) to the repo renderer.
+4. Update the controller so Dependency Map loads alongside Project Map, Project Summary, and Symbol Map.
+5. Reuse existing architecture and styling patterns.
 
 Verification:
 1. Run node --check on changed JS files.
 2. Start the server with npm start.
-3. Test GET /api/repos.
-4. Test GET /api/repos/:id/project-map.
-5. Test GET /api/repos/:id/project-summary.
-6. Test GET /api/repos/:id/symbol-map.
-7. Open http://localhost:3000/files.html.
-8. Confirm Project Map still works.
-9. Confirm Project Summary still works.
-10. Confirm Symbol Map appears.
-11. Confirm switching repos updates Project Map, Project Summary, and Symbol Map.
-12. Confirm no browser console errors.
+3. Test GET /api/repos/:id/dependency-map.
+4. Open http://localhost:3000/files.html.
+5. Confirm Project Map, Project Summary, and Symbol Map still render.
+6. Confirm Dependency Map panel appears.
+7. Confirm switching repos updates all panels.
+8. Confirm no browser console errors.
 ```
 
 ---
@@ -1700,8 +1753,9 @@ Home initializer works.
 `index.html` is the main home page.
 Project Map v1 is complete and merged into main.
 Project Summary v1 is complete and merged into main.
+Symbol Map v1 is complete on branch feature/symbol-map-v1.
 
-The next meaningful product layer is Symbol Map v1.
+The next meaningful product layer is Dependency Map v1.
 
 Current build order:
 
@@ -1709,8 +1763,8 @@ Current build order:
 Repo Intake ✅
 Project Map v1 ✅
 Project Summary v1 ✅
-Symbol Map v1 ← next
-Dependency Map v1
+Symbol Map v1 ✅
+Dependency Map v1 ← next
 Behavior Map v1
 Algorithm Map v1
 Recovery Assistant

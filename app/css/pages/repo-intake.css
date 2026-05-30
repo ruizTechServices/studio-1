@@ -681,3 +681,248 @@
   font-size: 11.5px;
   line-height: 1.8;
 }
+
+/* Symbol Map panel */
+
+.repo-symbol-map-card {
+  margin-top: 16px;
+  padding: 18px;
+  border: 1px solid rgba(55, 65, 81, 0.86);
+  border-radius: 12px;
+  background:
+    linear-gradient(180deg, rgba(18, 27, 42, 0.98), rgba(10, 16, 28, 0.98)),
+    var(--bg-surface);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 18px 60px rgba(0, 0, 0, 0.22);
+}
+
+.repo-symbol-map-card:empty {
+  display: none;
+}
+
+.symbol-map-loading {
+  padding: 24px 0;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.symbol-map-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.symbol-map-head h2 {
+  margin: 0;
+  font-size: 17px;
+}
+
+.symbol-map-head p {
+  margin: 4px 0 0;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.symbol-map-counts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.symbol-map-count-pill {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 10px;
+  border: 1px solid rgba(55, 65, 81, 0.74);
+  border-radius: 8px;
+  background: rgba(8, 13, 22, 0.48);
+}
+
+.symbol-map-count-pill strong {
+  color: var(--text-primary);
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+
+.symbol-map-files {
+  display: grid;
+  gap: 6px;
+}
+
+.symbol-map-empty {
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.symbol-map-file {
+  border: 1px solid rgba(55, 65, 81, 0.74);
+  border-radius: 9px;
+  background: rgba(8, 13, 22, 0.48);
+  overflow: hidden;
+}
+
+.symbol-map-file > summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 8px 12px;
+  cursor: pointer;
+  user-select: none;
+  list-style: none;
+}
+
+.symbol-map-file > summary::-webkit-details-marker {
+  display: none;
+}
+
+.symbol-map-file > summary:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.symbol-map-file-icon {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  color: #64748b;
+}
+
+.symbol-map-file-icon svg {
+  width: 13px;
+  height: 13px;
+}
+
+.symbol-map-file-path {
+  flex: 1;
+  overflow: hidden;
+  color: #d7deeb;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 11.5px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.symbol-map-file-lang {
+  color: #64748b;
+  font-size: 11px;
+}
+
+.symbol-map-file-count {
+  padding: 1px 8px;
+  border-radius: 999px;
+  color: #93c5fd;
+  background: rgba(59, 130, 246, 0.15);
+  font-size: 11.5px;
+  font-variant-numeric: tabular-nums;
+}
+
+.symbol-map-file-symbols {
+  border-top: 1px solid rgba(55, 65, 81, 0.55);
+  padding: 4px 0;
+}
+
+.symbol-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 30px;
+  padding: 3px 12px;
+  border-top: 1px solid rgba(55, 65, 81, 0.3);
+  background: rgba(8, 13, 22, 0.28);
+}
+
+.symbol-row:first-child {
+  border-top: none;
+}
+
+.symbol-name {
+  flex: 1;
+  overflow: hidden;
+  color: #c9d4e5;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.symbol-line {
+  color: #4b5e76;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* Symbol type badge colors */
+
+.symbol-badge {
+  flex-shrink: 0;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 10.5px;
+  font-weight: 600;
+  text-transform: lowercase;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.symbol-badge--import,
+.symbol-badge--imports {
+  color: #7dd3fc;
+  background: rgba(14, 165, 233, 0.14);
+  border: 1px solid rgba(14, 165, 233, 0.28);
+}
+
+.symbol-badge--export,
+.symbol-badge--exports {
+  color: #a5b4fc;
+  background: rgba(99, 102, 241, 0.14);
+  border: 1px solid rgba(99, 102, 241, 0.28);
+}
+
+.symbol-badge--function,
+.symbol-badge--functions {
+  color: #86efac;
+  background: rgba(34, 197, 94, 0.13);
+  border: 1px solid rgba(34, 197, 94, 0.26);
+}
+
+.symbol-badge--class,
+.symbol-badge--classes {
+  color: #fcd34d;
+  background: rgba(245, 158, 11, 0.13);
+  border: 1px solid rgba(245, 158, 11, 0.26);
+}
+
+.symbol-badge--method,
+.symbol-badge--methods {
+  color: #6ee7b7;
+  background: rgba(16, 185, 129, 0.13);
+  border: 1px solid rgba(16, 185, 129, 0.26);
+}
+
+.symbol-badge--constant,
+.symbol-badge--constants {
+  color: #fdba74;
+  background: rgba(249, 115, 22, 0.13);
+  border: 1px solid rgba(249, 115, 22, 0.26);
+}
+
+.symbol-badge--routeHandler,
+.symbol-badge--routeHandlers {
+  color: #f9a8d4;
+  background: rgba(236, 72, 153, 0.13);
+  border: 1px solid rgba(236, 72, 153, 0.26);
+}
+
+.symbol-badge--schema,
+.symbol-badge--schemas {
+  color: #c4b5fd;
+  background: rgba(139, 92, 246, 0.13);
+  border: 1px solid rgba(139, 92, 246, 0.26);
+}

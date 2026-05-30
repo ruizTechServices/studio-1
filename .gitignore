@@ -2,3 +2,6 @@ node_modules/
 data/
 npm-debug.log*
 .DS_Store
+
+# Local Claude tool config
+.claude/

@@ -1,8 +1,8 @@
 import { repoState } from "./repo-state.js";
 import { filterSelectedFiles } from "./repo-filters.js";
-import { fetchRepos, uploadRepoFiles, importGithubRepo, deleteRepo, fetchFilterRules, fetchActionEvents, fetchProjectMap, fetchProjectSummary } from "./repo-api.js";
+import { fetchRepos, uploadRepoFiles, importGithubRepo, deleteRepo, fetchFilterRules, fetchActionEvents, fetchProjectMap, fetchProjectSummary, fetchSymbolMap } from "./repo-api.js";
 import { createClientId, logEvent, mergeActionEvents, setEventsUpdatedCallback } from "./repo-events.js";
-import { renderRepoList, renderRepoDetail, renderProjectMap, renderProjectSummary, renderActionLogs } from "./repo-render.js";
+import { renderRepoList, renderRepoDetail, renderProjectMap, renderProjectSummary, renderSymbolMap, renderActionLogs } from "./repo-render.js";
 import { showToast } from "../../core/toast.js";
 import { icon } from "../../core/icons.js";
 import { escapeHtml } from "../../core/formatters.js";
@@ -153,6 +153,7 @@ export function initRepoIntakePage() {
       renderRepoDetail(result, { correlationId });
       loadAndRenderProjectMap(result.id);
       loadAndRenderProjectSummary(result.id);
+      loadAndRenderSymbolMap(result.id);
       showToast("Repo saved to SQLite");
     } catch (error) {
       status.textContent = error.message;
@@ -225,6 +226,7 @@ export function initRepoIntakePage() {
         renderRepoDetail(result, { correlationId });
         loadAndRenderProjectMap(result.id);
         loadAndRenderProjectSummary(result.id);
+        loadAndRenderSymbolMap(result.id);
         showToast("GitHub repo imported");
       } catch (error) {
         status.textContent = error.message;
@@ -261,6 +263,7 @@ export function initRepoIntakePage() {
       renderRepoDetail(selectedRepo);
       loadAndRenderProjectMap(repoButton.dataset.repoId);
       loadAndRenderProjectSummary(repoButton.dataset.repoId);
+      loadAndRenderSymbolMap(repoButton.dataset.repoId);
       return;
     }
 
@@ -293,6 +296,7 @@ async function loadRepos() {
     if (repoState.savedRepos.length) {
       loadAndRenderProjectMap(repoState.savedRepos[0].id);
       loadAndRenderProjectSummary(repoState.savedRepos[0].id);
+      loadAndRenderSymbolMap(repoState.savedRepos[0].id);
     }
   } catch (error) {
     repoList.innerHTML = `<div class="empty-repo-state"><span>${icon("database")}</span><p>${escapeHtml(error.message)}</p></div>`;
@@ -324,6 +328,20 @@ async function loadAndRenderProjectSummary(repoId) {
     renderProjectSummary(data);
   } catch {
     panel.innerHTML = `<div class="project-summary-loading">Could not load project summary.</div>`;
+  }
+}
+
+async function loadAndRenderSymbolMap(repoId) {
+  const panel = document.querySelector("#symbolMapPanel");
+  if (!panel) {
+    return;
+  }
+  panel.innerHTML = `<div class="symbol-map-loading">Loading symbol map...</div>`;
+  try {
+    const data = await fetchSymbolMap(repoId);
+    renderSymbolMap(data);
+  } catch {
+    panel.innerHTML = `<div class="symbol-map-loading">Could not load symbol map.</div>`;
   }
 }
 
