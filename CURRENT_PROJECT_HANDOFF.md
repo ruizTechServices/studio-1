@@ -20,23 +20,23 @@ This file is the current root-level handoff for `studio-1`. It should be read fi
 Current branch:
 
 ```bash
-feature/dependency-map-v1
+main
 ```
 
 Latest known main base:
 
 ```bash
-feature/symbol-map-v1 merged into main
+feature/dependency-map-v1 merged into main
 ```
 
 Recent commits on main:
 
 ```bash
+feat: add dependency map v1
 feat: add symbol map v1
 63e2067 merge: add project summary v1
 79d4dea feat: add project summary v1
 bad79eb docs: update handoff after project map v1
-044b1f4 feat: add Project Map v1 (GET /api/repos/:id/project-map + UI panel)
 ```
 
 Current known state:
@@ -45,8 +45,7 @@ Current known state:
 Project Map v1 is merged into main.
 Project Summary v1 is merged into main.
 Symbol Map v1 is merged into main.
-Dependency Map v1 is implemented and verified on feature/dependency-map-v1.
-Dependency Map v1 is not merged into main yet.
+Dependency Map v1 is merged into main.
 The current handoff is root-level at CURRENT_PROJECT_HANDOFF.md.
 ```
 
@@ -249,7 +248,7 @@ No API paths should be casually renamed. The frontend depends on this contract.
 
 `GET /api/repos/:id/symbol-map` is implemented and returns a structured Symbol Map extracted from stored JS/TS repo files using conservative regex/string parsing. No code is executed.
 
-`GET /api/repos/:id/dependency-map` is implemented on `feature/dependency-map-v1` and returns a structured Dependency Map showing which files import which other files, most-imported modules, and orphan files.
+`GET /api/repos/:id/dependency-map` is implemented and returns a structured Dependency Map showing which files import which other files, most-imported modules, and orphan files.
 
 ---
 
@@ -803,9 +802,7 @@ Important rule:
 
 ## Dependency Map v1
 
-Dependency Map v1 is implemented and verified on `feature/dependency-map-v1`.
-
-Dependency Map v1 is not merged into main yet.
+Dependency Map v1 is implemented, verified, and merged into main.
 
 Backend endpoint:
 
@@ -873,7 +870,7 @@ The resolvedEdges: 0 result is correct for a Next.js repo that uses `@/` path al
 
 Important rule:
 
-> Dependency Map v1 is implemented and verified on feature/dependency-map-v1.
+> Dependency Map v1 is complete and merged into main.
 > Do not rebuild it unless the current implementation is broken.
 > The next product layer is Behavior Map v1.
 
@@ -1384,19 +1381,19 @@ git log --oneline -5
 Current branch:
 
 ```text
-feature/dependency-map-v1
+main
 ```
 
 Current remote alignment:
 
 ```text
-HEAD -> feature/dependency-map-v1
+HEAD -> main, origin/main
 ```
 
-Latest merge commit observed on main:
+Latest merge commit observed:
 
 ```text
-63e2067 merge: add project summary v1
+feat: add dependency map v1
 ```
 
 Verified checks:
@@ -1777,8 +1774,9 @@ Recommended first prompt for Claude, Codex, or another coding agent:
 ```text
 Read CURRENT_PROJECT_HANDOFF.md first.
 
-We are on feature/dependency-map-v1 after implementing Dependency Map v1.
-Dependency Map v1 is not merged into main yet — merge it first, then create feature/behavior-map-v1.
+We are on main after Dependency Map v1 was merged.
+
+Create a new branch feature/behavior-map-v1 before implementation.
 
 Implement Behavior Map v1 as a deterministic behavioral pattern extractor.
 
@@ -1841,7 +1839,7 @@ Home initializer works.
 Project Map v1 is complete and merged into main.
 Project Summary v1 is complete and merged into main.
 Symbol Map v1 is complete and merged into main.
-Dependency Map v1 is complete and verified on feature/dependency-map-v1.
+Dependency Map v1 is complete and merged into main.
 
 The next meaningful product layer is Behavior Map v1.
 
