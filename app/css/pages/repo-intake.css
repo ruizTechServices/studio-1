@@ -453,3 +453,231 @@
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
+
+/* Project Summary panel */
+
+.repo-project-summary-card {
+  margin-top: 16px;
+  padding: 18px;
+  border: 1px solid rgba(55, 65, 81, 0.86);
+  border-radius: 12px;
+  background:
+    linear-gradient(180deg, rgba(18, 27, 42, 0.98), rgba(10, 16, 28, 0.98)),
+    var(--bg-surface);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 18px 60px rgba(0, 0, 0, 0.22);
+}
+
+.repo-project-summary-card:empty {
+  display: none;
+}
+
+.project-summary-loading {
+  padding: 24px 0;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.project-summary-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.project-summary-head h2 {
+  margin: 0;
+  font-size: 17px;
+}
+
+.project-summary-head p {
+  margin: 4px 0 0;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.project-summary-confidence {
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.project-summary-confidence.confidence-high {
+  color: #86efac;
+  background: rgba(34, 197, 94, 0.14);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.project-summary-confidence.confidence-medium {
+  color: #fcd34d;
+  background: rgba(245, 158, 11, 0.14);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.project-summary-confidence.confidence-low {
+  color: #94a3b8;
+  background: rgba(100, 116, 139, 0.14);
+  border: 1px solid rgba(100, 116, 139, 0.3);
+}
+
+.project-summary-type {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  border: 1px solid rgba(96, 165, 250, 0.2);
+  border-radius: 8px;
+  background: rgba(59, 130, 246, 0.07);
+}
+
+.project-summary-type-label {
+  color: var(--text-secondary);
+  font-size: 11.5px;
+  white-space: nowrap;
+}
+
+.project-summary-type-value {
+  color: #dbeafe;
+  font-size: 14px;
+}
+
+.project-summary-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.project-summary-block {
+  flex: 1;
+  min-width: 140px;
+  padding: 10px 12px;
+  border: 1px solid rgba(55, 65, 81, 0.74);
+  border-radius: 8px;
+  background: rgba(8, 13, 22, 0.48);
+}
+
+.project-summary-block--half {
+  flex: 1 1 calc(50% - 5px);
+  min-width: 180px;
+}
+
+.project-summary-block-label {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.project-summary-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.project-summary-tag {
+  padding: 2px 9px;
+  border: 1px solid rgba(96, 165, 250, 0.3);
+  border-radius: 999px;
+  color: #93c5fd;
+  background: rgba(59, 130, 246, 0.1);
+  font-size: 11.5px;
+}
+
+.project-summary-area-tag {
+  padding: 2px 9px;
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: 999px;
+  color: #c4b5fd;
+  background: rgba(139, 92, 246, 0.1);
+  font-size: 11.5px;
+}
+
+.project-summary-tag-empty {
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.project-summary-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 4px;
+}
+
+.project-summary-cap,
+.project-summary-missing,
+.project-summary-empty-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+}
+
+.project-summary-cap {
+  color: #86efac;
+}
+
+.project-summary-cap svg {
+  flex-shrink: 0;
+  width: 13px;
+  height: 13px;
+  color: #4ade80;
+}
+
+.project-summary-missing {
+  color: #fcd34d;
+}
+
+.project-summary-missing svg {
+  flex-shrink: 0;
+  width: 13px;
+  height: 13px;
+  color: #f59e0b;
+}
+
+.project-summary-empty-item {
+  color: var(--text-secondary);
+}
+
+.project-summary-evidence {
+  margin-top: 10px;
+  border: 1px solid rgba(55, 65, 81, 0.6);
+  border-radius: 8px;
+  background: rgba(8, 13, 22, 0.38);
+  overflow: hidden;
+}
+
+.project-summary-evidence > summary {
+  padding: 7px 12px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 12px;
+  user-select: none;
+  list-style: none;
+}
+
+.project-summary-evidence > summary::-webkit-details-marker {
+  display: none;
+}
+
+.project-summary-evidence > summary:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.project-summary-evidence-list {
+  margin: 0;
+  padding: 6px 12px 10px 28px;
+  border-top: 1px solid rgba(55, 65, 81, 0.5);
+  color: var(--text-secondary);
+  font-size: 11.5px;
+  line-height: 1.8;
+}
