@@ -20,7 +20,7 @@ This file is the current root-level handoff for `studio-1`. It should be read fi
 Current branch:
 
 ```bash
-main
+feature/dependency-map-v1
 ```
 
 Latest known main base:
@@ -45,6 +45,8 @@ Current known state:
 Project Map v1 is merged into main.
 Project Summary v1 is merged into main.
 Symbol Map v1 is merged into main.
+Dependency Map v1 is implemented and verified on feature/dependency-map-v1.
+Dependency Map v1 is not merged into main yet.
 The current handoff is root-level at CURRENT_PROJECT_HANDOFF.md.
 ```
 
@@ -228,6 +230,7 @@ GET    /api/repos/:id
 GET    /api/repos/:id/project-map
 GET    /api/repos/:id/project-summary
 GET    /api/repos/:id/symbol-map
+GET    /api/repos/:id/dependency-map
 POST   /api/repos/upload
 POST   /api/repos/import-github
 DELETE /api/repos/:id
@@ -245,6 +248,8 @@ No API paths should be casually renamed. The frontend depends on this contract.
 `GET /api/repos/:id/project-summary` is implemented and returns a deterministic, rule-based Project Summary built from Project Map data.
 
 `GET /api/repos/:id/symbol-map` is implemented and returns a structured Symbol Map extracted from stored JS/TS repo files using conservative regex/string parsing. No code is executed.
+
+`GET /api/repos/:id/dependency-map` is implemented on `feature/dependency-map-v1` and returns a structured Dependency Map showing which files import which other files, most-imported modules, and orphan files.
 
 ---
 
@@ -275,6 +280,7 @@ Key files inside `lib/repos/`:
 lib/repos/projectMap.js
 lib/repos/projectSummary.js
 lib/repos/symbolMap.js
+lib/repos/dependencyMap.js
 ```
 
 `projectSummary()` reuses `projectMap()` instead of duplicating file grouping logic.
@@ -789,9 +795,87 @@ imports: 149, exports: 38, functions: 45, constants: 59
 
 Important rule:
 
-> Symbol Map v1 is complete.
+> Symbol Map v1 is complete and merged into main.
 > Do not rebuild it unless the current implementation is broken.
-> The next product layer is Dependency Map v1.
+> The next product layer is Behavior Map v1.
+
+---
+
+## Dependency Map v1
+
+Dependency Map v1 is implemented and verified on `feature/dependency-map-v1`.
+
+Dependency Map v1 is not merged into main yet.
+
+Backend endpoint:
+
+```text
+GET /api/repos/:id/dependency-map
+```
+
+Backend helper:
+
+```text
+lib/repos/dependencyMap.js
+```
+
+Frontend files/functions involved:
+
+```text
+app/components/repo/repo-dependency-map.html
+fetchDependencyMap()
+renderDependencyMap()
+```
+
+Dependency Map v1 is read-only and deterministic.
+
+It reads stored JS/TS files from disk using `row.root_path` and `repo_files` records.
+
+It parses import/require/re-export statements line-by-line to extract dependency edges.
+
+No imported repo code is executed at any point.
+
+Supported extensions:
+
+```text
+.js  .jsx  .ts  .tsx  .mjs  .cjs
+```
+
+Import types handled:
+
+```text
+ES module imports:      import ... from "source"
+Side-effect imports:    import "source"
+Re-exports:             export ... from "source"
+CommonJS:               require("source")
+```
+
+Files larger than 512 KB are skipped.
+
+Relative imports are resolved against the stored file path set using path.posix operations with extension and index fallback resolution.
+
+External module names are normalized: `@scope/name/sub` → `@scope/name`, `name/sub` → `name`.
+
+`@/` path aliases (Next.js/tsconfig) cannot be resolved without config — they are correctly treated as external scoped packages.
+
+Verified output (website-one repo, 46 JS/TS files):
+
+```text
+totalFilesScanned: 46
+totalEdges: 143
+resolvedEdges: 0
+unresolvedEdges: 143
+orphanCount: 46
+mostImportedExternal: @/components (53), @/lib (31), lucide-react (14), next (11), react (11)
+```
+
+The resolvedEdges: 0 result is correct for a Next.js repo that uses `@/` path aliases throughout — all imports are external from the dependency resolver's perspective.
+
+Important rule:
+
+> Dependency Map v1 is implemented and verified on feature/dependency-map-v1.
+> Do not rebuild it unless the current implementation is broken.
+> The next product layer is Behavior Map v1.
 
 ---
 
@@ -1178,6 +1262,7 @@ repo deletion
 Project Map panel
 Project Summary panel
 Symbol Map panel
+Dependency Map panel
 Repo Map action log
 Global action log
 ```
@@ -1299,16 +1384,16 @@ git log --oneline -5
 Current branch:
 
 ```text
-main
+feature/dependency-map-v1
 ```
 
 Current remote alignment:
 
 ```text
-HEAD -> main, origin/main
+HEAD -> feature/dependency-map-v1
 ```
 
-Latest merge commit observed:
+Latest merge commit observed on main:
 
 ```text
 63e2067 merge: add project summary v1
@@ -1320,10 +1405,12 @@ Verified checks:
 Project Map endpoint works.
 Project Summary endpoint works.
 Symbol Map endpoint works.
+Dependency Map endpoint works.
 Project Map panel renders.
 Project Summary panel renders.
 Symbol Map panel renders.
-Switching repos updates Project Map, Project Summary, and Symbol Map.
+Dependency Map panel renders.
+Switching repos updates Project Map, Project Summary, Symbol Map, and Dependency Map.
 ```
 
 API checks:
@@ -1474,7 +1561,7 @@ git status --short
 
 ---
 
-## Recommended smoke tests before Dependency Map v1
+## Recommended smoke tests before Behavior Map v1
 
 Add or maintain a simple smoke test script before expanding functionality further.
 
@@ -1496,6 +1583,7 @@ DELETE /api/repos/__missing__ -> 404
 GET /api/repos/:id/project-map -> 200 for a real repo id
 GET /api/repos/:id/project-summary -> 200 for a real repo id
 GET /api/repos/:id/symbol-map -> 200 for a real repo id
+GET /api/repos/:id/dependency-map -> 200 for a real repo id
 ```
 
 Keep this script simple. Do not bring in Jest/Vitest yet unless the project actually needs it.
@@ -1565,12 +1653,13 @@ file categorization
 Project Map v1 ✅
 Project Summary v1 ✅
 Symbol Map v1 ✅
-Dependency Map v1 ← next
-Behavior Map v1
+Dependency Map v1 ✅
+Behavior Map v1 ← next
+Algorithm Map v1
 smoke tests
 ```
 
-The current next step is Dependency Map v1, not AI orchestration.
+The current next step is Behavior Map v1, not AI orchestration.
 
 ---
 
@@ -1606,7 +1695,7 @@ curl http://localhost:3000/api/events
 curl "http://localhost:3000/api/events?limit=abc"
 ```
 
-Check Project Map, Project Summary, and Symbol Map for a real repo id:
+Check Project Map, Project Summary, Symbol Map, and Dependency Map for a real repo id:
 
 ```bash
 curl -s "http://localhost:3000/api/repos" > repos.tmp.json
@@ -1615,6 +1704,7 @@ echo "$REPO_ID"
 curl "http://localhost:3000/api/repos/$REPO_ID/project-map"
 curl "http://localhost:3000/api/repos/$REPO_ID/project-summary"
 curl "http://localhost:3000/api/repos/$REPO_ID/symbol-map"
+curl "http://localhost:3000/api/repos/$REPO_ID/dependency-map"
 rm repos.tmp.json
 ```
 
@@ -1632,7 +1722,7 @@ Before making recommendations:
 6. Do not reintroduce stale paths like `app/script.js` or `app/styles.css`.
 7. Do not move logic back into `server.js`.
 8. Do not expose server internals in client error responses.
-9. Do not jump to AI orchestration before Symbol Map v1, Dependency Map v1, Behavior Map v1, and Algorithm Map v1 are stable.
+9. Do not jump to AI orchestration before Dependency Map v1, Behavior Map v1, and Algorithm Map v1 are stable.
 10. Keep new work layered and deterministic before adding LLM behavior.
 
 Current build order:
@@ -1642,8 +1732,8 @@ Repo Intake ✅
 Project Map v1 ✅
 Project Summary v1 ✅
 Symbol Map v1 ✅
-Dependency Map v1 ← current next task
-Behavior Map v1
+Dependency Map v1 ✅
+Behavior Map v1 ← current next task
 Algorithm Map v1
 Recovery Assistant
 AI/local model router
@@ -1656,18 +1746,20 @@ AI/local model router
 Build:
 
 ```text
-Dependency Map v1
+Behavior Map v1
 ```
 
-Dependency Map v1 should extract import-level relationships between files in the stored repo.
+Behavior Map v1 should extract behavioral patterns from stored JS/TS files in the repo — things like event listeners, async flows, side effects, conditional branches, and exported function call patterns.
 
 It should answer:
 
 ```text
-Which files import which other files?
-Which modules are imported most frequently?
-Which files have no dependents (leaf nodes)?
-Which files are imported everywhere (shared utilities)?
+What does each file do at runtime?
+Which files register event listeners?
+Which files make network calls (fetch, axios, etc.)?
+Which files have async/await flows?
+Which files mutate shared state?
+Which files are pure utilities?
 ```
 
 Rules:
@@ -1677,7 +1769,7 @@ No AI yet.
 No embeddings yet.
 No model routing yet.
 Keep it deterministic.
-Build on top of the stored repo files and the Symbol Map import data.
+Build on top of stored repo files, Symbol Map data, and Dependency Map data.
 ```
 
 Recommended first prompt for Claude, Codex, or another coding agent:
@@ -1685,50 +1777,46 @@ Recommended first prompt for Claude, Codex, or another coding agent:
 ```text
 Read CURRENT_PROJECT_HANDOFF.md first.
 
-We are on main after Symbol Map v1 was merged.
+We are on feature/dependency-map-v1 after implementing Dependency Map v1.
+Dependency Map v1 is not merged into main yet — merge it first, then create feature/behavior-map-v1.
 
-Create a new branch for Dependency Map v1 before implementation.
-
-Implement Dependency Map v1 as a deterministic file-level dependency graph feature.
+Implement Behavior Map v1 as a deterministic behavioral pattern extractor.
 
 Important:
 - No AI.
 - No embeddings.
 - No model routing.
-- Do not rewrite Project Map v1.
-- Do not rewrite Project Summary v1.
-- Do not rewrite Symbol Map v1.
-- Build on the existing repo intake, file storage, and Symbol Map foundation.
+- Do not rewrite Project Map v1, Project Summary v1, Symbol Map v1, or Dependency Map v1.
+- Build on the existing repo intake, file storage, Symbol Map, and Dependency Map foundation.
 
 Goal:
-Add a read-only Dependency Map layer that shows which files import which other files.
+Add a read-only Behavior Map layer that shows what each file does at runtime based on static analysis.
 
 Backend requirements:
-1. Add a Dependency Map helper under lib/repos/dependencyMap.js.
-2. Add GET /api/repos/:id/dependency-map.
+1. Add a Behavior Map helper under lib/repos/behaviorMap.js.
+2. Add GET /api/repos/:id/behavior-map.
 3. Reuse existing repoIdParams validation.
 4. Load the repo from SQLite.
 5. Return 404 if the repo does not exist.
-6. Use stored repo_files records and the same JS/TS file reading approach from symbolMap.js.
-7. Only read files that are already accepted by repo intake filtering.
-8. Extract import sources from import/require statements.
-9. Resolve relative imports to stored file paths.
-10. Return a structured response with: per-file dependency lists, most-imported modules, and orphan files.
+6. Use stored repo_files records and the same JS/TS file reading approach from symbolMap.js and dependencyMap.js.
+7. Only read files already accepted by repo intake filtering.
+8. Detect behavioral signals by scanning lines for known patterns.
+9. Return a structured response with: per-file behavior signals, summary counts, and notable files.
 
 Frontend requirements:
-1. Add fetchDependencyMap(repoId) to the repo-intake API module.
-2. Add a Dependency Map panel to the repo detail UI.
-3. Add renderDependencyMap(data) to the repo renderer.
-4. Update the controller so Dependency Map loads alongside Project Map, Project Summary, and Symbol Map.
+1. Add fetchBehaviorMap(repoId) to the repo-intake API module.
+2. Add a Behavior Map panel to the repo detail UI.
+3. Add renderBehaviorMap(data) to the repo renderer.
+4. Update the controller so Behavior Map loads alongside all other panels.
 5. Reuse existing architecture and styling patterns.
 
 Verification:
 1. Run node --check on changed JS files.
 2. Start the server with npm start.
-3. Test GET /api/repos/:id/dependency-map.
+3. Test GET /api/repos/:id/behavior-map.
 4. Open http://localhost:3000/files.html.
-5. Confirm Project Map, Project Summary, and Symbol Map still render.
-6. Confirm Dependency Map panel appears.
+5. Confirm all existing panels still render.
+6. Confirm Behavior Map panel appears.
 7. Confirm switching repos updates all panels.
 8. Confirm no browser console errors.
 ```
@@ -1753,8 +1841,9 @@ Home initializer works.
 Project Map v1 is complete and merged into main.
 Project Summary v1 is complete and merged into main.
 Symbol Map v1 is complete and merged into main.
+Dependency Map v1 is complete and verified on feature/dependency-map-v1.
 
-The next meaningful product layer is Dependency Map v1.
+The next meaningful product layer is Behavior Map v1.
 
 Current build order:
 
@@ -1763,8 +1852,8 @@ Repo Intake ✅
 Project Map v1 ✅
 Project Summary v1 ✅
 Symbol Map v1 ✅
-Dependency Map v1 ← next
-Behavior Map v1
+Dependency Map v1 ✅
+Behavior Map v1 ← next
 Algorithm Map v1
 Recovery Assistant
 AI/local model router
