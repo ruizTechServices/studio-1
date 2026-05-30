@@ -19,6 +19,7 @@ import {
   repoSummary,
   projectMap,
   projectSummary,
+  symbolMap,
   deleteRepo,
   saveRepo,
   detectRepoName,
@@ -227,6 +228,16 @@ router.get("/:id/project-summary", validate({ params: repoIdParams }), (request,
   }
 
   response.json(projectSummary(row));
+});
+
+router.get("/:id/symbol-map", validate({ params: repoIdParams }), (request, response) => {
+  const row = db.prepare("SELECT * FROM repos WHERE id = ?").get(request.params.id);
+  if (!row) {
+    response.status(404).json({ error: "Repo not found" });
+    return;
+  }
+
+  response.json(symbolMap(row));
 });
 
 router.get("/:id/project-map", validate({ params: repoIdParams }), (request, response) => {

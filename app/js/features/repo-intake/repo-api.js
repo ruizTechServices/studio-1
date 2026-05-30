@@ -51,6 +51,11 @@ export async function fetchProjectSummary(repoId) {
   return readApiJson(response);
 }
 
+export async function fetchSymbolMap(repoId) {
+  const response = await fetch(`/api/repos/${encodeURIComponent(repoId)}/symbol-map`);
+  return readApiJson(response);
+}
+
 export async function persistActionEvent(event) {
   const response = await fetch("/api/events", {
     method: "POST",

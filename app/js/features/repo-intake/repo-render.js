@@ -370,6 +370,87 @@ export function renderProjectSummary(data) {
   `;
 }
 
+const SYMBOL_COUNT_LABELS = {
+  imports: "Imports",
+  exports: "Exports",
+  functions: "Functions",
+  classes: "Classes",
+  methods: "Methods",
+  constants: "Constants",
+  routeHandlers: "Routes",
+  schemas: "Schemas"
+};
+
+const SYMBOL_BADGE_LABELS = {
+  import: "import",
+  export: "export",
+  function: "fn",
+  class: "class",
+  method: "method",
+  constant: "const",
+  routeHandler: "route",
+  schema: "schema"
+};
+
+export function renderSymbolMap(data) {
+  const panel = document.querySelector("#symbolMapPanel");
+  if (!panel) {
+    return;
+  }
+
+  if (!data) {
+    panel.innerHTML = "";
+    return;
+  }
+
+  const { repo, summary, files } = data;
+
+  const countPills = Object.entries(summary.counts)
+    .filter(([, n]) => n > 0)
+    .map(([key, n]) => `
+      <div class="symbol-map-count-pill">
+        <span class="symbol-badge symbol-badge--${escapeHtml(key)}">${escapeHtml(SYMBOL_COUNT_LABELS[key] || key)}</span>
+        <strong>${n}</strong>
+      </div>
+    `).join("");
+
+  const fileSections = files
+    .map((file) => {
+      const symbolRows = file.symbols.map((sym) => `
+        <div class="symbol-row">
+          <span class="symbol-badge symbol-badge--${escapeHtml(sym.type)}">${escapeHtml(SYMBOL_BADGE_LABELS[sym.type] || sym.type)}</span>
+          <span class="symbol-name">${escapeHtml(sym.name)}</span>
+          <span class="symbol-line">L${sym.line}</span>
+        </div>
+      `).join("");
+
+      return `
+        <details class="symbol-map-file">
+          <summary>
+            <span class="symbol-map-file-icon">${icon("file")}</span>
+            <span class="symbol-map-file-path">${escapeHtml(file.path)}</span>
+            <span class="symbol-map-file-lang">${escapeHtml(file.language)}</span>
+            <span class="symbol-map-file-count">${file.symbols.length}</span>
+          </summary>
+          <div class="symbol-map-file-symbols">${symbolRows}</div>
+        </details>
+      `;
+    }).join("");
+
+  panel.innerHTML = `
+    <div class="symbol-map-head">
+      <div>
+        <h2 id="symbolMapTitle">Symbol Map</h2>
+        <p>${escapeHtml(repo.name)} · ${summary.totalFilesScanned} files scanned · ${summary.totalSymbols} symbols</p>
+      </div>
+    </div>
+    ${countPills.length ? `<div class="symbol-map-counts">${countPills}</div>` : ""}
+    <div class="symbol-map-files">
+      ${fileSections || `<p class="symbol-map-empty">No symbols found in JS/TS files.</p>`}
+    </div>
+  `;
+}
+
 export function renderActionLogs() {
   renderActionLogPanel(
     "repoActionLog",
