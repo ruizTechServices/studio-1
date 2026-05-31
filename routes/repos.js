@@ -21,6 +21,7 @@ import {
   projectSummary,
   symbolMap,
   dependencyMap,
+  behaviorMap,
   deleteRepo,
   saveRepo,
   detectRepoName,
@@ -249,6 +250,16 @@ router.get("/:id/dependency-map", validate({ params: repoIdParams }), (request, 
   }
 
   response.json(dependencyMap(row));
+});
+
+router.get("/:id/behavior-map", validate({ params: repoIdParams }), (request, response) => {
+  const row = db.prepare("SELECT * FROM repos WHERE id = ?").get(request.params.id);
+  if (!row) {
+    response.status(404).json({ error: "Repo not found" });
+    return;
+  }
+
+  response.json(behaviorMap(row));
 });
 
 router.get("/:id/project-map", validate({ params: repoIdParams }), (request, response) => {

@@ -558,6 +558,148 @@ export function renderDependencyMap(data) {
   `;
 }
 
+const BEHAVIOR_LABELS = {
+  eventListener: "Event Listener",
+  networkCall: "Network Call",
+  asyncFlow: "Async / Await",
+  domMutation: "DOM Mutation",
+  formHandling: "Form / Input",
+  navigationFlow: "Navigation",
+  crudCreate: "Create",
+  crudRead: "Read / Query",
+  crudUpdate: "Update",
+  crudDelete: "Delete",
+  storageOp: "Storage",
+  authOp: "Auth",
+  errorHandling: "Error Handling",
+  timerBased: "Timer",
+  fileOp: "File / IO"
+};
+
+export function renderBehaviorMap(data) {
+  const panel = document.querySelector("#behaviorMapPanel");
+  if (!panel) return;
+
+  if (!data) {
+    panel.innerHTML = "";
+    return;
+  }
+
+  const { repo, summary, areas, files, notableFiles } = data;
+
+  const statPills = [
+    { label: "Files scanned", value: summary.totalFilesScanned },
+    { label: "With behaviors", value: summary.totalFilesWithBehaviors },
+    { label: "Total signals", value: summary.totalBehaviors }
+  ].map(({ label, value }) => `
+    <div class="behavior-stat-pill">
+      <strong>${value}</strong>
+      <span>${escapeHtml(label)}</span>
+    </div>
+  `).join("");
+
+  const topBehaviorRows = Object.entries(summary.behaviorCounts)
+    .filter(([, n]) => n > 0)
+    .sort((a, b) => b[1] - a[1])
+    .map(([type, count]) => `
+      <div class="behavior-type-row">
+        <span class="behavior-badge behavior-badge--${escapeHtml(type)}">${escapeHtml(BEHAVIOR_LABELS[type] || type)}</span>
+        <strong class="behavior-count">${count}</strong>
+      </div>
+    `).join("");
+
+  const activeAreaCount = Object.values(areas).filter((a) => a.total > 0).length;
+  const areaRows = Object.entries(areas)
+    .filter(([, a]) => a.total > 0)
+    .sort((a, b) => b[1].total - a[1].total)
+    .map(([, a]) => `
+      <div class="behavior-area-row">
+        <span class="behavior-area-label">${escapeHtml(a.label)}</span>
+        <span class="behavior-area-count">${a.total}</span>
+        <div class="behavior-area-types">
+          ${a.types.map((t) => `<span class="behavior-badge behavior-badge--${escapeHtml(t)}">${escapeHtml(BEHAVIOR_LABELS[t] || t)}</span>`).join("")}
+        </div>
+      </div>
+    `).join("");
+
+  const notableRows = notableFiles.map((f) => `
+    <div class="behavior-notable-row">
+      <span class="behavior-notable-path">${escapeHtml(f.path)}</span>
+      <span class="behavior-notable-count">${f.totalBehaviors}</span>
+      <div class="behavior-notable-types">
+        ${f.topTypes.map((t) => `<span class="behavior-badge behavior-badge--${escapeHtml(t)}">${escapeHtml(BEHAVIOR_LABELS[t] || t)}</span>`).join("")}
+      </div>
+    </div>
+  `).join("");
+
+  const fileSections = files.map((file) => {
+    const signalBlocks = file.behaviors.map((b) => {
+      const examples = b.examples.map((ex) => `
+        <div class="behavior-example-row">
+          <span class="behavior-example-line">L${ex.line}</span>
+          <code class="behavior-example-snippet">${escapeHtml(ex.snippet)}</code>
+        </div>
+      `).join("");
+
+      return `
+        <div class="behavior-signal">
+          <div class="behavior-signal-head">
+            <span class="behavior-badge behavior-badge--${escapeHtml(b.type)}">${escapeHtml(b.label)}</span>
+            <span class="behavior-signal-count">${b.count}</span>
+          </div>
+          ${examples ? `<div class="behavior-examples">${examples}</div>` : ""}
+        </div>
+      `;
+    }).join("");
+
+    return `
+      <details class="behavior-file">
+        <summary>
+          <span class="behavior-file-icon">${icon("file")}</span>
+          <span class="behavior-file-path">${escapeHtml(file.path)}</span>
+          <span class="behavior-file-count">${file.totalBehaviors}</span>
+        </summary>
+        <div class="behavior-file-signals">${signalBlocks}</div>
+      </details>
+    `;
+  }).join("");
+
+  panel.innerHTML = `
+    <div class="behavior-map-head">
+      <div>
+        <h2 id="behaviorMapTitle">Behavior Map</h2>
+        <p>${escapeHtml(repo.name)} · ${summary.totalFilesScanned} JS/TS files scanned</p>
+      </div>
+    </div>
+
+    <div class="behavior-stats">${statPills}</div>
+
+    <div class="behavior-sections">
+      ${areaRows ? `
+      <details class="behavior-section" open>
+        <summary><strong>Behavior areas</strong><span class="behavior-section-count">${activeAreaCount}</span></summary>
+        <div class="behavior-area-list">${areaRows}</div>
+      </details>` : ""}
+
+      ${topBehaviorRows ? `
+      <details class="behavior-section">
+        <summary><strong>Signal breakdown</strong><span class="behavior-section-count">${Object.values(summary.behaviorCounts).filter((n) => n > 0).length} types</span></summary>
+        <div class="behavior-type-list">${topBehaviorRows}</div>
+      </details>` : ""}
+
+      ${notableRows ? `
+      <details class="behavior-section">
+        <summary><strong>Most active files</strong><span class="behavior-section-count">${notableFiles.length}</span></summary>
+        <div class="behavior-notable-list">${notableRows}</div>
+      </details>` : ""}
+    </div>
+
+    <div class="behavior-files">
+      ${fileSections || `<p class="behavior-empty">No behavior signals found in JS/TS files.</p>`}
+    </div>
+  `;
+}
+
 export function renderActionLogs() {
   renderActionLogPanel(
     "repoActionLog",

@@ -61,6 +61,11 @@ export async function fetchDependencyMap(repoId) {
   return readApiJson(response);
 }
 
+export async function fetchBehaviorMap(repoId) {
+  const response = await fetch(`/api/repos/${encodeURIComponent(repoId)}/behavior-map`);
+  return readApiJson(response);
+}
+
 export async function persistActionEvent(event) {
   const response = await fetch("/api/events", {
     method: "POST",

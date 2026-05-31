@@ -1,6 +1,6 @@
 # studio-1 Current Project Handoff
 
-_Last updated: 2026-05-30_
+_Last updated: 2026-05-30 — Behavior Map v1 implemented on feature/behavior-map-v1_
 
 ## Purpose of this file
 
@@ -20,7 +20,7 @@ This file is the current root-level handoff for `studio-1`. It should be read fi
 Current branch:
 
 ```bash
-main
+feature/behavior-map-v1
 ```
 
 Latest known main base:
@@ -46,6 +46,8 @@ Project Map v1 is merged into main.
 Project Summary v1 is merged into main.
 Symbol Map v1 is merged into main.
 Dependency Map v1 is merged into main.
+Behavior Map v1 is implemented and verified on feature/behavior-map-v1.
+Behavior Map v1 is not merged into main yet.
 The current handoff is root-level at CURRENT_PROJECT_HANDOFF.md.
 ```
 
@@ -230,6 +232,7 @@ GET    /api/repos/:id/project-map
 GET    /api/repos/:id/project-summary
 GET    /api/repos/:id/symbol-map
 GET    /api/repos/:id/dependency-map
+GET    /api/repos/:id/behavior-map
 POST   /api/repos/upload
 POST   /api/repos/import-github
 DELETE /api/repos/:id
@@ -249,6 +252,8 @@ No API paths should be casually renamed. The frontend depends on this contract.
 `GET /api/repos/:id/symbol-map` is implemented and returns a structured Symbol Map extracted from stored JS/TS repo files using conservative regex/string parsing. No code is executed.
 
 `GET /api/repos/:id/dependency-map` is implemented and returns a structured Dependency Map showing which files import which other files, most-imported modules, and orphan files.
+
+`GET /api/repos/:id/behavior-map` is implemented on `feature/behavior-map-v1` and returns a structured Behavior Map showing behavioral signals grouped by area (UI, Network, Navigation, Data, Auth, Reliability, File/IO). Not yet merged into main.
 
 ---
 
@@ -280,6 +285,7 @@ lib/repos/projectMap.js
 lib/repos/projectSummary.js
 lib/repos/symbolMap.js
 lib/repos/dependencyMap.js
+lib/repos/behaviorMap.js
 ```
 
 `projectSummary()` reuses `projectMap()` instead of duplicating file grouping logic.
@@ -872,7 +878,80 @@ Important rule:
 
 > Dependency Map v1 is complete and merged into main.
 > Do not rebuild it unless the current implementation is broken.
-> The next product layer is Behavior Map v1.
+
+---
+
+## Behavior Map v1
+
+Behavior Map v1 is implemented and verified on `feature/behavior-map-v1`.
+
+Behavior Map v1 is not merged into main yet.
+
+Backend endpoint:
+
+```text
+GET /api/repos/:id/behavior-map
+```
+
+Backend helper:
+
+```text
+lib/repos/behaviorMap.js
+```
+
+Frontend files/functions involved:
+
+```text
+app/components/repo/repo-behavior-map.html
+fetchBehaviorMap()
+renderBehaviorMap()
+```
+
+Behavior Map v1 is read-only and deterministic.
+
+It reads stored JS/TS files from disk using `row.root_path` and `repo_files` records.
+
+It scans source files line-by-line using 15 behavioral signal detectors. No imported repo code is executed at any point.
+
+Supported extensions:
+
+```text
+.js  .jsx  .ts  .tsx  .mjs  .cjs
+```
+
+Behavioral areas:
+
+```text
+ui           - Event listeners, DOM mutations, form/input handling
+network      - Network calls (fetch/axios/XHR), async/await flows
+navigation   - Router pushes, window.location, history API
+data         - CRUD operations (create/read/update/delete), localStorage/sessionStorage
+auth         - Sign-in/out, authenticate, getSession, getUser
+reliability  - Error handling (try/catch, .catch, throw), timers (setTimeout, setInterval)
+io           - File system operations (fs.read/write, readFile, writeFile)
+```
+
+Signal types detected (15 total):
+
+```text
+eventListener   domMutation    formHandling
+networkCall     asyncFlow
+navigationFlow
+crudCreate      crudRead       crudUpdate     crudDelete     storageOp
+authOp
+errorHandling   timerBased
+fileOp
+```
+
+Files larger than 512 KB are skipped.
+
+Unreadable files are skipped silently.
+
+Important rule:
+
+> Behavior Map v1 is implemented on feature/behavior-map-v1.
+> Do not rebuild it unless the current implementation is broken.
+> The next product layer is Algorithm Map v1.
 
 ---
 
@@ -1260,6 +1339,7 @@ Project Map panel
 Project Summary panel
 Symbol Map panel
 Dependency Map panel
+Behavior Map panel
 Repo Map action log
 Global action log
 ```
@@ -1581,6 +1661,7 @@ GET /api/repos/:id/project-map -> 200 for a real repo id
 GET /api/repos/:id/project-summary -> 200 for a real repo id
 GET /api/repos/:id/symbol-map -> 200 for a real repo id
 GET /api/repos/:id/dependency-map -> 200 for a real repo id
+GET /api/repos/:id/behavior-map -> 200 for a real repo id
 ```
 
 Keep this script simple. Do not bring in Jest/Vitest yet unless the project actually needs it.
@@ -1651,12 +1732,12 @@ Project Map v1 ✅
 Project Summary v1 ✅
 Symbol Map v1 ✅
 Dependency Map v1 ✅
-Behavior Map v1 ← next
-Algorithm Map v1
+Behavior Map v1 ✅
+Algorithm Map v1 ← next
 smoke tests
 ```
 
-The current next step is Behavior Map v1, not AI orchestration.
+The current next step is Algorithm Map v1, not AI orchestration.
 
 ---
 
@@ -1692,7 +1773,7 @@ curl http://localhost:3000/api/events
 curl "http://localhost:3000/api/events?limit=abc"
 ```
 
-Check Project Map, Project Summary, Symbol Map, and Dependency Map for a real repo id:
+Check all map endpoints for a real repo id:
 
 ```bash
 curl -s "http://localhost:3000/api/repos" > repos.tmp.json
@@ -1702,6 +1783,7 @@ curl "http://localhost:3000/api/repos/$REPO_ID/project-map"
 curl "http://localhost:3000/api/repos/$REPO_ID/project-summary"
 curl "http://localhost:3000/api/repos/$REPO_ID/symbol-map"
 curl "http://localhost:3000/api/repos/$REPO_ID/dependency-map"
+curl "http://localhost:3000/api/repos/$REPO_ID/behavior-map"
 rm repos.tmp.json
 ```
 
@@ -1719,7 +1801,7 @@ Before making recommendations:
 6. Do not reintroduce stale paths like `app/script.js` or `app/styles.css`.
 7. Do not move logic back into `server.js`.
 8. Do not expose server internals in client error responses.
-9. Do not jump to AI orchestration before Dependency Map v1, Behavior Map v1, and Algorithm Map v1 are stable.
+9. Do not jump to AI orchestration before Behavior Map v1, Algorithm Map v1, and smoke tests are stable.
 10. Keep new work layered and deterministic before adding LLM behavior.
 
 Current build order:
@@ -1730,8 +1812,8 @@ Project Map v1 ✅
 Project Summary v1 ✅
 Symbol Map v1 ✅
 Dependency Map v1 ✅
-Behavior Map v1 ← current next task
-Algorithm Map v1
+Behavior Map v1 ✅
+Algorithm Map v1 ← current next task
 Recovery Assistant
 AI/local model router
 ```
@@ -1743,20 +1825,20 @@ AI/local model router
 Build:
 
 ```text
-Behavior Map v1
+Algorithm Map v1
 ```
 
-Behavior Map v1 should extract behavioral patterns from stored JS/TS files in the repo — things like event listeners, async flows, side effects, conditional branches, and exported function call patterns.
+Algorithm Map v1 should identify algorithmic patterns and logic structures in stored JS/TS files — things like sorting, searching, transformation pipelines, recursion, and stateful reduction patterns.
 
 It should answer:
 
 ```text
-What does each file do at runtime?
-Which files register event listeners?
-Which files make network calls (fetch, axios, etc.)?
-Which files have async/await flows?
-Which files mutate shared state?
-Which files are pure utilities?
+What algorithmic patterns exist in this repo?
+Which files contain sorting or searching logic?
+Which files contain transformation or mapping pipelines?
+Which files contain recursive patterns?
+Which files contain stateful reduction or accumulation?
+Which files are likely pure utilities versus orchestration?
 ```
 
 Rules:
@@ -1766,7 +1848,8 @@ No AI yet.
 No embeddings yet.
 No model routing yet.
 Keep it deterministic.
-Build on top of stored repo files, Symbol Map data, and Dependency Map data.
+Build on top of stored repo files, Symbol Map data, Dependency Map data, and Behavior Map data.
+Do not rewrite Project Map v1, Project Summary v1, Symbol Map v1, Dependency Map v1, or Behavior Map v1.
 ```
 
 Recommended first prompt for Claude, Codex, or another coding agent:
@@ -1774,47 +1857,47 @@ Recommended first prompt for Claude, Codex, or another coding agent:
 ```text
 Read CURRENT_PROJECT_HANDOFF.md first.
 
-We are on main after Dependency Map v1 was merged.
+We are on feature/behavior-map-v1. Behavior Map v1 is implemented and verified but not merged yet.
 
-Create a new branch feature/behavior-map-v1 before implementation.
+Create a new branch feature/algorithm-map-v1 before implementation.
 
-Implement Behavior Map v1 as a deterministic behavioral pattern extractor.
+Implement Algorithm Map v1 as a deterministic algorithmic pattern extractor.
 
 Important:
 - No AI.
 - No embeddings.
 - No model routing.
-- Do not rewrite Project Map v1, Project Summary v1, Symbol Map v1, or Dependency Map v1.
-- Build on the existing repo intake, file storage, Symbol Map, and Dependency Map foundation.
+- Do not rewrite Project Map v1, Project Summary v1, Symbol Map v1, Dependency Map v1, or Behavior Map v1.
+- Build on the existing repo intake, file storage, and map foundations.
 
 Goal:
-Add a read-only Behavior Map layer that shows what each file does at runtime based on static analysis.
+Add a read-only Algorithm Map layer that identifies algorithmic and logic patterns from stored JS/TS source files.
 
 Backend requirements:
-1. Add a Behavior Map helper under lib/repos/behaviorMap.js.
-2. Add GET /api/repos/:id/behavior-map.
+1. Add a Algorithm Map helper under lib/repos/algorithmMap.js.
+2. Add GET /api/repos/:id/algorithm-map.
 3. Reuse existing repoIdParams validation.
 4. Load the repo from SQLite.
 5. Return 404 if the repo does not exist.
 6. Use stored repo_files records and the same JS/TS file reading approach from symbolMap.js and dependencyMap.js.
 7. Only read files already accepted by repo intake filtering.
-8. Detect behavioral signals by scanning lines for known patterns.
-9. Return a structured response with: per-file behavior signals, summary counts, and notable files.
+8. Detect algorithm pattern signals by scanning lines for known patterns.
+9. Return a structured response with: per-file algorithm signals, summary counts, and notable files.
 
 Frontend requirements:
-1. Add fetchBehaviorMap(repoId) to the repo-intake API module.
-2. Add a Behavior Map panel to the repo detail UI.
-3. Add renderBehaviorMap(data) to the repo renderer.
-4. Update the controller so Behavior Map loads alongside all other panels.
+1. Add fetchAlgorithmMap(repoId) to the repo-intake API module.
+2. Add an Algorithm Map panel to the repo detail UI.
+3. Add renderAlgorithmMap(data) to the repo renderer.
+4. Update the controller so Algorithm Map loads alongside all other panels.
 5. Reuse existing architecture and styling patterns.
 
 Verification:
 1. Run node --check on changed JS files.
 2. Start the server with npm start.
-3. Test GET /api/repos/:id/behavior-map.
+3. Test GET /api/repos/:id/algorithm-map.
 4. Open http://localhost:3000/files.html.
 5. Confirm all existing panels still render.
-6. Confirm Behavior Map panel appears.
+6. Confirm Algorithm Map panel appears.
 7. Confirm switching repos updates all panels.
 8. Confirm no browser console errors.
 ```
@@ -1840,8 +1923,9 @@ Project Map v1 is complete and merged into main.
 Project Summary v1 is complete and merged into main.
 Symbol Map v1 is complete and merged into main.
 Dependency Map v1 is complete and merged into main.
+Behavior Map v1 is implemented and verified on feature/behavior-map-v1. Not yet merged into main.
 
-The next meaningful product layer is Behavior Map v1.
+The next meaningful product layer is Algorithm Map v1.
 
 Current build order:
 
@@ -1851,8 +1935,8 @@ Project Map v1 ✅
 Project Summary v1 ✅
 Symbol Map v1 ✅
 Dependency Map v1 ✅
-Behavior Map v1 ← next
-Algorithm Map v1
+Behavior Map v1 ✅
+Algorithm Map v1 ← current next task
 Recovery Assistant
 AI/local model router
 ```
