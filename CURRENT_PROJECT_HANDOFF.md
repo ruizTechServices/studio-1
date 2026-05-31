@@ -1,6 +1,6 @@
 # studio-1 Current Project Handoff
 
-_Last updated: 2026-05-30 — Behavior Map v1 implemented on feature/behavior-map-v1_
+_Last updated: 2026-05-30 — Behavior Map v1 merged into main_
 
 ## Purpose of this file
 
@@ -20,23 +20,23 @@ This file is the current root-level handoff for `studio-1`. It should be read fi
 Current branch:
 
 ```bash
-feature/behavior-map-v1
+main
 ```
 
 Latest known main base:
 
 ```bash
-feature/dependency-map-v1 merged into main
+feature/behavior-map-v1 merged into main
 ```
 
 Recent commits on main:
 
 ```bash
+merge: add behavior map v1
+feat: add behavior map v1
 feat: add dependency map v1
 feat: add symbol map v1
 63e2067 merge: add project summary v1
-79d4dea feat: add project summary v1
-bad79eb docs: update handoff after project map v1
 ```
 
 Current known state:
@@ -46,8 +46,7 @@ Project Map v1 is merged into main.
 Project Summary v1 is merged into main.
 Symbol Map v1 is merged into main.
 Dependency Map v1 is merged into main.
-Behavior Map v1 is implemented and verified on feature/behavior-map-v1.
-Behavior Map v1 is not merged into main yet.
+Behavior Map v1 is merged into main.
 The current handoff is root-level at CURRENT_PROJECT_HANDOFF.md.
 ```
 
@@ -253,7 +252,7 @@ No API paths should be casually renamed. The frontend depends on this contract.
 
 `GET /api/repos/:id/dependency-map` is implemented and returns a structured Dependency Map showing which files import which other files, most-imported modules, and orphan files.
 
-`GET /api/repos/:id/behavior-map` is implemented on `feature/behavior-map-v1` and returns a structured Behavior Map showing behavioral signals grouped by area (UI, Network, Navigation, Data, Auth, Reliability, File/IO). Not yet merged into main.
+`GET /api/repos/:id/behavior-map` is implemented and returns a structured Behavior Map showing behavioral signals grouped by area (UI, Network, Navigation, Data, Auth, Reliability, File/IO).
 
 ---
 
@@ -802,7 +801,6 @@ Important rule:
 
 > Symbol Map v1 is complete and merged into main.
 > Do not rebuild it unless the current implementation is broken.
-> The next product layer is Behavior Map v1.
 
 ---
 
@@ -883,9 +881,7 @@ Important rule:
 
 ## Behavior Map v1
 
-Behavior Map v1 is implemented and verified on `feature/behavior-map-v1`.
-
-Behavior Map v1 is not merged into main yet.
+Behavior Map v1 is implemented, verified, and merged into main.
 
 Backend endpoint:
 
@@ -949,7 +945,7 @@ Unreadable files are skipped silently.
 
 Important rule:
 
-> Behavior Map v1 is implemented on feature/behavior-map-v1.
+> Behavior Map v1 is complete and merged into main.
 > Do not rebuild it unless the current implementation is broken.
 > The next product layer is Algorithm Map v1.
 
@@ -1473,7 +1469,7 @@ HEAD -> main, origin/main
 Latest merge commit observed:
 
 ```text
-feat: add dependency map v1
+merge: add behavior map v1
 ```
 
 Verified checks:
@@ -1483,11 +1479,13 @@ Project Map endpoint works.
 Project Summary endpoint works.
 Symbol Map endpoint works.
 Dependency Map endpoint works.
+Behavior Map endpoint works.
 Project Map panel renders.
 Project Summary panel renders.
 Symbol Map panel renders.
 Dependency Map panel renders.
-Switching repos updates Project Map, Project Summary, Symbol Map, and Dependency Map.
+Behavior Map panel renders.
+Switching repos updates all panels.
 ```
 
 API checks:
@@ -1857,7 +1855,7 @@ Recommended first prompt for Claude, Codex, or another coding agent:
 ```text
 Read CURRENT_PROJECT_HANDOFF.md first.
 
-We are on feature/behavior-map-v1. Behavior Map v1 is implemented and verified but not merged yet.
+We are on main after Behavior Map v1 was merged.
 
 Create a new branch feature/algorithm-map-v1 before implementation.
 
@@ -1923,7 +1921,7 @@ Project Map v1 is complete and merged into main.
 Project Summary v1 is complete and merged into main.
 Symbol Map v1 is complete and merged into main.
 Dependency Map v1 is complete and merged into main.
-Behavior Map v1 is implemented and verified on feature/behavior-map-v1. Not yet merged into main.
+Behavior Map v1 is complete and merged into main.
 
 The next meaningful product layer is Algorithm Map v1.
 
