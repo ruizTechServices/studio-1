@@ -1,6 +1,6 @@
 # studio-1 Current Project Handoff
 
-_Last updated: 2026-05-31 — Recovery Assistant v1 implemented on feature/recovery-assistant-v1_
+_Last updated: 2026-06-01 — Recovery Assistant v1 merged into main_
 
 ## Purpose of this file
 
@@ -20,23 +20,23 @@ This file is the current root-level handoff for `studio-1`. It should be read fi
 Current branch:
 
 ```bash
-feature/recovery-assistant-v1
+main
 ```
 
 Latest known main base:
 
 ```bash
-feature/algorithm-map-v1 merged into main
+feature/recovery-assistant-v1 merged into main
 ```
 
 Recent commits on main:
 
 ```bash
+merge: add recovery assistant v1
+feat: add recovery assistant v1
 merge: add algorithm map v1
 feat: add algorithm map v1
-docs: update handoff after behavior map merge
-merge: add behavior map v1
-feat: add behavior map v1
+docs: update handoff after algorithm map merge
 ```
 
 Current known state:
@@ -48,8 +48,7 @@ Symbol Map v1 is merged into main.
 Dependency Map v1 is merged into main.
 Behavior Map v1 is merged into main.
 Algorithm Map v1 is merged into main.
-Recovery Assistant v1 is implemented and verified on feature/recovery-assistant-v1.
-Recovery Assistant v1 is not merged into main yet.
+Recovery Assistant v1 is merged into main.
 The current handoff is root-level at CURRENT_PROJECT_HANDOFF.md.
 ```
 
@@ -261,7 +260,7 @@ No API paths should be casually renamed. The frontend depends on this contract.
 
 `GET /api/repos/:id/algorithm-map` is implemented and returns a structured Algorithm Map showing algorithmic signals grouped by category (Search & Sort, Transform Pipelines, Aggregation, Validation & Parsing, Control & Workflow, Safety, File / IO & Graph).
 
-`GET /api/repos/:id/recovery-assistant` is implemented on `feature/recovery-assistant-v1` and returns a structured Recovery Assistant synthesis: repo overview, detected capabilities, inspect-first files, missing/light areas, suggested next steps, and recent activity. Not yet merged into main.
+`GET /api/repos/:id/recovery-assistant` is implemented and returns a structured Recovery Assistant synthesis: repo overview, detected capabilities, inspect-first files, missing/light areas, suggested next steps, and recent activity.
 
 ---
 
@@ -1045,9 +1044,7 @@ Important rule:
 
 ## Recovery Assistant v1
 
-Recovery Assistant v1 is implemented and verified on `feature/recovery-assistant-v1`.
-
-Recovery Assistant v1 is not merged into main yet.
+Recovery Assistant v1 is implemented, verified, and merged into main.
 
 Backend endpoint:
 
@@ -1123,7 +1120,7 @@ evidence: 944 import edges, 1285 behavioral signals, 1512 algorithm signals, 10 
 
 Important rule:
 
-> Recovery Assistant v1 is implemented on feature/recovery-assistant-v1.
+> Recovery Assistant v1 is merged into main.
 > Do not rebuild it unless the current implementation is broken.
 > The next product layer is AI/local model router.
 
@@ -1918,11 +1915,11 @@ Symbol Map v1 ✅
 Dependency Map v1 ✅
 Behavior Map v1 ✅
 Algorithm Map v1 ✅
-Recovery Assistant ← next
+Recovery Assistant v1 ✅
 smoke tests
 ```
 
-The current next step is AI/local model router. Recovery Assistant v1 is implemented on feature/recovery-assistant-v1.
+The current next step is AI/local model router.
 
 ---
 
@@ -1988,7 +1985,7 @@ Before making recommendations:
 6. Do not reintroduce stale paths like `app/script.js` or `app/styles.css`.
 7. Do not move logic back into `server.js`.
 8. Do not expose server internals in client error responses.
-9. Do not jump to AI orchestration before Recovery Assistant v1 is merged into main.
+9. Do not jump to AI orchestration before smoke tests are in place.
 10. Keep new work layered and deterministic before adding LLM behavior.
 
 Current build order:
@@ -2001,7 +1998,7 @@ Symbol Map v1 ✅
 Dependency Map v1 ✅
 Behavior Map v1 ✅
 Algorithm Map v1 ✅
-Recovery Assistant v1 ✅ (on feature/recovery-assistant-v1, not merged)
+Recovery Assistant v1 ✅
 AI/local model router ← current next task
 ```
 
@@ -2014,8 +2011,6 @@ Build:
 ```text
 AI/local model router
 ```
-
-Recovery Assistant v1 is complete on `feature/recovery-assistant-v1`. Merge it into main first, then proceed to the AI/local model router.
 
 The AI/local model router should add the first LLM-powered answer layer on top of the existing deterministic maps and Recovery Assistant data.
 
@@ -2042,9 +2037,9 @@ Symbol Map v1 is complete and merged into main.
 Dependency Map v1 is complete and merged into main.
 Behavior Map v1 is complete and merged into main.
 Algorithm Map v1 is complete and merged into main.
-Recovery Assistant v1 is implemented and verified on feature/recovery-assistant-v1. Not yet merged into main.
+Recovery Assistant v1 is complete and merged into main.
 
-The next meaningful product layer is AI/local model router (after Recovery Assistant v1 is merged).
+The next meaningful product layer is AI/local model router.
 
 Current build order:
 
@@ -2056,6 +2051,6 @@ Symbol Map v1 ✅
 Dependency Map v1 ✅
 Behavior Map v1 ✅
 Algorithm Map v1 ✅
-Recovery Assistant v1 ✅ (feature/recovery-assistant-v1, not merged)
+Recovery Assistant v1 ✅
 AI/local model router ← current next task
 ```
