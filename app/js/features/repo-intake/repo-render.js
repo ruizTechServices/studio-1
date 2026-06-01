@@ -700,6 +700,149 @@ export function renderBehaviorMap(data) {
   `;
 }
 
+const ALGORITHM_LABELS = {
+  sorting: "Sorting",
+  searching: "Searching",
+  filtering: "Filtering",
+  mapping: "Mapping / Transform",
+  reduction: "Reduction / Accumulation",
+  grouping: "Grouping / Aggregation",
+  counting: "Counting / Scoring",
+  validation: "Validation",
+  parsing: "Parsing / Extraction",
+  matching: "Matching / Resolution",
+  errorHandling: "Error Handling",
+  safetyGuard: "Safety Guard",
+  fileProcessing: "File Processing",
+  graphBuild: "Graph / Dependency",
+  workflow: "State / Update Workflow",
+  recursion: "Recursion (candidate)"
+};
+
+export function renderAlgorithmMap(data) {
+  const panel = document.querySelector("#algorithmMapPanel");
+  if (!panel) return;
+
+  if (!data) {
+    panel.innerHTML = "";
+    return;
+  }
+
+  const { repo, summary, categories, files, notableFiles } = data;
+
+  const statPills = [
+    { label: "Files scanned", value: summary.totalFilesScanned },
+    { label: "With signals", value: summary.totalFilesWithSignals },
+    { label: "Total signals", value: summary.totalSignals }
+  ].map(({ label, value }) => `
+    <div class="algorithm-stat-pill">
+      <strong>${value}</strong>
+      <span>${escapeHtml(label)}</span>
+    </div>
+  `).join("");
+
+  const topSignalRows = Object.entries(summary.signalCounts)
+    .filter(([, n]) => n > 0)
+    .sort((a, b) => b[1] - a[1])
+    .map(([type, count]) => `
+      <div class="algorithm-type-row">
+        <span class="algorithm-badge algorithm-badge--${escapeHtml(type)}">${escapeHtml(ALGORITHM_LABELS[type] || type)}</span>
+        <strong class="algorithm-count">${count}</strong>
+      </div>
+    `).join("");
+
+  const activeCategoryCount = Object.values(categories).filter((c) => c.total > 0).length;
+  const categoryRows = Object.entries(categories)
+    .filter(([, c]) => c.total > 0)
+    .sort((a, b) => b[1].total - a[1].total)
+    .map(([, c]) => `
+      <div class="algorithm-category-row">
+        <span class="algorithm-category-label">${escapeHtml(c.label)}</span>
+        <span class="algorithm-category-count">${c.total}</span>
+        <div class="algorithm-category-types">
+          ${c.types.map((t) => `<span class="algorithm-badge algorithm-badge--${escapeHtml(t)}">${escapeHtml(ALGORITHM_LABELS[t] || t)}</span>`).join("")}
+        </div>
+      </div>
+    `).join("");
+
+  const notableRows = notableFiles.map((f) => `
+    <div class="algorithm-notable-row">
+      <span class="algorithm-notable-path">${escapeHtml(f.path)}</span>
+      <span class="algorithm-notable-count">${f.totalSignals}</span>
+      <div class="algorithm-notable-types">
+        ${f.topTypes.map((t) => `<span class="algorithm-badge algorithm-badge--${escapeHtml(t)}">${escapeHtml(ALGORITHM_LABELS[t] || t)}</span>`).join("")}
+      </div>
+    </div>
+  `).join("");
+
+  const fileSections = files.map((file) => {
+    const signalBlocks = file.signals.map((s) => {
+      const examples = s.examples.map((ex) => `
+        <div class="algorithm-example-row">
+          <span class="algorithm-example-line">L${ex.line}</span>
+          <code class="algorithm-example-snippet">${escapeHtml(ex.snippet)}</code>
+        </div>
+      `).join("");
+
+      return `
+        <div class="algorithm-signal">
+          <div class="algorithm-signal-head">
+            <span class="algorithm-badge algorithm-badge--${escapeHtml(s.type)}">${escapeHtml(s.label)}</span>
+            <span class="algorithm-signal-count">${s.count}</span>
+          </div>
+          ${examples ? `<div class="algorithm-examples">${examples}</div>` : ""}
+        </div>
+      `;
+    }).join("");
+
+    return `
+      <details class="algorithm-file">
+        <summary>
+          <span class="algorithm-file-icon">${icon("file")}</span>
+          <span class="algorithm-file-path">${escapeHtml(file.path)}</span>
+          <span class="algorithm-file-count">${file.totalSignals}</span>
+        </summary>
+        <div class="algorithm-file-signals">${signalBlocks}</div>
+      </details>
+    `;
+  }).join("");
+
+  panel.innerHTML = `
+    <div class="algorithm-map-head">
+      <div>
+        <h2 id="algorithmMapTitle">Algorithm Map</h2>
+        <p>${escapeHtml(repo.name)} · ${summary.totalFilesScanned} JS/TS files scanned</p>
+      </div>
+    </div>
+
+    <div class="algorithm-stats">${statPills}</div>
+
+    <div class="algorithm-sections">
+      ${categoryRows ? `
+      <details class="algorithm-section" open>
+        <summary><strong>Algorithm categories</strong><span class="algorithm-section-count">${activeCategoryCount}</span></summary>
+        <div class="algorithm-category-list">${categoryRows}</div>
+      </details>` : ""}
+
+      ${topSignalRows ? `
+      <details class="algorithm-section">
+        <summary><strong>Signal breakdown</strong><span class="algorithm-section-count">${Object.values(summary.signalCounts).filter((n) => n > 0).length} types</span></summary>
+        <div class="algorithm-type-list">${topSignalRows}</div>
+      </details>` : ""}
+
+      ${notableRows ? `
+      <details class="algorithm-section">
+        <summary><strong>Most algorithmic files</strong><span class="algorithm-section-count">${notableFiles.length}</span></summary>
+        <div class="algorithm-notable-list">${notableRows}</div>
+      </details>` : ""}
+    </div>
+
+    <div class="algorithm-files">
+      ${fileSections || `<p class="algorithm-empty">No algorithmic signals found in JS/TS files.</p>`}
+    </div>
+  `;
+}
+
 export function renderActionLogs() {
   renderActionLogPanel(
     "repoActionLog",
