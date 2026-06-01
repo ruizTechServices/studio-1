@@ -23,6 +23,7 @@ import {
   dependencyMap,
   behaviorMap,
   algorithmMap,
+  recoveryAssistant,
   deleteRepo,
   saveRepo,
   detectRepoName,
@@ -271,6 +272,16 @@ router.get("/:id/algorithm-map", validate({ params: repoIdParams }), (request, r
   }
 
   response.json(algorithmMap(row));
+});
+
+router.get("/:id/recovery-assistant", validate({ params: repoIdParams }), (request, response) => {
+  const row = db.prepare("SELECT * FROM repos WHERE id = ?").get(request.params.id);
+  if (!row) {
+    response.status(404).json({ error: "Repo not found" });
+    return;
+  }
+
+  response.json(recoveryAssistant(row));
 });
 
 router.get("/:id/project-map", validate({ params: repoIdParams }), (request, response) => {

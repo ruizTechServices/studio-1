@@ -1,6 +1,6 @@
 # studio-1 Current Project Handoff
 
-_Last updated: 2026-05-31 — Algorithm Map v1 merged into main_
+_Last updated: 2026-05-31 — Recovery Assistant v1 implemented on feature/recovery-assistant-v1_
 
 ## Purpose of this file
 
@@ -20,7 +20,7 @@ This file is the current root-level handoff for `studio-1`. It should be read fi
 Current branch:
 
 ```bash
-main
+feature/recovery-assistant-v1
 ```
 
 Latest known main base:
@@ -48,6 +48,8 @@ Symbol Map v1 is merged into main.
 Dependency Map v1 is merged into main.
 Behavior Map v1 is merged into main.
 Algorithm Map v1 is merged into main.
+Recovery Assistant v1 is implemented and verified on feature/recovery-assistant-v1.
+Recovery Assistant v1 is not merged into main yet.
 The current handoff is root-level at CURRENT_PROJECT_HANDOFF.md.
 ```
 
@@ -234,6 +236,7 @@ GET    /api/repos/:id/symbol-map
 GET    /api/repos/:id/dependency-map
 GET    /api/repos/:id/behavior-map
 GET    /api/repos/:id/algorithm-map
+GET    /api/repos/:id/recovery-assistant
 POST   /api/repos/upload
 POST   /api/repos/import-github
 DELETE /api/repos/:id
@@ -257,6 +260,8 @@ No API paths should be casually renamed. The frontend depends on this contract.
 `GET /api/repos/:id/behavior-map` is implemented and returns a structured Behavior Map showing behavioral signals grouped by area (UI, Network, Navigation, Data, Auth, Reliability, File/IO).
 
 `GET /api/repos/:id/algorithm-map` is implemented and returns a structured Algorithm Map showing algorithmic signals grouped by category (Search & Sort, Transform Pipelines, Aggregation, Validation & Parsing, Control & Workflow, Safety, File / IO & Graph).
+
+`GET /api/repos/:id/recovery-assistant` is implemented on `feature/recovery-assistant-v1` and returns a structured Recovery Assistant synthesis: repo overview, detected capabilities, inspect-first files, missing/light areas, suggested next steps, and recent activity. Not yet merged into main.
 
 ---
 
@@ -290,6 +295,7 @@ lib/repos/symbolMap.js
 lib/repos/dependencyMap.js
 lib/repos/behaviorMap.js
 lib/repos/algorithmMap.js
+lib/repos/recoveryAssistant.js
 ```
 
 `projectSummary()` reuses `projectMap()` instead of duplicating file grouping logic.
@@ -1037,6 +1043,92 @@ Important rule:
 
 ---
 
+## Recovery Assistant v1
+
+Recovery Assistant v1 is implemented and verified on `feature/recovery-assistant-v1`.
+
+Recovery Assistant v1 is not merged into main yet.
+
+Backend endpoint:
+
+```text
+GET /api/repos/:id/recovery-assistant
+```
+
+Backend helper:
+
+```text
+lib/repos/recoveryAssistant.js
+```
+
+Frontend files/functions involved:
+
+```text
+app/components/repo/repo-recovery-assistant.html
+fetchRecoveryAssistant()
+renderRecoveryAssistant()
+```
+
+Recovery Assistant v1 is read-only and deterministic.
+
+It synthesizes data from all existing map helpers without re-implementing their scanning logic.
+
+Map helpers called internally:
+
+```text
+projectMap()        - for file categories and all paths
+projectSummary()    - for project type, frameworks, capabilities, missing areas
+dependencyMap()     - for most-imported internal hub files
+behaviorMap()       - for behavior-active notable files
+algorithmMap()      - for algorithm-active notable files
+```
+
+It also queries `action_events` for the 10 most recent events matching the repo's `entity_id` or `entity_name`.
+
+Response sections:
+
+```text
+repo            - id, name, createdAt, sourceType, totalFiles
+overview        - projectType, confidence, primaryLanguage, frameworks
+capabilities    - detected capabilities with supporting evidence
+inspectFirst    - top files to review first (scored by hub importance + behavior + algorithm signals + entry point names)
+missingOrLight  - areas missing or under-represented in the repo
+nextSteps       - deterministic suggestions based on missing areas and central files
+recentActivity  - last 10 action events for this repo
+evidence        - summary of what each map contributed
+```
+
+`inspectFirst` scoring:
+
+```text
++3 for most-imported internal dependency hubs (top 6)
++2 for behavior-active notable files (top 6)
++2 for algorithm-active notable files (top 6)
++1 for files matching important entry point names (server.js, index.js, app.py, etc.)
+```
+
+Deduped and capped at 8 files.
+
+Verified output (luis_ruiz_2 repo, 444 files):
+
+```text
+projectType: Next.js web application
+confidence: high
+capabilities: 9 detected (frontend pages/routes, component system, API layer, auth, payments, AI, database, tests, docs)
+inspectFirst: 8 files (dependency hubs + behavior-active)
+missingOrLight: [] (well-rounded project)
+nextSteps: 1 (file review recommendation)
+evidence: 944 import edges, 1285 behavioral signals, 1512 algorithm signals, 10 recent events
+```
+
+Important rule:
+
+> Recovery Assistant v1 is implemented on feature/recovery-assistant-v1.
+> Do not rebuild it unless the current implementation is broken.
+> The next product layer is AI/local model router.
+
+---
+
 ## Repo deletion
 
 The app supports repo deletion through:
@@ -1423,6 +1515,7 @@ Symbol Map panel
 Dependency Map panel
 Behavior Map panel
 Algorithm Map panel
+Recovery Assistant panel
 Repo Map action log
 Global action log
 ```
@@ -1568,12 +1661,14 @@ Symbol Map endpoint works.
 Dependency Map endpoint works.
 Behavior Map endpoint works.
 Algorithm Map endpoint works.
+Recovery Assistant endpoint works.
 Project Map panel renders.
 Project Summary panel renders.
 Symbol Map panel renders.
 Dependency Map panel renders.
 Behavior Map panel renders.
 Algorithm Map panel renders.
+Recovery Assistant panel renders.
 Switching repos updates all panels.
 ```
 
@@ -1750,6 +1845,7 @@ GET /api/repos/:id/symbol-map -> 200 for a real repo id
 GET /api/repos/:id/dependency-map -> 200 for a real repo id
 GET /api/repos/:id/behavior-map -> 200 for a real repo id
 GET /api/repos/:id/algorithm-map -> 200 for a real repo id
+GET /api/repos/:id/recovery-assistant -> 200 for a real repo id
 ```
 
 Keep this script simple. Do not bring in Jest/Vitest yet unless the project actually needs it.
@@ -1826,7 +1922,7 @@ Recovery Assistant ← next
 smoke tests
 ```
 
-The current next step is Recovery Assistant, not AI orchestration.
+The current next step is AI/local model router. Recovery Assistant v1 is implemented on feature/recovery-assistant-v1.
 
 ---
 
@@ -1874,6 +1970,7 @@ curl "http://localhost:3000/api/repos/$REPO_ID/symbol-map"
 curl "http://localhost:3000/api/repos/$REPO_ID/dependency-map"
 curl "http://localhost:3000/api/repos/$REPO_ID/behavior-map"
 curl "http://localhost:3000/api/repos/$REPO_ID/algorithm-map"
+curl "http://localhost:3000/api/repos/$REPO_ID/recovery-assistant"
 rm repos.tmp.json
 ```
 
@@ -1891,7 +1988,7 @@ Before making recommendations:
 6. Do not reintroduce stale paths like `app/script.js` or `app/styles.css`.
 7. Do not move logic back into `server.js`.
 8. Do not expose server internals in client error responses.
-9. Do not jump to AI orchestration before Algorithm Map v1, Recovery Assistant, and smoke tests are stable.
+9. Do not jump to AI orchestration before Recovery Assistant v1 is merged into main.
 10. Keep new work layered and deterministic before adding LLM behavior.
 
 Current build order:
@@ -1904,8 +2001,8 @@ Symbol Map v1 ✅
 Dependency Map v1 ✅
 Behavior Map v1 ✅
 Algorithm Map v1 ✅
-Recovery Assistant ← current next task
-AI/local model router
+Recovery Assistant v1 ✅ (on feature/recovery-assistant-v1, not merged)
+AI/local model router ← current next task
 ```
 
 ---
@@ -1915,81 +2012,12 @@ AI/local model router
 Build:
 
 ```text
-Recovery Assistant
+AI/local model router
 ```
 
-Recovery Assistant should be the first deterministic answer layer that consumes Project Map, Project Summary, Symbol Map, Dependency Map, Behavior Map, and Algorithm Map data and helps the user recall what a repo is about and where to pick back up.
+Recovery Assistant v1 is complete on `feature/recovery-assistant-v1`. Merge it into main first, then proceed to the AI/local model router.
 
-It should answer:
-
-```text
-What is this project, in one paragraph?
-What did I last work on (by file recency, action events, and notable files)?
-What are the most important files to read first?
-What would a sensible next step be, based on missing/light capabilities?
-Where is auth, payments, AI, database, and persistence logic?
-Where do recent action events point me?
-```
-
-Rules:
-
-```text
-No AI yet.
-No embeddings yet.
-No model routing yet.
-Keep it deterministic.
-Build on top of stored repo files, action events, and the existing Project/Symbol/Dependency/Behavior/Algorithm Map data.
-Do not rewrite Project Map v1, Project Summary v1, Symbol Map v1, Dependency Map v1, Behavior Map v1, or Algorithm Map v1.
-```
-
-Recommended first prompt for Claude, Codex, or another coding agent:
-
-```text
-Read CURRENT_PROJECT_HANDOFF.md first.
-
-We are on main after Algorithm Map v1 was merged.
-
-Create a new branch feature/recovery-assistant-v1 before implementation.
-
-Implement Recovery Assistant v1 as a deterministic, rule-based recap layer that pulls from existing map data and action events.
-
-Important:
-- No AI.
-- No embeddings.
-- No model routing.
-- Do not rewrite any existing v1 map.
-- Build on the existing repo intake, file storage, action_events, and map foundations.
-
-Goal:
-Add a read-only Recovery Assistant layer that gives the user a structured recap of a repo — what it is, where the important files are, what was last worked on, and where to pick back up.
-
-Backend requirements:
-1. Add a Recovery Assistant helper under lib/repos/recoveryAssistant.js.
-2. Add GET /api/repos/:id/recovery-assistant.
-3. Reuse existing repoIdParams validation.
-4. Load the repo from SQLite.
-5. Return 404 if the repo does not exist.
-6. Reuse projectMap, projectSummary, symbolMap, dependencyMap, behaviorMap, and algorithmMap helpers.
-7. Pull recent action_events relevant to this repo for "last worked on" hints.
-8. Return a structured response with: repo recap, important files, suggested next steps, and recent activity highlights.
-
-Frontend requirements:
-1. Add fetchRecoveryAssistant(repoId) to the repo-intake API module.
-2. Add a Recovery Assistant panel to the repo detail UI.
-3. Add renderRecoveryAssistant(data) to the repo renderer.
-4. Update the controller so Recovery Assistant loads alongside all other panels.
-5. Reuse existing architecture and styling patterns.
-
-Verification:
-1. Run node --check on changed JS files.
-2. Start the server with npm start.
-3. Test GET /api/repos/:id/recovery-assistant.
-4. Open http://localhost:3000/files.html.
-5. Confirm all existing panels still render.
-6. Confirm Recovery Assistant panel appears.
-7. Confirm switching repos updates all panels.
-8. Confirm no browser console errors.
-```
+The AI/local model router should add the first LLM-powered answer layer on top of the existing deterministic maps and Recovery Assistant data.
 
 ---
 
@@ -2014,8 +2042,9 @@ Symbol Map v1 is complete and merged into main.
 Dependency Map v1 is complete and merged into main.
 Behavior Map v1 is complete and merged into main.
 Algorithm Map v1 is complete and merged into main.
+Recovery Assistant v1 is implemented and verified on feature/recovery-assistant-v1. Not yet merged into main.
 
-The next meaningful product layer is Recovery Assistant.
+The next meaningful product layer is AI/local model router (after Recovery Assistant v1 is merged).
 
 Current build order:
 
@@ -2027,6 +2056,6 @@ Symbol Map v1 ✅
 Dependency Map v1 ✅
 Behavior Map v1 ✅
 Algorithm Map v1 ✅
-Recovery Assistant ← current next task
-AI/local model router
+Recovery Assistant v1 ✅ (feature/recovery-assistant-v1, not merged)
+AI/local model router ← current next task
 ```
