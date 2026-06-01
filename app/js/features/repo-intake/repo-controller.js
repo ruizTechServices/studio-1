@@ -1,8 +1,8 @@
 import { repoState } from "./repo-state.js";
 import { filterSelectedFiles } from "./repo-filters.js";
-import { fetchRepos, uploadRepoFiles, importGithubRepo, deleteRepo, fetchFilterRules, fetchActionEvents, fetchProjectMap, fetchProjectSummary, fetchSymbolMap, fetchDependencyMap, fetchBehaviorMap } from "./repo-api.js";
+import { fetchRepos, uploadRepoFiles, importGithubRepo, deleteRepo, fetchFilterRules, fetchActionEvents, fetchProjectMap, fetchProjectSummary, fetchSymbolMap, fetchDependencyMap, fetchBehaviorMap, fetchAlgorithmMap } from "./repo-api.js";
 import { createClientId, logEvent, mergeActionEvents, setEventsUpdatedCallback } from "./repo-events.js";
-import { renderRepoList, renderRepoDetail, renderProjectMap, renderProjectSummary, renderSymbolMap, renderDependencyMap, renderBehaviorMap, renderActionLogs } from "./repo-render.js";
+import { renderRepoList, renderRepoDetail, renderProjectMap, renderProjectSummary, renderSymbolMap, renderDependencyMap, renderBehaviorMap, renderAlgorithmMap, renderActionLogs } from "./repo-render.js";
 import { showToast } from "../../core/toast.js";
 import { icon } from "../../core/icons.js";
 import { escapeHtml } from "../../core/formatters.js";
@@ -156,6 +156,7 @@ export function initRepoIntakePage() {
       loadAndRenderSymbolMap(result.id);
       loadAndRenderDependencyMap(result.id);
       loadAndRenderBehaviorMap(result.id);
+      loadAndRenderAlgorithmMap(result.id);
       showToast("Repo saved to SQLite");
     } catch (error) {
       status.textContent = error.message;
@@ -231,6 +232,7 @@ export function initRepoIntakePage() {
         loadAndRenderSymbolMap(result.id);
         loadAndRenderDependencyMap(result.id);
         loadAndRenderBehaviorMap(result.id);
+        loadAndRenderAlgorithmMap(result.id);
         showToast("GitHub repo imported");
       } catch (error) {
         status.textContent = error.message;
@@ -270,6 +272,7 @@ export function initRepoIntakePage() {
       loadAndRenderSymbolMap(repoButton.dataset.repoId);
       loadAndRenderDependencyMap(repoButton.dataset.repoId);
       loadAndRenderBehaviorMap(repoButton.dataset.repoId);
+      loadAndRenderAlgorithmMap(repoButton.dataset.repoId);
       return;
     }
 
@@ -305,6 +308,7 @@ async function loadRepos() {
       loadAndRenderSymbolMap(repoState.savedRepos[0].id);
       loadAndRenderDependencyMap(repoState.savedRepos[0].id);
       loadAndRenderBehaviorMap(repoState.savedRepos[0].id);
+      loadAndRenderAlgorithmMap(repoState.savedRepos[0].id);
     }
   } catch (error) {
     repoList.innerHTML = `<div class="empty-repo-state"><span>${icon("database")}</span><p>${escapeHtml(error.message)}</p></div>`;
@@ -378,6 +382,20 @@ async function loadAndRenderBehaviorMap(repoId) {
     renderBehaviorMap(data);
   } catch {
     panel.innerHTML = `<div class="behavior-map-loading">Could not load behavior map.</div>`;
+  }
+}
+
+async function loadAndRenderAlgorithmMap(repoId) {
+  const panel = document.querySelector("#algorithmMapPanel");
+  if (!panel) {
+    return;
+  }
+  panel.innerHTML = `<div class="algorithm-map-loading">Loading algorithm map...</div>`;
+  try {
+    const data = await fetchAlgorithmMap(repoId);
+    renderAlgorithmMap(data);
+  } catch {
+    panel.innerHTML = `<div class="algorithm-map-loading">Could not load algorithm map.</div>`;
   }
 }
 

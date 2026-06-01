@@ -22,6 +22,7 @@ import {
   symbolMap,
   dependencyMap,
   behaviorMap,
+  algorithmMap,
   deleteRepo,
   saveRepo,
   detectRepoName,
@@ -260,6 +261,16 @@ router.get("/:id/behavior-map", validate({ params: repoIdParams }), (request, re
   }
 
   response.json(behaviorMap(row));
+});
+
+router.get("/:id/algorithm-map", validate({ params: repoIdParams }), (request, response) => {
+  const row = db.prepare("SELECT * FROM repos WHERE id = ?").get(request.params.id);
+  if (!row) {
+    response.status(404).json({ error: "Repo not found" });
+    return;
+  }
+
+  response.json(algorithmMap(row));
 });
 
 router.get("/:id/project-map", validate({ params: repoIdParams }), (request, response) => {

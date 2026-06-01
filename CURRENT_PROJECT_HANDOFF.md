@@ -1,6 +1,6 @@
 # studio-1 Current Project Handoff
 
-_Last updated: 2026-05-30 — Behavior Map v1 merged into main_
+_Last updated: 2026-05-30 — Algorithm Map v1 implemented on feature/algorithm-map-v1_
 
 ## Purpose of this file
 
@@ -20,7 +20,7 @@ This file is the current root-level handoff for `studio-1`. It should be read fi
 Current branch:
 
 ```bash
-main
+feature/algorithm-map-v1
 ```
 
 Latest known main base:
@@ -32,11 +32,11 @@ feature/behavior-map-v1 merged into main
 Recent commits on main:
 
 ```bash
+docs: update handoff after behavior map merge
 merge: add behavior map v1
 feat: add behavior map v1
 feat: add dependency map v1
 feat: add symbol map v1
-63e2067 merge: add project summary v1
 ```
 
 Current known state:
@@ -47,6 +47,8 @@ Project Summary v1 is merged into main.
 Symbol Map v1 is merged into main.
 Dependency Map v1 is merged into main.
 Behavior Map v1 is merged into main.
+Algorithm Map v1 is implemented and verified on feature/algorithm-map-v1.
+Algorithm Map v1 is not merged into main yet.
 The current handoff is root-level at CURRENT_PROJECT_HANDOFF.md.
 ```
 
@@ -232,6 +234,7 @@ GET    /api/repos/:id/project-summary
 GET    /api/repos/:id/symbol-map
 GET    /api/repos/:id/dependency-map
 GET    /api/repos/:id/behavior-map
+GET    /api/repos/:id/algorithm-map
 POST   /api/repos/upload
 POST   /api/repos/import-github
 DELETE /api/repos/:id
@@ -253,6 +256,8 @@ No API paths should be casually renamed. The frontend depends on this contract.
 `GET /api/repos/:id/dependency-map` is implemented and returns a structured Dependency Map showing which files import which other files, most-imported modules, and orphan files.
 
 `GET /api/repos/:id/behavior-map` is implemented and returns a structured Behavior Map showing behavioral signals grouped by area (UI, Network, Navigation, Data, Auth, Reliability, File/IO).
+
+`GET /api/repos/:id/algorithm-map` is implemented on `feature/algorithm-map-v1` and returns a structured Algorithm Map showing algorithmic signals grouped by category (Search & Sort, Transform Pipelines, Aggregation, Validation & Parsing, Control & Workflow, Safety, File / IO & Graph). Not yet merged into main.
 
 ---
 
@@ -285,6 +290,7 @@ lib/repos/projectSummary.js
 lib/repos/symbolMap.js
 lib/repos/dependencyMap.js
 lib/repos/behaviorMap.js
+lib/repos/algorithmMap.js
 ```
 
 `projectSummary()` reuses `projectMap()` instead of duplicating file grouping logic.
@@ -947,7 +953,90 @@ Important rule:
 
 > Behavior Map v1 is complete and merged into main.
 > Do not rebuild it unless the current implementation is broken.
-> The next product layer is Algorithm Map v1.
+
+---
+
+## Algorithm Map v1
+
+Algorithm Map v1 is implemented and verified on `feature/algorithm-map-v1`.
+
+Algorithm Map v1 is not merged into main yet.
+
+Backend endpoint:
+
+```text
+GET /api/repos/:id/algorithm-map
+```
+
+Backend helper:
+
+```text
+lib/repos/algorithmMap.js
+```
+
+Frontend files/functions involved:
+
+```text
+app/components/repo/repo-algorithm-map.html
+fetchAlgorithmMap()
+renderAlgorithmMap()
+```
+
+Algorithm Map v1 is read-only and deterministic.
+
+It reads stored JS/TS files from disk using `row.root_path` and `repo_files` records.
+
+It scans source files line-by-line using 15 line-level detectors plus a two-pass recursion-candidate detector that finds function declarations whose names are called elsewhere in the same file. No imported repo code is executed at any point.
+
+Supported extensions:
+
+```text
+.js  .jsx  .ts  .tsx  .mjs  .cjs
+```
+
+Algorithm categories:
+
+```text
+search       - Sorting, searching
+transform    - Filtering, mapping, reduction/accumulation
+aggregate    - Grouping, counting/scoring
+validation   - Validation, parsing/extraction, matching/resolution
+control      - State/update workflow, recursion (candidate)
+safety       - Error handling, safety/security guards
+io           - File processing, graph/dependency building
+```
+
+Signal types detected (16 total):
+
+```text
+sorting        searching
+filtering      mapping        reduction
+grouping       counting
+validation     parsing        matching
+errorHandling  safetyGuard
+fileProcessing graphBuild
+workflow
+recursion
+```
+
+Files larger than 512 KB are skipped.
+
+Unreadable files are skipped silently.
+
+Verified output (website-one repo, 46 JS/TS files scanned):
+
+```text
+totalFilesScanned: 46
+totalFilesWithSignals: 5
+totalSignals: 15
+notable categories: search (1), transform (13), control (1)
+```
+
+Important rule:
+
+> Algorithm Map v1 is implemented on feature/algorithm-map-v1.
+> Do not rebuild it unless the current implementation is broken.
+> The next product layer is Recovery Assistant.
 
 ---
 
@@ -1336,6 +1425,7 @@ Project Summary panel
 Symbol Map panel
 Dependency Map panel
 Behavior Map panel
+Algorithm Map panel
 Repo Map action log
 Global action log
 ```
@@ -1636,7 +1726,7 @@ git status --short
 
 ---
 
-## Recommended smoke tests before Behavior Map v1
+## Recommended smoke tests before Recovery Assistant
 
 Add or maintain a simple smoke test script before expanding functionality further.
 
@@ -1660,6 +1750,7 @@ GET /api/repos/:id/project-summary -> 200 for a real repo id
 GET /api/repos/:id/symbol-map -> 200 for a real repo id
 GET /api/repos/:id/dependency-map -> 200 for a real repo id
 GET /api/repos/:id/behavior-map -> 200 for a real repo id
+GET /api/repos/:id/algorithm-map -> 200 for a real repo id
 ```
 
 Keep this script simple. Do not bring in Jest/Vitest yet unless the project actually needs it.
@@ -1731,11 +1822,12 @@ Project Summary v1 ✅
 Symbol Map v1 ✅
 Dependency Map v1 ✅
 Behavior Map v1 ✅
-Algorithm Map v1 ← next
+Algorithm Map v1 ✅
+Recovery Assistant ← next
 smoke tests
 ```
 
-The current next step is Algorithm Map v1, not AI orchestration.
+The current next step is Recovery Assistant, not AI orchestration.
 
 ---
 
@@ -1782,6 +1874,7 @@ curl "http://localhost:3000/api/repos/$REPO_ID/project-summary"
 curl "http://localhost:3000/api/repos/$REPO_ID/symbol-map"
 curl "http://localhost:3000/api/repos/$REPO_ID/dependency-map"
 curl "http://localhost:3000/api/repos/$REPO_ID/behavior-map"
+curl "http://localhost:3000/api/repos/$REPO_ID/algorithm-map"
 rm repos.tmp.json
 ```
 
@@ -1799,7 +1892,7 @@ Before making recommendations:
 6. Do not reintroduce stale paths like `app/script.js` or `app/styles.css`.
 7. Do not move logic back into `server.js`.
 8. Do not expose server internals in client error responses.
-9. Do not jump to AI orchestration before Behavior Map v1, Algorithm Map v1, and smoke tests are stable.
+9. Do not jump to AI orchestration before Algorithm Map v1, Recovery Assistant, and smoke tests are stable.
 10. Keep new work layered and deterministic before adding LLM behavior.
 
 Current build order:
@@ -1811,8 +1904,8 @@ Project Summary v1 ✅
 Symbol Map v1 ✅
 Dependency Map v1 ✅
 Behavior Map v1 ✅
-Algorithm Map v1 ← current next task
-Recovery Assistant
+Algorithm Map v1 ✅
+Recovery Assistant ← current next task
 AI/local model router
 ```
 
@@ -1823,20 +1916,20 @@ AI/local model router
 Build:
 
 ```text
-Algorithm Map v1
+Recovery Assistant
 ```
 
-Algorithm Map v1 should identify algorithmic patterns and logic structures in stored JS/TS files — things like sorting, searching, transformation pipelines, recursion, and stateful reduction patterns.
+Recovery Assistant should be the first deterministic answer layer that consumes Project Map, Project Summary, Symbol Map, Dependency Map, Behavior Map, and Algorithm Map data and helps the user recall what a repo is about and where to pick back up.
 
 It should answer:
 
 ```text
-What algorithmic patterns exist in this repo?
-Which files contain sorting or searching logic?
-Which files contain transformation or mapping pipelines?
-Which files contain recursive patterns?
-Which files contain stateful reduction or accumulation?
-Which files are likely pure utilities versus orchestration?
+What is this project, in one paragraph?
+What did I last work on (by file recency, action events, and notable files)?
+What are the most important files to read first?
+What would a sensible next step be, based on missing/light capabilities?
+Where is auth, payments, AI, database, and persistence logic?
+Where do recent action events point me?
 ```
 
 Rules:
@@ -1846,8 +1939,8 @@ No AI yet.
 No embeddings yet.
 No model routing yet.
 Keep it deterministic.
-Build on top of stored repo files, Symbol Map data, Dependency Map data, and Behavior Map data.
-Do not rewrite Project Map v1, Project Summary v1, Symbol Map v1, Dependency Map v1, or Behavior Map v1.
+Build on top of stored repo files, action events, and the existing Project/Symbol/Dependency/Behavior/Algorithm Map data.
+Do not rewrite Project Map v1, Project Summary v1, Symbol Map v1, Dependency Map v1, Behavior Map v1, or Algorithm Map v1.
 ```
 
 Recommended first prompt for Claude, Codex, or another coding agent:
@@ -1855,47 +1948,46 @@ Recommended first prompt for Claude, Codex, or another coding agent:
 ```text
 Read CURRENT_PROJECT_HANDOFF.md first.
 
-We are on main after Behavior Map v1 was merged.
+We are on main after Algorithm Map v1 was merged.
 
-Create a new branch feature/algorithm-map-v1 before implementation.
+Create a new branch feature/recovery-assistant-v1 before implementation.
 
-Implement Algorithm Map v1 as a deterministic algorithmic pattern extractor.
+Implement Recovery Assistant v1 as a deterministic, rule-based recap layer that pulls from existing map data and action events.
 
 Important:
 - No AI.
 - No embeddings.
 - No model routing.
-- Do not rewrite Project Map v1, Project Summary v1, Symbol Map v1, Dependency Map v1, or Behavior Map v1.
-- Build on the existing repo intake, file storage, and map foundations.
+- Do not rewrite any existing v1 map.
+- Build on the existing repo intake, file storage, action_events, and map foundations.
 
 Goal:
-Add a read-only Algorithm Map layer that identifies algorithmic and logic patterns from stored JS/TS source files.
+Add a read-only Recovery Assistant layer that gives the user a structured recap of a repo — what it is, where the important files are, what was last worked on, and where to pick back up.
 
 Backend requirements:
-1. Add a Algorithm Map helper under lib/repos/algorithmMap.js.
-2. Add GET /api/repos/:id/algorithm-map.
+1. Add a Recovery Assistant helper under lib/repos/recoveryAssistant.js.
+2. Add GET /api/repos/:id/recovery-assistant.
 3. Reuse existing repoIdParams validation.
 4. Load the repo from SQLite.
 5. Return 404 if the repo does not exist.
-6. Use stored repo_files records and the same JS/TS file reading approach from symbolMap.js and dependencyMap.js.
-7. Only read files already accepted by repo intake filtering.
-8. Detect algorithm pattern signals by scanning lines for known patterns.
-9. Return a structured response with: per-file algorithm signals, summary counts, and notable files.
+6. Reuse projectMap, projectSummary, symbolMap, dependencyMap, behaviorMap, and algorithmMap helpers.
+7. Pull recent action_events relevant to this repo for "last worked on" hints.
+8. Return a structured response with: repo recap, important files, suggested next steps, and recent activity highlights.
 
 Frontend requirements:
-1. Add fetchAlgorithmMap(repoId) to the repo-intake API module.
-2. Add an Algorithm Map panel to the repo detail UI.
-3. Add renderAlgorithmMap(data) to the repo renderer.
-4. Update the controller so Algorithm Map loads alongside all other panels.
+1. Add fetchRecoveryAssistant(repoId) to the repo-intake API module.
+2. Add a Recovery Assistant panel to the repo detail UI.
+3. Add renderRecoveryAssistant(data) to the repo renderer.
+4. Update the controller so Recovery Assistant loads alongside all other panels.
 5. Reuse existing architecture and styling patterns.
 
 Verification:
 1. Run node --check on changed JS files.
 2. Start the server with npm start.
-3. Test GET /api/repos/:id/algorithm-map.
+3. Test GET /api/repos/:id/recovery-assistant.
 4. Open http://localhost:3000/files.html.
 5. Confirm all existing panels still render.
-6. Confirm Algorithm Map panel appears.
+6. Confirm Recovery Assistant panel appears.
 7. Confirm switching repos updates all panels.
 8. Confirm no browser console errors.
 ```
@@ -1922,8 +2014,9 @@ Project Summary v1 is complete and merged into main.
 Symbol Map v1 is complete and merged into main.
 Dependency Map v1 is complete and merged into main.
 Behavior Map v1 is complete and merged into main.
+Algorithm Map v1 is implemented and verified on feature/algorithm-map-v1. Not yet merged into main.
 
-The next meaningful product layer is Algorithm Map v1.
+The next meaningful product layer is Recovery Assistant.
 
 Current build order:
 
@@ -1934,7 +2027,7 @@ Project Summary v1 ✅
 Symbol Map v1 ✅
 Dependency Map v1 ✅
 Behavior Map v1 ✅
-Algorithm Map v1 ← current next task
-Recovery Assistant
+Algorithm Map v1 ✅
+Recovery Assistant ← current next task
 AI/local model router
 ```

@@ -66,6 +66,11 @@ export async function fetchBehaviorMap(repoId) {
   return readApiJson(response);
 }
 
+export async function fetchAlgorithmMap(repoId) {
+  const response = await fetch(`/api/repos/${encodeURIComponent(repoId)}/algorithm-map`);
+  return readApiJson(response);
+}
+
 export async function persistActionEvent(event) {
   const response = await fetch("/api/events", {
     method: "POST",
