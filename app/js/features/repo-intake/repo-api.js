@@ -71,6 +71,11 @@ export async function fetchAlgorithmMap(repoId) {
   return readApiJson(response);
 }
 
+export async function fetchRecoveryAssistant(repoId) {
+  const response = await fetch(`/api/repos/${encodeURIComponent(repoId)}/recovery-assistant`);
+  return readApiJson(response);
+}
+
 export async function persistActionEvent(event) {
   const response = await fetch("/api/events", {
     method: "POST",

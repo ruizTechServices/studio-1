@@ -843,6 +843,132 @@ export function renderAlgorithmMap(data) {
   `;
 }
 
+export function renderRecoveryAssistant(data) {
+  const panel = document.querySelector("#recoveryAssistantPanel");
+  if (!panel) return;
+
+  if (!data) {
+    panel.innerHTML = "";
+    return;
+  }
+
+  const { repo, overview, capabilities, inspectFirst, missingOrLight, nextSteps, recentActivity, evidence } = data;
+  const { projectType, confidence, primaryLanguage, frameworks } = overview;
+
+  const confidenceClass = confidence === "high" ? "ra-confidence--high" : confidence === "medium" ? "ra-confidence--medium" : "ra-confidence--low";
+
+  const frameworkTags = frameworks.length
+    ? frameworks.map((f) => `<span class="ra-tag">${escapeHtml(f)}</span>`).join("")
+    : `<span class="ra-tag-empty">—</span>`;
+
+  const inspectRows = inspectFirst.length
+    ? inspectFirst.map((f) => `
+      <div class="ra-inspect-row">
+        <span class="ra-inspect-icon">${icon("file")}</span>
+        <code class="ra-inspect-path">${escapeHtml(f.path)}</code>
+        <span class="ra-inspect-reason">${escapeHtml(f.reason)}</span>
+      </div>
+    `).join("")
+    : `<p class="ra-empty">No central files identified.</p>`;
+
+  const capItems = capabilities.length
+    ? capabilities.map((c) => `
+      <li class="ra-cap-item">
+        ${icon("check")} ${escapeHtml(c.name)}
+        ${c.evidence ? `<span class="ra-cap-evidence">${escapeHtml(c.evidence)}</span>` : ""}
+      </li>
+    `).join("")
+    : `<li class="ra-empty-item">No capabilities detected.</li>`;
+
+  const missingItems = missingOrLight.length
+    ? missingOrLight.map((m) => `
+      <li class="ra-missing-item ra-missing--${escapeHtml(m.severity)}">
+        ${icon("warning")} ${escapeHtml(m.message)}
+      </li>
+    `).join("")
+    : `<li class="ra-empty-item">Nothing obviously missing.</li>`;
+
+  const stepItems = nextSteps.map((s, i) => `
+    <li class="ra-step">${escapeHtml(s)}</li>
+  `).join("");
+
+  const activityRows = recentActivity.length
+    ? recentActivity.map((e) => `
+      <div class="ra-activity-row log-${escapeHtml(e.level)}">
+        <span class="ra-activity-time">${formatEventTime(e.timestamp)}</span>
+        <span class="ra-activity-action">${escapeHtml(e.action)}</span>
+        <span class="ra-activity-msg">${escapeHtml(e.message)}</span>
+      </div>
+    `).join("")
+    : `<p class="ra-empty">No recent events for this repo.</p>`;
+
+  const evidenceItems = evidence.map((e) => `<li>${escapeHtml(e)}</li>`).join("");
+
+  panel.innerHTML = `
+    <div class="ra-head">
+      <div>
+        <h2 id="recoveryAssistantTitle">Recovery Assistant</h2>
+        <p>${escapeHtml(repo.name)} · ${escapeHtml(repo.sourceType || "unknown")} · ${repo.totalFiles} files</p>
+      </div>
+      <span class="ra-confidence ${confidenceClass}">${escapeHtml(confidence)} confidence</span>
+    </div>
+
+    <div class="ra-overview">
+      <div class="ra-overview-type">
+        <span class="ra-label">Project type</span>
+        <strong>${escapeHtml(projectType)}</strong>
+      </div>
+      <div class="ra-overview-meta">
+        <div class="ra-overview-meta-item">
+          <span class="ra-label">Language</span>
+          <span class="ra-tag">${primaryLanguage ? escapeHtml(primaryLanguage) : "—"}</span>
+        </div>
+        <div class="ra-overview-meta-item">
+          <span class="ra-label">Frameworks</span>
+          <div class="ra-tags">${frameworkTags}</div>
+        </div>
+      </div>
+    </div>
+
+    ${inspectFirst.length ? `
+    <div class="ra-section">
+      <div class="ra-section-head">
+        <strong>Start here</strong>
+        <span class="ra-section-count">${inspectFirst.length} files</span>
+      </div>
+      <div class="ra-inspect-list">${inspectRows}</div>
+    </div>` : ""}
+
+    <div class="ra-two-col">
+      <div class="ra-block">
+        <span class="ra-label">Capabilities (${capabilities.length})</span>
+        <ul class="ra-list">${capItems}</ul>
+      </div>
+      <div class="ra-block">
+        <span class="ra-label">Missing / Light</span>
+        <ul class="ra-list">${missingItems}</ul>
+      </div>
+    </div>
+
+    ${stepItems ? `
+    <div class="ra-section">
+      <div class="ra-section-head"><strong>Suggested next steps</strong></div>
+      <ol class="ra-steps-list">${stepItems}</ol>
+    </div>` : ""}
+
+    ${recentActivity.length ? `
+    <details class="ra-details">
+      <summary>Recent activity <span class="ra-section-count">${recentActivity.length}</span></summary>
+      <div class="ra-activity-list">${activityRows}</div>
+    </details>` : ""}
+
+    <details class="ra-details">
+      <summary>Evidence</summary>
+      <ul class="ra-evidence-list">${evidenceItems}</ul>
+    </details>
+  `;
+}
+
 export function renderActionLogs() {
   renderActionLogPanel(
     "repoActionLog",
