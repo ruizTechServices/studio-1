@@ -1,6 +1,6 @@
 # studio-1 Current Project Handoff
 
-_Last updated: 2026-05-30 — Algorithm Map v1 implemented on feature/algorithm-map-v1_
+_Last updated: 2026-05-31 — Algorithm Map v1 merged into main_
 
 ## Purpose of this file
 
@@ -20,23 +20,23 @@ This file is the current root-level handoff for `studio-1`. It should be read fi
 Current branch:
 
 ```bash
-feature/algorithm-map-v1
+main
 ```
 
 Latest known main base:
 
 ```bash
-feature/behavior-map-v1 merged into main
+feature/algorithm-map-v1 merged into main
 ```
 
 Recent commits on main:
 
 ```bash
+merge: add algorithm map v1
+feat: add algorithm map v1
 docs: update handoff after behavior map merge
 merge: add behavior map v1
 feat: add behavior map v1
-feat: add dependency map v1
-feat: add symbol map v1
 ```
 
 Current known state:
@@ -47,8 +47,7 @@ Project Summary v1 is merged into main.
 Symbol Map v1 is merged into main.
 Dependency Map v1 is merged into main.
 Behavior Map v1 is merged into main.
-Algorithm Map v1 is implemented and verified on feature/algorithm-map-v1.
-Algorithm Map v1 is not merged into main yet.
+Algorithm Map v1 is merged into main.
 The current handoff is root-level at CURRENT_PROJECT_HANDOFF.md.
 ```
 
@@ -257,7 +256,7 @@ No API paths should be casually renamed. The frontend depends on this contract.
 
 `GET /api/repos/:id/behavior-map` is implemented and returns a structured Behavior Map showing behavioral signals grouped by area (UI, Network, Navigation, Data, Auth, Reliability, File/IO).
 
-`GET /api/repos/:id/algorithm-map` is implemented on `feature/algorithm-map-v1` and returns a structured Algorithm Map showing algorithmic signals grouped by category (Search & Sort, Transform Pipelines, Aggregation, Validation & Parsing, Control & Workflow, Safety, File / IO & Graph). Not yet merged into main.
+`GET /api/repos/:id/algorithm-map` is implemented and returns a structured Algorithm Map showing algorithmic signals grouped by category (Search & Sort, Transform Pipelines, Aggregation, Validation & Parsing, Control & Workflow, Safety, File / IO & Graph).
 
 ---
 
@@ -958,9 +957,7 @@ Important rule:
 
 ## Algorithm Map v1
 
-Algorithm Map v1 is implemented and verified on `feature/algorithm-map-v1`.
-
-Algorithm Map v1 is not merged into main yet.
+Algorithm Map v1 is merged into main.
 
 Backend endpoint:
 
@@ -1034,7 +1031,7 @@ notable categories: search (1), transform (13), control (1)
 
 Important rule:
 
-> Algorithm Map v1 is implemented on feature/algorithm-map-v1.
+> Algorithm Map v1 is merged into main.
 > Do not rebuild it unless the current implementation is broken.
 > The next product layer is Recovery Assistant.
 
@@ -1559,7 +1556,7 @@ HEAD -> main, origin/main
 Latest merge commit observed:
 
 ```text
-merge: add behavior map v1
+merge: add algorithm map v1
 ```
 
 Verified checks:
@@ -1570,11 +1567,13 @@ Project Summary endpoint works.
 Symbol Map endpoint works.
 Dependency Map endpoint works.
 Behavior Map endpoint works.
+Algorithm Map endpoint works.
 Project Map panel renders.
 Project Summary panel renders.
 Symbol Map panel renders.
 Dependency Map panel renders.
 Behavior Map panel renders.
+Algorithm Map panel renders.
 Switching repos updates all panels.
 ```
 
@@ -2014,7 +2013,7 @@ Project Summary v1 is complete and merged into main.
 Symbol Map v1 is complete and merged into main.
 Dependency Map v1 is complete and merged into main.
 Behavior Map v1 is complete and merged into main.
-Algorithm Map v1 is implemented and verified on feature/algorithm-map-v1. Not yet merged into main.
+Algorithm Map v1 is complete and merged into main.
 
 The next meaningful product layer is Recovery Assistant.
 
