@@ -1,10 +1,14 @@
-<section class="repo-library-card" aria-labelledby="repoLibraryTitle">
-  <div class="home-card-header">
+<details class="repo-library-card repo-collapsible-card" aria-labelledby="repoLibraryTitle" open>
+  <summary class="repo-collapsible-summary">
     <div>
       <h2 id="repoLibraryTitle">Saved Repos</h2>
       <p>SQLite-backed uploads ready for mapping.</p>
     </div>
 
+    <span class="repo-collapsible-chevron" aria-hidden="true" data-icon="chevron-right"></span>
+  </summary>
+
+  <div class="repo-collapsible-body">
     <button
       class="mini-icon-btn"
       type="button"
@@ -13,7 +17,7 @@
     >
       <span data-icon="refresh"></span>
     </button>
-  </div>
 
-  <div class="repo-list" id="repoList"></div>
-</section>
+    <div class="repo-list" id="repoList"></div>
+  </div>
+</details>

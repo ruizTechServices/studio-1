@@ -1,23 +1,27 @@
 <div class="action-log-grid" aria-label="Action logs">
-  <section class="action-log-card" aria-labelledby="repoActionLogTitle">
-    <div class="home-card-header">
+  <details class="action-log-card repo-collapsible-card" aria-labelledby="repoActionLogTitle" open>
+    <summary class="repo-collapsible-summary">
       <div>
         <h2 id="repoActionLogTitle">Repo Map Action Log</h2>
         <p>Repo intake, filter, clone, save, and display events.</p>
       </div>
-    </div>
 
-    <div class="action-log-panel" id="repoActionLog"></div>
-  </section>
+      <span class="repo-collapsible-chevron" aria-hidden="true" data-icon="chevron-right"></span>
+    </summary>
 
-  <section class="action-log-card" aria-labelledby="globalActionLogTitle">
-    <div class="home-card-header">
+    <div class="repo-collapsible-body action-log-panel" id="repoActionLog"></div>
+  </details>
+
+  <details class="action-log-card repo-collapsible-card" aria-labelledby="globalActionLogTitle" open>
+    <summary class="repo-collapsible-summary">
       <div>
         <h2 id="globalActionLogTitle">Global Action Log</h2>
         <p>Recent events from every app area.</p>
       </div>
-    </div>
 
-    <div class="action-log-panel" id="globalActionLog"></div>
-  </section>
+      <span class="repo-collapsible-chevron" aria-hidden="true" data-icon="chevron-right"></span>
+    </summary>
+
+    <div class="repo-collapsible-body action-log-panel" id="globalActionLog"></div>
+  </details>
 </div>

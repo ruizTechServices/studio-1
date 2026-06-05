@@ -41,6 +41,24 @@ export function categoryAccent(category) {
   return accents[category] || "#64748b";
 }
 
+function renderCollapsibleCard({ titleId, title, subtitle, meta = "", body, open = false }) {
+  return `
+    <details class="repo-collapsible" ${open ? "open" : ""}>
+      <summary class="repo-collapsible-summary">
+        <div class="repo-collapsible-heading">
+          <h2 id="${escapeHtml(titleId)}">${escapeHtml(title)}</h2>
+          <p>${subtitle}</p>
+        </div>
+        ${meta}
+        <span class="repo-collapsible-chevron" aria-hidden="true">${icon("chevron-right")}</span>
+      </summary>
+      <div class="repo-collapsible-body">
+        ${body}
+      </div>
+    </details>
+  `;
+}
+
 export function renderRepoList(repos) {
   const repoList = document.querySelector("#repoList");
   if (!repoList) {
@@ -108,6 +126,8 @@ export function renderRepoDetail(repo, options = {}) {
   `).join("");
 
   detail.innerHTML = `
+    <details class="repo-collapsible" open>
+      <summary class="repo-collapsible-summary">
     <div class="repo-detail-head">
       <div>
         <h2>${escapeHtml(repo.name)}</h2>
@@ -115,12 +135,17 @@ export function renderRepoDetail(repo, options = {}) {
       </div>
       <div class="repo-detail-actions">
         <span class="repo-saved-badge">${icon("database")} Saved</span>
-        <button class="repo-delete-btn" id="deleteRepoBtn" type="button" data-delete-repo-id="${escapeHtml(repo.id)}" data-delete-repo-name="${escapeHtml(repo.name)}">
-          ${icon("trash")}
-          Delete
-        </button>
       </div>
     </div>
+        <span class="repo-collapsible-chevron" aria-hidden="true">${icon("chevron-right")}</span>
+      </summary>
+      <div class="repo-collapsible-body">
+        <div class="repo-detail-actions repo-detail-body-actions">
+          <button class="repo-delete-btn" id="deleteRepoBtn" type="button" data-delete-repo-id="${escapeHtml(repo.id)}" data-delete-repo-name="${escapeHtml(repo.name)}">
+            ${icon("trash")}
+            Delete
+          </button>
+        </div>
     <div class="repo-category-grid">${categories}</div>
     <div class="repo-file-table">
       <div class="repo-file-table-head">
@@ -130,6 +155,8 @@ export function renderRepoDetail(repo, options = {}) {
       </div>
       ${files}
     </div>
+      </div>
+    </details>
   `;
 
   if (options.log !== false) {
@@ -263,10 +290,15 @@ export function renderProjectMap(data) {
     })
     .join("");
 
-  panel.innerHTML = `
-    <div class="project-map-head">
+  panel.innerHTML = renderCollapsibleCard({
+    titleId: "projectMapTitle",
+    title: "Project Map",
+    subtitle: `${escapeHtml(repo.name)} &middot; ${repo.totalFiles} files`,
+    meta: langTags.length ? `<div class="project-map-langs">${langTags}</div>` : "",
+    body: `
+    <div class="project-map-head" hidden>
       <div>
-        <h2 id="projectMapTitle">Project Map</h2>
+        <h2>Project Map</h2>
         <p>${escapeHtml(repo.name)} · ${repo.totalFiles} files</p>
       </div>
       ${langTags.length ? `<div class="project-map-langs">${langTags}</div>` : ""}
@@ -274,7 +306,7 @@ export function renderProjectMap(data) {
     <div class="project-map-sections">
       ${sectionItems || `<p class="project-map-empty">No categorized files found.</p>`}
     </div>
-  `;
+  `});
 }
 
 export function renderProjectSummary(data) {
@@ -322,10 +354,15 @@ export function renderProjectSummary(data) {
     ? evidence.map((e) => `<li>${escapeHtml(e)}</li>`).join("")
     : "";
 
-  panel.innerHTML = `
-    <div class="project-summary-head">
+  panel.innerHTML = renderCollapsibleCard({
+    titleId: "projectSummaryTitle",
+    title: "Project Summary",
+    subtitle: escapeHtml(repo.name),
+    meta: `<span class="project-summary-confidence ${confidenceClass}">${escapeHtml(confidence)} confidence</span>`,
+    body: `
+    <div class="project-summary-head" hidden>
       <div>
-        <h2 id="projectSummaryTitle">Project Summary</h2>
+        <h2>Project Summary</h2>
         <p>${escapeHtml(repo.name)}</p>
       </div>
       <span class="project-summary-confidence ${confidenceClass}">${escapeHtml(confidence)} confidence</span>
@@ -367,7 +404,7 @@ export function renderProjectSummary(data) {
       <summary>Evidence (${evidence.length})</summary>
       <ul class="project-summary-evidence-list">${evidenceRows}</ul>
     </details>` : ""}
-  `;
+  `});
 }
 
 const SYMBOL_COUNT_LABELS = {
@@ -437,10 +474,14 @@ export function renderSymbolMap(data) {
       `;
     }).join("");
 
-  panel.innerHTML = `
-    <div class="symbol-map-head">
+  panel.innerHTML = renderCollapsibleCard({
+    titleId: "symbolMapTitle",
+    title: "Symbol Map",
+    subtitle: `${escapeHtml(repo.name)} &middot; ${summary.totalFilesScanned} files scanned &middot; ${summary.totalSymbols} symbols`,
+    body: `
+    <div class="symbol-map-head" hidden>
       <div>
-        <h2 id="symbolMapTitle">Symbol Map</h2>
+        <h2>Symbol Map</h2>
         <p>${escapeHtml(repo.name)} · ${summary.totalFilesScanned} files scanned · ${summary.totalSymbols} symbols</p>
       </div>
     </div>
@@ -448,7 +489,7 @@ export function renderSymbolMap(data) {
     <div class="symbol-map-files">
       ${fileSections || `<p class="symbol-map-empty">No symbols found in JS/TS files.</p>`}
     </div>
-  `;
+  `});
 }
 
 export function renderDependencyMap(data) {
@@ -524,10 +565,14 @@ export function renderDependencyMap(data) {
     ? orphans.map((p) => `<span class="dep-map-orphan-path">${escapeHtml(p)}</span>`).join("")
     : "";
 
-  panel.innerHTML = `
-    <div class="dep-map-head">
+  panel.innerHTML = renderCollapsibleCard({
+    titleId: "dependencyMapTitle",
+    title: "Dependency Map",
+    subtitle: `${escapeHtml(repo.name)} &middot; ${summary.totalFilesScanned} JS/TS files scanned`,
+    body: `
+    <div class="dep-map-head" hidden>
       <div>
-        <h2 id="dependencyMapTitle">Dependency Map</h2>
+        <h2>Dependency Map</h2>
         <p>${escapeHtml(repo.name)} · ${summary.totalFilesScanned} JS/TS files scanned</p>
       </div>
     </div>
@@ -555,7 +600,7 @@ export function renderDependencyMap(data) {
     <div class="dep-map-files">
       ${fileSections || `<p class="dep-map-empty">No import statements found in JS/TS files.</p>`}
     </div>
-  `;
+  `});
 }
 
 const BEHAVIOR_LABELS = {
@@ -664,10 +709,14 @@ export function renderBehaviorMap(data) {
     `;
   }).join("");
 
-  panel.innerHTML = `
-    <div class="behavior-map-head">
+  panel.innerHTML = renderCollapsibleCard({
+    titleId: "behaviorMapTitle",
+    title: "Behavior Map",
+    subtitle: `${escapeHtml(repo.name)} &middot; ${summary.totalFilesScanned} JS/TS files scanned`,
+    body: `
+    <div class="behavior-map-head" hidden>
       <div>
-        <h2 id="behaviorMapTitle">Behavior Map</h2>
+        <h2>Behavior Map</h2>
         <p>${escapeHtml(repo.name)} · ${summary.totalFilesScanned} JS/TS files scanned</p>
       </div>
     </div>
@@ -697,7 +746,7 @@ export function renderBehaviorMap(data) {
     <div class="behavior-files">
       ${fileSections || `<p class="behavior-empty">No behavior signals found in JS/TS files.</p>`}
     </div>
-  `;
+  `});
 }
 
 const ALGORITHM_LABELS = {
@@ -807,10 +856,14 @@ export function renderAlgorithmMap(data) {
     `;
   }).join("");
 
-  panel.innerHTML = `
-    <div class="algorithm-map-head">
+  panel.innerHTML = renderCollapsibleCard({
+    titleId: "algorithmMapTitle",
+    title: "Algorithm Map",
+    subtitle: `${escapeHtml(repo.name)} &middot; ${summary.totalFilesScanned} JS/TS files scanned`,
+    body: `
+    <div class="algorithm-map-head" hidden>
       <div>
-        <h2 id="algorithmMapTitle">Algorithm Map</h2>
+        <h2>Algorithm Map</h2>
         <p>${escapeHtml(repo.name)} · ${summary.totalFilesScanned} JS/TS files scanned</p>
       </div>
     </div>
@@ -840,7 +893,7 @@ export function renderAlgorithmMap(data) {
     <div class="algorithm-files">
       ${fileSections || `<p class="algorithm-empty">No algorithmic signals found in JS/TS files.</p>`}
     </div>
-  `;
+  `});
 }
 
 export function renderRecoveryAssistant(data) {
@@ -904,10 +957,15 @@ export function renderRecoveryAssistant(data) {
 
   const evidenceItems = evidence.map((e) => `<li>${escapeHtml(e)}</li>`).join("");
 
-  panel.innerHTML = `
-    <div class="ra-head">
+  panel.innerHTML = renderCollapsibleCard({
+    titleId: "recoveryAssistantTitle",
+    title: "Recovery Assistant",
+    subtitle: `${escapeHtml(repo.name)} &middot; ${escapeHtml(repo.sourceType || "unknown")} &middot; ${repo.totalFiles} files`,
+    meta: `<span class="ra-confidence ${confidenceClass}">${escapeHtml(confidence)} confidence</span>`,
+    body: `
+    <div class="ra-head" hidden>
       <div>
-        <h2 id="recoveryAssistantTitle">Recovery Assistant</h2>
+        <h2>Recovery Assistant</h2>
         <p>${escapeHtml(repo.name)} · ${escapeHtml(repo.sourceType || "unknown")} · ${repo.totalFiles} files</p>
       </div>
       <span class="ra-confidence ${confidenceClass}">${escapeHtml(confidence)} confidence</span>
@@ -966,7 +1024,7 @@ export function renderRecoveryAssistant(data) {
       <summary>Evidence</summary>
       <ul class="ra-evidence-list">${evidenceItems}</ul>
     </details>
-  `;
+  `});
 }
 
 export function renderActionLogs() {

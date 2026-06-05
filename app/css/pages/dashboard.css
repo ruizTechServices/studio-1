@@ -1,9 +1,9 @@
 .overview-row {
   display: grid;
-  grid-template-columns: minmax(320px, 1fr) minmax(600px, 704px);
-  gap: 28px;
+  grid-template-columns: minmax(260px, 0.72fr) minmax(0, 1.28fr);
+  gap: 18px;
   align-items: start;
-  margin-bottom: 13px;
+  margin-bottom: 16px;
 }
 
 .welcome-copy h1 {
@@ -29,7 +29,7 @@
 
 .dashboard-grid {
   display: grid;
-  grid-template-columns: minmax(335px, 1.28fr) minmax(285px, 1fr) minmax(300px, 1.06fr) minmax(265px, 0.9fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 12px;
   align-items: stretch;
 }

@@ -192,6 +192,120 @@
   padding: 18px;
 }
 
+.repo-collapsible,
+.repo-collapsible-card {
+  min-width: 0;
+}
+
+.repo-collapsible-summary {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  min-width: 0;
+  border-radius: 9px;
+  color: inherit;
+  cursor: pointer;
+  list-style: none;
+  outline: 0;
+  user-select: none;
+}
+
+.repo-collapsible-summary::-webkit-details-marker {
+  display: none;
+}
+
+.repo-collapsible-summary:hover {
+  color: var(--text-primary);
+}
+
+.repo-collapsible-summary:focus-visible {
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
+}
+
+.repo-collapsible[open] > .repo-collapsible-summary,
+.repo-collapsible-card[open] > .repo-collapsible-summary {
+  margin-bottom: 14px;
+}
+
+.repo-collapsible-heading,
+.repo-collapsible-summary > div:first-child {
+  flex: 1;
+  min-width: 0;
+}
+
+.repo-collapsible-summary h2 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 17px;
+  line-height: 1.2;
+  font-weight: 740;
+}
+
+.repo-collapsible-summary p {
+  margin: 5px 0 0;
+  overflow: hidden;
+  color: var(--text-secondary);
+  font-size: 12.5px;
+  line-height: 1.45;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.repo-collapsible-body {
+  min-width: 0;
+}
+
+.repo-collapsible-chevron {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  margin-top: 1px;
+  border: 1px solid rgba(55, 65, 81, 0.74);
+  border-radius: 7px;
+  color: #95a3b8;
+  background: rgba(8, 13, 22, 0.46);
+  transition: transform 150ms ease, color 150ms ease, border-color 150ms ease;
+}
+
+.repo-collapsible-chevron svg {
+  width: 15px;
+  height: 15px;
+}
+
+.repo-collapsible[open] > .repo-collapsible-summary .repo-collapsible-chevron,
+.repo-collapsible-card[open] > .repo-collapsible-summary .repo-collapsible-chevron {
+  border-color: rgba(96, 165, 250, 0.42);
+  color: #bfdbfe;
+  transform: rotate(90deg);
+}
+
+.repo-upload-body {
+  display: grid;
+  gap: 14px;
+}
+
+.repo-library-card > .repo-collapsible-body {
+  display: grid;
+  gap: 10px;
+}
+
+.repo-library-card > .repo-collapsible-body .mini-icon-btn {
+  justify-self: end;
+}
+
+.repo-collapsible-summary .repo-detail-head {
+  flex: 1;
+  min-width: 0;
+  margin-bottom: 0;
+}
+
+.repo-detail-body-actions {
+  margin-bottom: 12px;
+}
+
 .repo-detail-actions {
   display: inline-flex;
   align-items: center;
@@ -2536,4 +2650,30 @@
   font-size: 12px;
   margin: 4px 6px;
   font-style: italic;
+}
+
+@media (max-width: 640px) {
+  .repo-collapsible-summary {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .repo-collapsible-summary p {
+    overflow-wrap: anywhere;
+    white-space: normal;
+  }
+
+  .repo-collapsible-summary .project-map-langs {
+    flex-basis: 100%;
+    order: 2;
+  }
+
+  .repo-collapsible-summary .project-summary-confidence,
+  .repo-collapsible-summary .ra-confidence {
+    order: 2;
+  }
+
+  .repo-library-card > .repo-collapsible-body .mini-icon-btn {
+    justify-self: start;
+  }
 }

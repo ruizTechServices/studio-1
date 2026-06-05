@@ -9,7 +9,13 @@
 
   <body data-page="home">
     <div class="product-shell">
+      <button class="mobile-nav-toggle" type="button" aria-label="Open navigation" aria-controls="siteSidebar" aria-expanded="false" data-shell-nav-toggle>
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
       <div data-include="./components/shell/sidebar.html"></div>
+      <button class="shell-backdrop" type="button" aria-label="Close navigation" data-shell-backdrop hidden></button>
 
       <main class="home-workspace">
         <div data-include="./components/home/home-page.html"></div>

@@ -8,7 +8,13 @@
   </head>
   <body data-page="dashboard">
     <div class="product-shell">
-      <aside class="sidebar" aria-label="Sidebar">
+      <button class="mobile-nav-toggle" type="button" aria-label="Open navigation" aria-controls="siteSidebar" aria-expanded="false" data-shell-nav-toggle>
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <aside class="sidebar" id="siteSidebar" aria-label="Sidebar">
         <div class="brand">
           <span class="logo-mark" aria-hidden="true"></span>
           <span class="brand-name">studio-1</span>
@@ -33,6 +39,7 @@
           <button class="primary-button" type="button" data-toast="Plan management opened">Manage Plan</button>
         </section>
       </aside>
+      <button class="shell-backdrop" type="button" aria-label="Close navigation" data-shell-backdrop hidden></button>
 
       <main class="workspace">
         <header class="topbar" aria-label="Utility bar">
