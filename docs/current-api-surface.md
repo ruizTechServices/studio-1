@@ -18,6 +18,7 @@ The current API is mounted under `/api` by the Express backend.
 | `GET` | `/api/repos/:id/behavior-map` | Return detected behavior signals. |
 | `GET` | `/api/repos/:id/algorithm-map` | Return detected algorithm candidates. |
 | `GET` | `/api/repos/:id/recovery-assistant` | Return deterministic continuity guidance. |
+| `GET` | `/api/repos/:id/reusable-assets` | Return repo metadata, type counts, and all deterministic reusable asset candidates sorted by confidence, risk, and path. |
 
 GitHub branch and commit pinning are not implemented.
 
@@ -47,4 +48,4 @@ GitHub branch and commit pinning are not implemented.
 - Dedicated memory table: not implemented.
 - Workflow automation: not implemented.
 - AI/local model routing: not implemented.
-- Reusable Assets v0: next planned implementation.
+- Reusable Assets v0: implemented as a deterministic read-only layer.

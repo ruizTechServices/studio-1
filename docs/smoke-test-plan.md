@@ -16,7 +16,7 @@ Set `STUDIO_BASE_URL` to test a different host or port.
 
 ## Coverage
 
-The smoke script checks the known top-level read endpoints. If at least one repo exists, it also checks that repo's detail, project map, project summary, symbol map, dependency map, behavior map, algorithm map, and recovery assistant endpoints.
+The smoke script checks the known top-level read endpoints. If at least one repo exists, it also checks that repo's detail, project map, project summary, symbol map, dependency map, behavior map, algorithm map, recovery assistant, and reusable-assets endpoints.
 
 ## Behavior
 

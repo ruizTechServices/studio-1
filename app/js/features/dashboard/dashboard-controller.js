@@ -1,27 +1,62 @@
-import { renderKpis, renderDashboard } from "./dashboard-render.js";
+import { fetchDashboardSummary } from "../studio-api.js";
+import { renderKpis, renderKpiError } from "./dashboard-render.js";
 import { icon } from "../../core/icons.js";
+import { escapeHtml } from "../../core/formatters.js";
 import { showToast } from "../../core/toast.js";
-import { projects } from "../../data/dashboard-data.js";
+
+function projectIcon(project) {
+  if (project.iconUrl) {
+    return `<img class="project-logo" src="${escapeHtml(project.iconUrl)}" alt="">`;
+  }
+
+  return project.sourceType === "github_url_filtered" ? "code" : "folder";
+}
+
+function renderProjectNav(projects = []) {
+  const projectNav = document.querySelector("#projectNav");
+  if (!projectNav) {
+    return;
+  }
+
+  projectNav.innerHTML = projects.map((project) => `
+    <button class="project-row" type="button" data-project-id="${escapeHtml(project.id)}" title="${escapeHtml(project.name)}">
+      ${project.iconUrl ? projectIcon(project) : icon(projectIcon(project))}
+      <span>${escapeHtml(project.name)}</span>
+    </button>
+  `).join("") + `
+    <a class="project-row new-project" href="./files.html">
+      ${icon("plus")}
+      <span>New Project</span>
+    </a>
+  `;
+}
+
+function renderProjectNavError() {
+  const projectNav = document.querySelector("#projectNav");
+  if (!projectNav) {
+    return;
+  }
+
+  projectNav.innerHTML = `
+    <p class="project-nav-error">Codebases unavailable</p>
+    <a class="project-row new-project" href="./files.html">
+      ${icon("plus")}
+      <span>New Project</span>
+    </a>
+  `;
+}
 
 export function initDashboardPage() {
   renderKpis();
-  renderDashboard();
-
-  const projectNav = document.querySelector("#projectNav");
-  if (projectNav) {
-    projectNav.innerHTML = projects.map(([label, iconName, active]) => `
-      <button class="project-row ${active ? "active" : ""}" type="button" data-project="${label}" data-toast="${label}">
-        ${icon(iconName)}
-        <span>${label}</span>
-        ${active ? `<span class="project-chevron">${icon("chevron-right")}</span>` : ""}
-      </button>
-    `).join("") + `
-      <button class="project-row new-project" type="button" data-toast="New project">
-        ${icon("plus")}
-        <span>New Project</span>
-      </button>
-    `;
-  }
+  fetchDashboardSummary()
+    .then((data) => {
+      renderKpis(data);
+      renderProjectNav(data.projects?.projects);
+    })
+    .catch(() => {
+      renderKpiError();
+      renderProjectNavError();
+    });
 
   document.addEventListener("click", (event) => {
     const navButton = event.target.closest(".nav-item");

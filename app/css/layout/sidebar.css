@@ -72,10 +72,16 @@
 }
 
 .nav-item svg,
-.project-row svg {
+.project-row svg,
+.project-logo {
   width: 17px;
   height: 17px;
   flex: 0 0 auto;
+}
+
+.project-logo {
+  border-radius: 3px;
+  object-fit: contain;
 }
 
 .nav-item.active,
@@ -130,57 +136,8 @@
   color: #b2bdce;
 }
 
-.plan-card {
-  margin: auto 15px 16px;
-  padding: 16px 14px;
-  border: 1px solid rgba(55, 65, 81, 0.85);
-  border-radius: 8px;
-  background:
-    linear-gradient(180deg, rgba(17, 24, 39, 0.94), rgba(10, 16, 28, 0.96)),
-    var(--bg-surface);
-}
-
-.plan-card p,
-.plan-card small {
-  margin: 0;
-}
-
-.plan-card p {
-  font-size: 12px;
-  color: var(--text-primary);
-}
-
-.plan-price {
-  display: flex;
-  align-items: baseline;
-  gap: 4px;
-  margin-top: 10px;
-  font-size: 14px;
-  color: var(--text-secondary);
-}
-
-.plan-price strong {
-  color: var(--text-primary);
-  font-size: 22px;
-  line-height: 1;
-}
-
-.plan-card small {
-  display: block;
-  margin-top: 10px;
-  color: var(--text-muted);
+.project-nav-error {
+  margin: 6px 8px;
+  color: #fca5a5;
   font-size: 11.5px;
-}
-
-.primary-button {
-  width: 100%;
-  height: 30px;
-  margin-top: 14px;
-  border: 1px solid rgba(59, 130, 246, 0.75);
-  border-radius: 5px;
-  color: #fff;
-  background: linear-gradient(180deg, #2385ff, #0d5ef6);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 8px 22px rgba(13, 94, 246, 0.25);
-  cursor: pointer;
-  font-size: 12.5px;
 }

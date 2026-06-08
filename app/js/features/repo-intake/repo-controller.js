@@ -1,8 +1,8 @@
 import { repoState } from "./repo-state.js";
 import { filterSelectedFiles } from "./repo-filters.js";
-import { fetchRepos, uploadRepoFiles, importGithubRepo, deleteRepo, fetchFilterRules, fetchActionEvents, fetchProjectMap, fetchProjectSummary, fetchSymbolMap, fetchDependencyMap, fetchBehaviorMap, fetchAlgorithmMap, fetchRecoveryAssistant } from "./repo-api.js";
+import { fetchRepos, uploadRepoFiles, importGithubRepo, deleteRepo, fetchFilterRules, fetchActionEvents, fetchProjectMap, fetchProjectSummary, fetchSymbolMap, fetchDependencyMap, fetchBehaviorMap, fetchAlgorithmMap, fetchRecoveryAssistant, fetchReusableAssets } from "./repo-api.js";
 import { createClientId, logEvent, mergeActionEvents, setEventsUpdatedCallback } from "./repo-events.js";
-import { renderRepoList, renderRepoDetail, renderProjectMap, renderProjectSummary, renderSymbolMap, renderDependencyMap, renderBehaviorMap, renderAlgorithmMap, renderRecoveryAssistant, renderActionLogs } from "./repo-render.js";
+import { renderRepoList, renderRepoDetail, renderProjectMap, renderProjectSummary, renderSymbolMap, renderDependencyMap, renderBehaviorMap, renderAlgorithmMap, renderRecoveryAssistant, renderReusableAssets, renderActionLogs } from "./repo-render.js";
 import { showToast } from "../../core/toast.js";
 import { icon } from "../../core/icons.js";
 import { escapeHtml } from "../../core/formatters.js";
@@ -158,6 +158,7 @@ export function initRepoIntakePage() {
       loadAndRenderBehaviorMap(result.id);
       loadAndRenderAlgorithmMap(result.id);
       loadAndRenderRecoveryAssistant(result.id);
+      loadAndRenderReusableAssets(result.id);
       showToast("Repo saved to SQLite");
     } catch (error) {
       status.textContent = error.message;
@@ -235,6 +236,7 @@ export function initRepoIntakePage() {
         loadAndRenderBehaviorMap(result.id);
         loadAndRenderAlgorithmMap(result.id);
         loadAndRenderRecoveryAssistant(result.id);
+        loadAndRenderReusableAssets(result.id);
         showToast("GitHub repo imported");
       } catch (error) {
         status.textContent = error.message;
@@ -276,6 +278,7 @@ export function initRepoIntakePage() {
       loadAndRenderBehaviorMap(repoButton.dataset.repoId);
       loadAndRenderAlgorithmMap(repoButton.dataset.repoId);
       loadAndRenderRecoveryAssistant(repoButton.dataset.repoId);
+      loadAndRenderReusableAssets(repoButton.dataset.repoId);
       return;
     }
 
@@ -313,6 +316,7 @@ async function loadRepos() {
       loadAndRenderBehaviorMap(repoState.savedRepos[0].id);
       loadAndRenderAlgorithmMap(repoState.savedRepos[0].id);
       loadAndRenderRecoveryAssistant(repoState.savedRepos[0].id);
+      loadAndRenderReusableAssets(repoState.savedRepos[0].id);
     }
   } catch (error) {
     repoList.innerHTML = `<div class="empty-repo-state"><span>${icon("database")}</span><p>${escapeHtml(error.message)}</p></div>`;
@@ -414,6 +418,20 @@ async function loadAndRenderRecoveryAssistant(repoId) {
     renderRecoveryAssistant(data);
   } catch {
     panel.innerHTML = `<div class="recovery-assistant-loading">Could not load recovery assistant.</div>`;
+  }
+}
+
+async function loadAndRenderReusableAssets(repoId) {
+  const panel = document.querySelector("#reusableAssetsPanel");
+  if (!panel) {
+    return;
+  }
+  panel.innerHTML = `<div class="reusable-assets-loading">Loading reusable assets...</div>`;
+  try {
+    const data = await fetchReusableAssets(repoId);
+    renderReusableAssets(data);
+  } catch {
+    panel.innerHTML = `<div class="reusable-assets-loading">Could not load reusable assets.</div>`;
   }
 }
 

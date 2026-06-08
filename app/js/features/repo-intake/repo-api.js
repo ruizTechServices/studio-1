@@ -76,6 +76,11 @@ export async function fetchRecoveryAssistant(repoId) {
   return readApiJson(response);
 }
 
+export async function fetchReusableAssets(repoId) {
+  const response = await fetch(`/api/repos/${encodeURIComponent(repoId)}/reusable-assets`);
+  return readApiJson(response);
+}
+
 export async function persistActionEvent(event) {
   const response = await fetch("/api/events", {
     method: "POST",

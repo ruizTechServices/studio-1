@@ -1027,6 +1027,99 @@ export function renderRecoveryAssistant(data) {
   `});
 }
 
+const REUSABLE_TYPE_LABELS = {
+  component: "Component",
+  function: "Function",
+  utility: "Utility",
+  api_handler: "API handler",
+  config_pattern: "Config pattern",
+  setup_pattern: "Setup pattern",
+  algorithm_candidate: "Algorithm candidate",
+  implementation_pattern: "Implementation pattern"
+};
+
+function reusableTypeLabel(type) {
+  return REUSABLE_TYPE_LABELS[type] || type;
+}
+
+export function renderReusableAssets(data) {
+  const panel = document.querySelector("#reusableAssetsPanel");
+  if (!panel) return;
+
+  if (!data) {
+    panel.innerHTML = "";
+    return;
+  }
+
+  const { repo, summary, assets } = data;
+  const visibleAssets = (assets || []).slice(0, 10);
+
+  const statPills = [
+    ["Total", summary.totalAssets || 0],
+    ["Components", summary.components || 0],
+    ["Functions", summary.functions || 0],
+    ["API handlers", summary.apiHandlers || 0],
+    ["Utilities", summary.utilities || 0],
+    ["Configs", summary.configs || 0],
+    ["Algorithms", summary.algorithms || 0],
+    ["Patterns", summary.patterns || 0]
+  ].map(([label, value]) => `
+    <span class="reusable-assets-stat">
+      <strong>${value}</strong>
+      <span>${escapeHtml(label)}</span>
+    </span>
+  `).join("");
+
+  const assetRows = visibleAssets.map((asset) => {
+    const signalBadges = Array.isArray(asset.signals) && asset.signals.length
+      ? asset.signals.slice(0, 3).map((signal) => `<span class="reusable-asset-signal">${escapeHtml(signal)}</span>`).join("")
+      : "";
+
+    return `
+      <article class="reusable-asset-row reusable-asset-risk--${escapeHtml(asset.risk)}">
+        <div class="reusable-asset-main">
+          <div class="reusable-asset-topline">
+            <span class="reusable-asset-icon">${icon("layers")}</span>
+            <div class="reusable-asset-title-wrap">
+              <div class="reusable-asset-name-row">
+                <strong class="reusable-asset-name">${escapeHtml(asset.name)}</strong>
+                <span class="reusable-asset-type">${escapeHtml(reusableTypeLabel(asset.type))}</span>
+              </div>
+              <div class="reusable-asset-path">${escapeHtml(asset.path)}</div>
+            </div>
+            <span class="reusable-asset-confidence">${Math.round((asset.confidence || 0) * 100)}%</span>
+          </div>
+          <p class="reusable-asset-reason">${escapeHtml(asset.reuseReason || "Deterministic reusable candidate.")}</p>
+          ${signalBadges ? `<div class="reusable-asset-signals">${signalBadges}</div>` : ""}
+        </div>
+        <div class="reusable-asset-side">
+          <span class="reusable-asset-category">${escapeHtml(categoryLabel(asset.category))}</span>
+          <span class="reusable-asset-risk reusable-asset-risk-pill reusable-asset-risk-pill--${escapeHtml(asset.risk)}">${escapeHtml(asset.risk)}</span>
+        </div>
+      </article>
+    `;
+  }).join("");
+
+  panel.innerHTML = renderCollapsibleCard({
+    titleId: "reusableAssetsTitle",
+    title: "Reusable Assets",
+    subtitle: `${escapeHtml(repo.name)} &middot; ${summary.totalAssets || 0} candidates`,
+    meta: `<div class="reusable-assets-stats">${statPills}</div>`,
+    body: `
+    <div class="reusable-assets-head" hidden>
+      <div>
+        <h2>Reusable Assets</h2>
+        <p>${escapeHtml(repo.name)} · ${summary.totalAssets || 0} candidates</p>
+      </div>
+      <div class="reusable-assets-stats">${statPills}</div>
+    </div>
+
+    <div class="reusable-assets-list">
+      ${assetRows || `<p class="reusable-assets-empty">No reusable assets detected.</p>`}
+    </div>
+  `});
+}
+
 export function renderActionLogs() {
   renderActionLogPanel(
     "repoActionLog",

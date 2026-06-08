@@ -19,7 +19,8 @@ const repoPaths = [
   "/dependency-map",
   "/behavior-map",
   "/algorithm-map",
-  "/recovery-assistant"
+  "/recovery-assistant",
+  "/reusable-assets"
 ];
 
 async function check(path) {
