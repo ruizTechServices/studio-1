@@ -24,6 +24,7 @@ import {
   behaviorMap,
   algorithmMap,
   recoveryAssistant,
+  reusableAssets,
   deleteRepo,
   saveRepo,
   detectRepoName,
@@ -282,6 +283,16 @@ router.get("/:id/recovery-assistant", validate({ params: repoIdParams }), (reque
   }
 
   response.json(recoveryAssistant(row));
+});
+
+router.get("/:id/reusable-assets", validate({ params: repoIdParams }), (request, response) => {
+  const row = db.prepare("SELECT * FROM repos WHERE id = ?").get(request.params.id);
+  if (!row) {
+    response.status(404).json({ error: "Repo not found" });
+    return;
+  }
+
+  response.json(reusableAssets(row));
 });
 
 router.get("/:id/project-map", validate({ params: repoIdParams }), (request, response) => {

@@ -34,10 +34,11 @@ dcf6f61 feat: add algorithm map v1
 Current known status:
 
 - Core repo recovery and deterministic map layers are implemented.
+- Reusable Assets v0 is implemented as a read-only deterministic panel in the repo detail flow.
 - Backend-backed workspace pages are implemented for Projects, Specs, Agents evidence/status, Workflow runs, Memory context sources, and Settings/runtime status.
 - These newer views expose stored evidence and runtime status. They do not implement agent execution, workflow automation, or a dedicated memory store.
 - Documentation is being reorganized under `docs/archive/`, `docs/plans/`, and `docs/prompts/`.
-- Reusable Assets v0 is the next planned product implementation.
+- Reusable Assets v0 is implemented and exposed in the current repo detail flow.
 
 The repo and current code are the source of truth.
 
@@ -88,6 +89,7 @@ GitHub import currently accepts a repository URL and performs a shallow, single-
 - **Workflow runs** groups action events into observed runs; workflow automation is not implemented.
 - **Memory** assembles context sources from repos, docs, recovery signals, and events; a dedicated memory table is not implemented.
 - **Settings** reports runtime, storage, and filter-rule status; writable settings are not implemented.
+- **Reusable Assets** identifies deterministic reusable candidates from already-scanned repos.
 
 ## Current API Surface
 
@@ -104,6 +106,7 @@ GET    /api/repos/:id/dependency-map
 GET    /api/repos/:id/behavior-map
 GET    /api/repos/:id/algorithm-map
 GET    /api/repos/:id/recovery-assistant
+GET    /api/repos/:id/reusable-assets
 
 GET    /api/events
 POST   /api/events
@@ -126,7 +129,7 @@ Verified during the current recovery/docs work:
 - Key files exist: `server.js`, `routes/index.js`, `app/js/main.js`, and `app/js/data/nav-items.js`.
 - JavaScript syntax checks pass.
 - Known top-level curl endpoints work: `/api/repos`, `/api/events`, `/api/projects`, `/api/specs`, `/api/agents`, `/api/workflows/runs`, `/api/memory/context`, and `/api/settings/status`.
-- `npm run smoke` is available for deterministic API smoke checks while the server is running.
+- `npm run smoke` is available for deterministic API smoke checks while the server is running, including reusable-assets coverage when repos exist.
 
 ## Known Non-Features
 
@@ -138,14 +141,14 @@ Verified during the current recovery/docs work:
 - No embeddings
 - No auth or multi-user isolation
 - No repo editing
-- No reusable-assets implementation yet
+- No AI summaries or reuse recommendations yet
 
 ## Current Next Steps
 
 1. Finish docs reconciliation.
 2. Add or verify the smoke test script.
 3. Commit documentation/state cleanup.
-4. Implement Reusable Assets v0.
+4. Continue refining Reusable Assets v0 if needed.
 5. Only after continuity MVP basics are stable, consider local model/AI routing.
 
 Reusable Assets v0 means detecting and displaying reusable components, functions, API handlers, utilities, patterns, and algorithm candidates from already-scanned repos. It does not include AI recommendations, embeddings, automatic code reuse, a marketplace, or agent execution.

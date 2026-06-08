@@ -2,11 +2,13 @@
 
 ## Status
 
-Next planned implementation. It does not currently exist.
+Implemented as a deterministic read-only layer inside the repo intake/detail flow.
 
 ## Goal
 
 Detect and display reusable components, functions, API handlers, utilities, patterns, and algorithm candidates from already-scanned repos.
+
+The current implementation uses existing repo scan data and deterministic map helpers. It does not use AI, embeddings, or model routing.
 
 ## Initial Scope
 
@@ -24,4 +26,4 @@ Detect and display reusable components, functions, API handlers, utilities, patt
 - Agent execution or orchestration
 - Local model routing
 
-The v0 layer should remain deterministic and support continuity by making proven code easier to find again.
+The v0 layer is deterministic and supports continuity by making proven code easier to find again. Future versions may add AI summaries or reuse recommendations, but that is explicitly out of scope for v0.
