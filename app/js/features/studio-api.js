@@ -23,3 +23,14 @@ export function fetchMemoryContext() {
 export function fetchSettingsStatus() {
   return apiGet("/api/settings/status");
 }
+
+export async function fetchDashboardSummary() {
+  const [projects, specs, agents, workflows] = await Promise.all([
+    fetchProjects(),
+    fetchSpecs(),
+    fetchAgents(),
+    fetchWorkflowRuns()
+  ]);
+
+  return { projects, specs, agents, workflows };
+}

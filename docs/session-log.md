@@ -1,31 +1,27 @@
 # Session Log
 
-## 2026-06-07 - Current docs reconciliation session
+## 2026-06-08 - Reusable Assets v0 completion verification
 
-Branch: `main`
+Branch: `feature/reusable-assets-v0`
 
 Verified:
 
-- key files exist
-- JS syntax checks pass
-- known curl endpoints work
-- `npm run smoke` passes, including repo-specific endpoints
-- reusable assets endpoint and panel implemented
-
-Current dirty state:
-
-- docs moved/reorganized
-- README/current docs created
+- reusable-assets helper, endpoint, repo detail panel, API client, and conditional smoke coverage are present
+- candidate output is deterministic and sorted by confidence, risk, and path
+- candidate filtering excludes generated/noisy/oversized files
+- dependency hubs are recognized even when the hub file has no imports of its own
+- confidence and risk scoring match the v0 rules
 
 Decision:
 
-- fix docs/code mismatches before new feature work
-- preserve `docs/archive/`, `docs/plans/`, and `docs/prompts/`
-- keep AI/local model routing after the continuity MVP basics
-- keep reusable asset extraction deterministic and read-only
+- keep the layer deterministic and read-only
+- return the complete candidate list from the backend and show only the top 10 in the current repo detail flow
+- keep AI recommendations, embeddings, routing, auth, and repo editing out of scope
 
-Next:
+Verification:
 
-- keep the smoke test script current as API routes change
-- commit docs reconciliation
-- refine Reusable Assets v0 if needed
+- `node --check server.js`: pass
+- syntax checks for all 92 JavaScript files under `routes`, `lib`, `app/js`, and `scripts`: pass
+- `npm run smoke`: pass, including `/api/repos/:id/reusable-assets`
+- direct `/api/repos` and `/api/repos/:id/reusable-assets` requests: HTTP `200`
+- browser panel check: visible, 10 candidate rows, no console errors

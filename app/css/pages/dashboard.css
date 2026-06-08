@@ -1,6 +1,6 @@
 .overview-row {
   display: grid;
-  grid-template-columns: minmax(260px, 0.72fr) minmax(0, 1.28fr);
+  grid-template-columns: minmax(0, 1fr);
   gap: 18px;
   align-items: start;
   margin-bottom: 16px;
@@ -24,14 +24,16 @@
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 12px;
-  margin-top: -12px;
 }
 
-.dashboard-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 12px;
-  align-items: stretch;
+.kpi-load-error {
+  grid-column: 1 / -1;
+  padding: 18px;
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  border-radius: 10px;
+  color: #fecaca;
+  background: rgba(127, 29, 29, 0.14);
+  font-size: 13px;
 }
 
 .featured-project {
