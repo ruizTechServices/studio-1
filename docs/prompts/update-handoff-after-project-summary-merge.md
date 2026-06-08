@@ -1,3 +1,11 @@
+# Status Notice
+
+This is a historical handoff-update prompt, not current implementation truth or the current next-task sequence. Use `docs/CURRENT_PROJECT_HANDOFF.md` and current code instead.
+
+Current sequence is smoke tests, docs reconciliation, Reusable Assets v0, and only then consideration of local model/AI routing.
+
+---
+
 Read CURRENT_PROJECT_HANDOFF.md first.
 
 We are on branch main.

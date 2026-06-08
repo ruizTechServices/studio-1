@@ -1,4 +1,24 @@
 
+# Status Notice
+
+This file is a visual/design reference, not current implementation truth.
+
+Some concepts in this mock/spec are aspirational, including:
+
+- AI agents as runnable workers
+- workflow automation
+- dedicated memory store
+- Deep Research toggle
+- project health scoring
+- pricing/plan UI
+- conversational AI shell
+
+Current MVP priority is repo recovery and continuity:
+
+repo intake -> repo maps -> recovery assistant -> reusable asset extraction.
+
+---
+
 # Studio-1 Dashboard — Full Specification
 
 ## 1. Meta / Frame

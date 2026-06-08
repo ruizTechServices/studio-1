@@ -1,3 +1,16 @@
+# Status Notice
+
+This is a deferred design prompt, not the current next task. Local model and AI routing should only be considered after smoke coverage, docs reconciliation, and Reusable Assets v0 are complete and the continuity MVP is stable.
+
+Current sequence:
+
+1. Add/verify smoke tests.
+2. Update docs/handoff.
+3. Implement Reusable Assets v0.
+4. Only then consider local model/AI routing.
+
+---
+
 # Designing the AI / Local Model Router for studio-1
 ### Prompt for the next conversation
 
@@ -8,7 +21,7 @@
 > **This file is the source of truth for the project state and conventions. Do not skim it. Read every section.**
 
 ```
-c:\Users\giost\CascadeProjects\projects\application-studio\studio-1\CURRENT_PROJECT_HANDOFF.md
+c:\Users\giost\CascadeProjects\projects\application-studio\studio-1\docs\CURRENT_PROJECT_HANDOFF.md
 ```
 
 After reading, you should be able to answer:
@@ -45,7 +58,7 @@ studio-1 is a **local-first project recovery and project-mapping studio**. It is
 
 ## STEP 2 — The Next Task
 
-The next product layer is the **AI / local model router.**
+This deferred prompt originally proposed the **AI / local model router** as the next product layer. That sequence is superseded by the status notice above.
 
 This is the **first layer in studio-1 that introduces an LLM.** Everything before this was rule-based and reproducible. The router is what lets future panels ask natural-language questions about a repo and get answers grounded in the existing map data.
 

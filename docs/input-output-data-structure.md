@@ -8,12 +8,14 @@ The scanner should understand the repo before any modification tools are added.
 
 ## Input
 
+Current implementation accepts a GitHub repo URL and scans the cloned/default repo state. Branch/commit pinning is planned but not part of the current MVP implementation.
+
 ```json
 {
   "repo": {
     "sourceType": "github_url",
     "url": "https://github.com/example/example-repo",
-    "branch": "main",
+    "branch": null,
     "commit": null
   },
   "scanOptions": {
@@ -38,8 +40,8 @@ The scanner should understand the repo before any modification tools are added.
 |---|---:|---:|---|
 | `repo.sourceType` | string | yes | Where the repo comes from. Initial value: `github_url`. |
 | `repo.url` | string | yes | GitHub repository URL. |
-| `repo.branch` | string | no | Branch to scan. Defaults to the repo default branch. |
-| `repo.commit` | string/null | no | Specific commit to scan. If null, scan the selected branch head. |
+| `repo.branch` | string/null | no | **Future / planned.** Branch pinning is not accepted by the current import endpoint. |
+| `repo.commit` | string/null | no | **Future / planned.** Commit pinning is not accepted by the current import endpoint. |
 | `scanOptions.includeDocs` | boolean | no | Include documentation files in the map. |
 | `scanOptions.includeTests` | boolean | no | Include test files in the map. |
 | `scanOptions.includeConfig` | boolean | no | Include config files in the map. |
@@ -47,13 +49,15 @@ The scanner should understand the repo before any modification tools are added.
 
 ## Output
 
+The output shape below remains useful as a target data contract. `repo.branch` and `repo.commit` are planned metadata and are not currently populated by the importer.
+
 ```json
 {
   "repo": {
     "name": "example-repo",
     "url": "https://github.com/example/example-repo",
-    "branch": "main",
-    "commit": "abc123",
+    "branch": null,
+    "commit": null,
     "detectedStack": ["react", "vite", "typescript"]
   },
   "summary": {
